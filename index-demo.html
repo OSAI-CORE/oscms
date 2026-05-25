@@ -23,6 +23,41 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
+        .system-footer {
+    width: 100%;
+    background-color: #333a45;
+    text-align: center;
+    padding: 20px 0 18px 0;
+    margin-top: 32px;
+}
+
+.footer-line {
+    width: 160px;
+    height: 1px;
+    margin: 0 auto 12px auto;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255, 255, 255, 0.28),
+        transparent
+    );
+}
+
+.footer-title {
+    color: #e2e8f0;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.footer-dev {
+    color: #93c5fd;
+    font-size: 11px;
+    font-style: italic;
+    letter-spacing: 0.08em;
+}
+
         .report-table-container {
             background: white;
             border-radius: 12px;
@@ -360,10 +395,17 @@
     </main>
 
     <!-- 頁尾資訊 -->
-    <footer class="max-w-7xl mx-auto px-8 pb-10 pt-4 flex flex-col items-center text-xs text-slate-400 font-medium gap-1">
-        <div>© 2026 職業安全衛生室｜職業安全證照管理系統</div>
-        <div>Developed by Sam Sun</div>
-    </footer>
+<footer class="system-footer">
+    <div class="footer-line"></div>
+
+    <p class="footer-title">
+        © 2026 職業安全衛生室｜職業安全證照管理系統
+    </p>
+
+    <p class="footer-dev">
+        Developed by Sam Sun
+    </p>
+</footer>
 
     <!-- 檔案預覽 Modal -->
     <div id="file-preview-overlay" class="fixed inset-0 bg-black/90 hidden flex flex-col items-center justify-center p-4 md:p-10 text-white animate-in fade-in duration-200 z-[400]">
