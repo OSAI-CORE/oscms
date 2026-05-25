@@ -23,6 +23,41 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
+        .system-footer {
+    width: 100%;
+    background-color: #333a45;
+    text-align: center;
+    padding: 20px 0 18px 0;
+    margin-top: 32px;
+}
+
+.footer-line {
+    width: 160px;
+    height: 1px;
+    margin: 0 auto 12px auto;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255, 255, 255, 0.28),
+        transparent
+    );
+}
+
+.footer-title {
+    color: #e2e8f0;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.footer-dev {
+    color: #93c5fd;
+    font-size: 11px;
+    font-style: italic;
+    letter-spacing: 0.08em;
+}
+
         .report-table-container {
             background: white;
             border-radius: 12px;
@@ -170,9 +205,7 @@
             select, 
             .table-cell:last-child, 
             .table-header-cell:last-child, 
-            .link-icon-btn,
-            .reorder-btns,
-            footer {
+            .link-icon-btn {
                 display: none !important;
             }
             body { 
@@ -283,7 +316,7 @@
         <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <div class="flex items-center gap-4">
                 <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                    <i data-lucide="table-2" class="w-5 h-5"></i> 證照清單明細
+                    <i data-lucide="table-2" class="w-5 h-5"></i> 證照清單明細報表
                 </h2>
                 <button id="add-person-btn" onclick="openAddModal()" class="hidden bg-emerald-600 text-white px-4 py-1.5 rounded-lg font-bold text-sm hover:bg-emerald-700 transition flex items-center gap-2 shadow-sm">
                     <i data-lucide="user-plus" class="w-4 h-4"></i> 新增人員
@@ -311,7 +344,7 @@
                 <table class="w-full border-collapse min-w-[1000px]">
                     <thead>
                         <tr>
-                            <th class="table-header-cell w-16 text-center">項次</th>
+                            <th class="table-header-cell w-16">項次</th>
                             <th class="table-header-cell">作業單位</th>
                             <th class="table-header-cell">姓名</th>
                             <th class="table-header-cell">訓練項目</th>
@@ -329,12 +362,19 @@
         </div>
     </main>
 
-    <!-- 頁尾資訊 -->
-    <footer class="max-w-7xl mx-auto px-8 pb-10 pt-4 flex flex-col items-center text-xs text-slate-400 font-medium gap-1">
-        <div>© 2026 職業安全衛生室｜職業安全證照管理系統</div>
-        <div>Developed by Sam Sun</div>
-    </footer>
+        <!-- 頁尾資訊 -->
+<footer class="system-footer">
+    <div class="footer-line"></div>
 
+    <p class="footer-title">
+        © 2026 職業安全衛生室｜職業安全證照管理系統
+    </p>
+
+    <p class="footer-dev">
+        Developed by Sam Sun
+    </p>
+</footer>
+    
     <!-- 檔案預覽 Modal -->
     <div id="file-preview-overlay" class="fixed inset-0 bg-black/90 hidden flex flex-col items-center justify-center p-4 md:p-10 text-white animate-in fade-in duration-200 z-[400]">
         <div class="w-full max-w-5xl flex justify-between items-center mb-4">
@@ -378,6 +418,7 @@
                 <i data-lucide="check-circle" class="w-8 h-8"></i>
             </div>
             <h2 class="text-xl font-black text-slate-800 mb-2">資料同步完成</h2>
+            <p class="text-slate-400 text-sm mb-6"></p>
             <button onclick="closeSyncSuccessModal()" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold hover:bg-slate-900 transition shadow-lg">確定</button>
         </div>
     </div>
@@ -427,12 +468,8 @@
                 <button onclick="closeAttachmentModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
             <div id="upload-area" class="mb-6">
-                <!-- 拖拉區域 -->
                 <div id="drop-zone" class="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-indigo-400 transition cursor-pointer group"
-                     onclick="document.getElementById('attach-file-input').click()"
-                     ondragover="handleDragOver(event)"
-                     ondragleave="handleDragLeave(event)"
-                     ondrop="handleDrop(event)">
+                     onclick="document.getElementById('attach-file-input').click()">
                     <input type="file" id="attach-file-input" class="hidden" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="handleFileUpload(event)">
                     <div class="bg-slate-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-indigo-50">
                         <i data-lucide="upload-cloud" class="w-6 h-6 text-slate-400 group-hover:text-indigo-500"></i>
@@ -491,7 +528,7 @@
 
 <script>
     // --- IndexedDB 核心邏輯 ---
-    const DB_NAME = 'OSH_Management_Production';
+    const DB_NAME = 'OSH_Management_System';
     const DB_VERSION = 1;
     const STORE_RECORDS = 'records';
     const STORE_CONFIG = 'config';
@@ -508,9 +545,11 @@
 
             request.onupgradeneeded = (event) => {
                 const dbInstance = event.target.result;
+                // 建立紀錄儲存區
                 if (!dbInstance.objectStoreNames.contains(STORE_RECORDS)) {
                     dbInstance.createObjectStore(STORE_RECORDS, { keyPath: 'id' });
                 }
+                // 建立配置儲存區 (用於儲存密碼等)
                 if (!dbInstance.objectStoreNames.contains(STORE_CONFIG)) {
                     dbInstance.createObjectStore(STORE_CONFIG, { keyPath: 'key' });
                 }
@@ -523,6 +562,9 @@
         });
     }
 
+    /**
+     * 讀取所有證照紀錄
+     */
     async function fetchAllRecords() {
         return new Promise((resolve) => {
             const transaction = db.transaction([STORE_RECORDS], 'readonly');
@@ -532,19 +574,28 @@
         });
     }
 
+    /**
+     * 儲存單一或複數紀錄 (覆蓋模式)
+     */
     async function persistAllRecords(recordsArray) {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction([STORE_RECORDS], 'readwrite');
             const store = transaction.objectStore(STORE_RECORDS);
+            
+            // 先清空再寫入，以符合原先 localStorage 全量覆蓋的行為邏輯
             const clearReq = store.clear();
             clearReq.onsuccess = () => {
                 recordsArray.forEach(record => store.add(record));
             };
+
             transaction.oncomplete = () => resolve();
             transaction.onerror = () => reject('資料保存失敗');
         });
     }
 
+    /**
+     * 讀取配置資訊 (密碼)
+     */
     async function getConfig(key) {
         return new Promise((resolve) => {
             const transaction = db.transaction([STORE_CONFIG], 'readonly');
@@ -554,6 +605,9 @@
         });
     }
 
+    /**
+     * 儲存配置資訊
+     */
     async function setConfig(key, value) {
         return new Promise((resolve) => {
             const transaction = db.transaction([STORE_CONFIG], 'readwrite');
@@ -565,38 +619,15 @@
 
     // --- 全域變數 ---
     let isAdmin = false;
-    let systemPassword = "1068";
+    let systemPassword = "1068"; // 預設密碼
     let records = [];
     let currentAttachRecordId = null;
 
-    // --- 圖片內容對應數據集 ---
-    const imageDataset = [
-        { id: 1, dept: "電子部", name: "余謙琼", item: "甲種業務主管", certNo: "", cycle: "6H/2Y", lastDate: "", attachments: [] },
-        { id: 2, dept: "電子部", name: "黃俊淵", item: "甲種業務主管", certNo: "108N0151302102", cycle: "6H/2Y", lastDate: "2024-08-06", attachments: [] },
-        { id: 3, dept: "電子部", name: "黃俊淵", item: "急救人員", certNo: "北市勞職字第10638825400號函認可", cycle: "3H/3Y", lastDate: "2023-11-14", attachments: [] },
-        { id: 4, dept: "物流部", name: "鍾嘉駿", item: "急救人員", certNo: "北市勞職字第10638825400號函認可", cycle: "3H/3Y", lastDate: "2023-12-08", attachments: [] },
-        { id: 5, dept: "電子部", name: "莊勝男", item: "急救人員", certNo: "台北市政府北市勞職字第1116084321號", cycle: "3H/3Y", lastDate: "2025-10-17", attachments: [] },
-        { id: 6, dept: "電子部", name: "余謙琼", item: "急救人員", certNo: "台北市政府北市勞職字第1116084518號", cycle: "3H/3Y", lastDate: "2025-10-17", attachments: [] },
-        { id: 7, dept: "系統部", name: "陳宏毅", item: "急救人員", certNo: "中北訓證字第1081066043號", cycle: "3H/3Y", lastDate: "2025-10-17", attachments: [] },
-        { id: 8, dept: "系統部", name: "余建銘", item: "急救人員", certNo: "中北訓證字第1081066042號", cycle: "3H/3Y", lastDate: "2025-09-17", attachments: [] },
-        { id: 9, dept: "系統部", name: "謝青翰", item: "急救人員", certNo: "北市勞職字第10638825400號函認可", cycle: "3H/3Y", lastDate: "2023-11-14", attachments: [] },
-        { id: 10, dept: "品保部", name: "陳彥廷", item: "游離輻射操作人員", certNo: "福訓字第00021號", cycle: "3H/1Y", lastDate: "2025-10-29", attachments: [] },
-        { id: 11, dept: "品保部", name: "陳家和", item: "游離輻射操作人員", certNo: "(華)輻安訓字第0896號", cycle: "3H/1Y", lastDate: "2025-09-24", attachments: [] },
-        { id: 12, dept: "品保部", name: "林晉緯", item: "游離輻射操作人員", certNo: "一一0(華)輻安訓字第0478號", cycle: "3H/1Y", lastDate: "2025-07-18", attachments: [] },
-        { id: 13, dept: "品保部", name: "楊賽亮", item: "游離輻射操作人員", certNo: "台能輻訓字第105416號", cycle: "3H/1Y", lastDate: "", attachments: [] },
-        { id: 14, dept: "品保部", name: "姚若蓁", item: "游離輻射操作人員", certNo: "一零八(華)輻安訓字第0054號", cycle: "3H/1Y", lastDate: "2025-09-24", attachments: [] },
-        { id: 15, dept: "電子部", name: "吳明毅", item: "游離輻射操作人員", certNo: "台能輻訓字第111308號", cycle: "3H/1Y", lastDate: "2025-10-29", attachments: [] },
-        { id: 16, dept: "電子部", name: "陳彥晟", item: "游離輻射操作人員", certNo: "台能輻訓字第111338號", cycle: "3H/1Y", lastDate: "2025-09-24", attachments: [] },
-        { id: 17, dept: "電子部", name: "藍煥文", item: "游離輻射操作人員", certNo: "台能輻訓字第111493號", cycle: "3H/1Y", lastDate: "2025-10-29", attachments: [] },
-        { id: 18, dept: "電子部", name: "余謙琼", item: "游離輻射操作人員", certNo: "台能輻訓字第00021號", cycle: "3H/1Y", lastDate: "2025-10-29", attachments: [] },
-        { id: 19, dept: "電子部", name: "周碧君", item: "有機溶劑作業主管", certNo: "", cycle: "6H/3Y", lastDate: "", attachments: [] },
-        { id: 20, dept: "管理部", name: "阮立誠", item: "防火管理人", certNo: "北市消預字第1133000483號函證書字號:A113初00125號", cycle: "6H/3Y", lastDate: "2024-01-09", attachments: [] },
-        { id: 21, dept: "職業安全衛生室", name: "孫惠星", item: "職業安全管理師", certNo: "勞訓證字第22446-18號", cycle: "12H/2Y", lastDate: "2025-05-08", attachments: [] }
-    ];
+    // --- UI 初始化功能 ---
 
-    // --- UI 功能與邏輯 ---
-
-    function initIcons() { if (typeof lucide !== 'undefined') lucide.createIcons(); }
+    function initIcons() {
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
 
     function setTodayDate() {
         const now = new Date();
@@ -606,16 +637,14 @@
         document.getElementById('current-date-display').innerText = `${yyyy}-${mm}-${dd}`;
     }
 
+    // --- 核心邏輯計算 ---
+
     function calculateNextDate(lastDateStr, cycleStr) {
         if (!lastDateStr) return null;
         const lastDate = new Date(lastDateStr);
         if (isNaN(lastDate.getTime())) return null;
         
-        let years = 0;
-        if (cycleStr.includes('Y')) {
-            years = parseInt(cycleStr.split('/').pop().replace('Y', '')) || 0;
-        }
-        
+        const years = parseInt(cycleStr.replace('Y', '')) || 0;
         const nextDate = new Date(lastDate);
         nextDate.setFullYear(lastDate.getFullYear() + years);
         return nextDate;
@@ -632,6 +661,8 @@
         return { label: '效期內', bg: 'bg-green-100', text: 'text-green-600' };
     }
 
+    // --- 介面渲染 ---
+
     function updateItemFilter() {
         const itemFilter = document.getElementById('itemFilter');
         const currentVal = itemFilter.value;
@@ -647,24 +678,6 @@
         });
     }
 
-    // --- 排序功能 ---
-    async function moveRecord(id, direction) {
-        const index = records.findIndex(r => r.id === id);
-        if (index === -1) return;
-        
-        const newIndex = index + direction;
-        if (newIndex < 0 || newIndex >= records.length) return;
-        
-        // 交換位置
-        const temp = records[index];
-        records[index] = records[newIndex];
-        records[newIndex] = temp;
-        
-        // 儲存並重新渲染
-        await persistAllRecords(records);
-        renderReport();
-    }
-
     async function renderReport() {
         const tableBody = document.getElementById('report-body');
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -675,26 +688,18 @@
         let stats = { total: 0, expired: 0, warning: 0, valid: 0 };
         let visibleCount = 0;
 
-        // 計算基礎統計數據
-        records.forEach(record => {
-            const nextDate = calculateNextDate(record.lastDate, record.cycle);
-            const status = getStatusInfo(nextDate, record.lastDate);
-            stats.total++;
-            if (status.label === '已過期') stats.expired++;
-            else if (status.label === '待受訓') stats.warning++;
-            else stats.valid++;
-        });
-
         if (records.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="10" class="p-20 text-center text-slate-400">目前尚無資料。</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="10" class="p-20 text-center text-slate-400">目前尚無資料，請登入管理帳號新增或導入備份。</td></tr>';
         } else {
-            // 用於檢查是否在篩選模式（篩選模式下通常不建議排序以免邏輯混亂，但此處維持可用）
-            const isFiltering = searchTerm !== "" || statusFilter !== "" || itemFilter !== "";
-
-            records.forEach((record, arrayIndex) => {
+            records.forEach(record => {
                 const nextDate = calculateNextDate(record.lastDate, record.cycle);
                 const status = getStatusInfo(nextDate, record.lastDate);
                 const hasAttachments = record.attachments && record.attachments.length > 0;
+                
+                stats.total++;
+                if (status.label === '已過期') stats.expired++;
+                else if (status.label === '待受訓') stats.warning++;
+                else stats.valid++;
 
                 const matchesSearch = (record.name || "").toLowerCase().includes(searchTerm) || 
                                     (record.item || "").toLowerCase().includes(searchTerm) || 
@@ -705,37 +710,16 @@
                 if (matchesSearch && matchesStatus && matchesItem) {
                     visibleCount++;
                     const displayNextDate = nextDate ? nextDate.toISOString().split('T')[0] : "待補件";
-                    
-                    // 管理模式下的排序按鈕
-                    let reorderHtml = '';
-                    if (isAdmin) {
-                        reorderHtml = `
-                            <div class="reorder-btns flex flex-col items-center justify-center -mt-1 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="moveRecord(${record.id}, -1)" class="text-slate-300 hover:text-indigo-500 disabled:opacity-0" ${arrayIndex === 0 ? 'disabled' : ''}>
-                                    <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
-                                </button>
-                                <button onclick="moveRecord(${record.id}, 1)" class="text-slate-300 hover:text-indigo-500 disabled:opacity-0" ${arrayIndex === records.length - 1 ? 'disabled' : ''}>
-                                    <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
-                                </button>
-                            </div>
-                        `;
-                    }
-
                     const row = document.createElement('tr');
-                    row.className = "table-row group";
+                    row.className = "table-row";
                     row.innerHTML = `
-                        <td class="table-cell">
-                            <div class="flex items-center justify-center gap-1">
-                                <span class="font-mono text-slate-400 text-sm w-4 text-center">${visibleCount}</span>
-                                ${reorderHtml}
-                            </div>
-                        </td>
+                        <td class="table-cell font-mono text-slate-400 text-sm">${visibleCount}</td>
                         <td class="table-cell font-medium text-slate-500">${record.dept}</td>
                         <td class="table-cell font-bold text-slate-800">${record.name}</td>
                         <td class="table-cell font-semibold text-indigo-600">${record.item}</td>
                         <td class="table-cell">
-                            <div class="flex items-center justify-between group-inner max-w-[180px]">
-                                <span class="text-xs font-mono text-slate-400 truncate mr-2" title="${record.certNo}">${record.certNo || '---'}</span>
+                            <div class="flex items-center justify-between group max-w-[180px]">
+                                <span class="text-xs font-mono text-slate-400 truncate mr-2">${record.certNo}</span>
                                 <button onclick="handleLinkClick(${record.id})" 
                                         class="link-icon-btn p-1.5 rounded-lg transition-colors ${hasAttachments ? 'text-blue-500 hover:bg-blue-50' : 'text-slate-300'}">
                                     <i data-lucide="link" class="w-3.5 h-3.5"></i>
@@ -743,7 +727,7 @@
                             </div>
                         </td>
                         <td class="table-cell text-slate-500">${record.cycle}</td>
-                        <td class="table-cell text-slate-500">${record.lastDate || '<span class="text-red-300">待補</span>'}</td>
+                        <td class="table-cell text-slate-500">${record.lastDate || '<span class="text-red-300">未填寫</span>'}</td>
                         <td class="table-cell font-bold ${status.text}">${displayNextDate}</td>
                         <td class="table-cell text-center">
                             <span class="badge-status ${status.bg} ${status.text}">
@@ -770,8 +754,12 @@
         initIcons();
     }
 
+    // --- 附件管理與預覽 ---
+
     function handleLinkClick(id) {
-        if (isAdmin) { openAttachmentModal(id); } else {
+        if (isAdmin) { 
+            openAttachmentModal(id); 
+        } else {
             const record = records.find(r => r.id === id);
             if (record && record.attachments && record.attachments.length > 0) {
                 openFilePreview(record.attachments[0], record.name);
@@ -800,72 +788,77 @@
         const listContainer = document.getElementById('attachment-list');
         const record = records.find(r => r.id === currentAttachRecordId);
         listContainer.innerHTML = '';
+        
         if (!record.attachments || record.attachments.length === 0) {
             listContainer.innerHTML = '<p class="text-center text-slate-400 py-4 text-sm">尚未上傳任何檔案</p>';
             return;
         }
+
         record.attachments.forEach((file, index) => {
             const item = document.createElement('div');
             item.className = "flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 group";
             item.innerHTML = `
                 <div class="flex items-center gap-3 overflow-hidden">
-                    <div class="bg-white p-2 rounded-lg border border-slate-200"><i data-lucide="${file.type === 'pdf' ? 'file-text' : 'image'}" class="w-4 h-4 text-slate-400"></i></div>
+                    <div class="bg-white p-2 rounded-lg border border-slate-200">
+                        <i data-lucide="${file.type === 'pdf' ? 'file-text' : 'image'}" class="w-4 h-4 text-slate-400"></i>
+                    </div>
                     <span class="text-xs font-bold text-slate-700 truncate">${file.name}</span>
                 </div>
                 <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
-                    <button onclick='openFilePreview(${JSON.stringify(file)}, "${record.name}")' class="p-1.5 text-slate-400 hover:text-blue-500"><i data-lucide="external-link" class="w-3.5 h-3.5"></i></button>
-                    <button onclick="removeAttachment(${index})" class="p-1.5 text-slate-400 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                </div>`;
+                    <button onclick='openFilePreview(${JSON.stringify(file)}, "${record.name}")' class="p-1.5 text-slate-400 hover:text-blue-500">
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="removeAttachment(${index})" class="p-1.5 text-slate-400 hover:text-red-500">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            `;
             listContainer.appendChild(item);
         });
         initIcons();
     }
 
-    function handleDragOver(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        document.getElementById('drop-zone').classList.add('drag-over');
-    }
-
-    function handleDragLeave(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        document.getElementById('drop-zone').classList.remove('drag-over');
-    }
-
-    function handleDrop(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        document.getElementById('drop-zone').classList.remove('drag-over');
-        
-        const files = e.dataTransfer.files;
-        if (files && files.length > 0) {
-            processFiles(files);
-        }
-    }
-
     function handleFileUpload(event) {
-        const files = event.target.files;
-        if (files && files.length > 0) {
-            processFiles(files);
-        }
-    }
-
-    function processFiles(files) {
-        const filesArray = Array.from(files);
+        const filesArray = Array.from(event.target.files);
         const record = records.find(r => r.id === currentAttachRecordId);
-        if (!record) return;
-
+        
         filesArray.forEach(file => {
             const type = file.type.includes('pdf') ? 'pdf' : (file.type.includes('image') ? 'image' : 'unknown');
             const reader = new FileReader();
             reader.onload = (e) => {
-                record.attachments.push({ name: file.name, url: e.target.result, type: type });
+                record.attachments.push({ 
+                    name: file.name, 
+                    url: e.target.result, 
+                    type: type,
+                    lastModified: file.lastModified
+                });
                 renderAttachmentList();
             };
             reader.readAsDataURL(file);
         });
     }
+
+    // Drag and Drop 支援
+    const dropZone = document.getElementById('drop-zone');
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('drag-over'); });
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const record = records.find(r => r.id === currentAttachRecordId);
+            Array.from(files).forEach(file => {
+                const type = file.type.includes('pdf') ? 'pdf' : (file.type.includes('image') ? 'image' : 'unknown');
+                const reader = new FileReader();
+                reader.onload = (re) => {
+                    record.attachments.push({ name: file.name, url: re.target.result, type: type });
+                    renderAttachmentList();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    });
 
     function removeAttachment(index) {
         if (confirm("確定要移除此附件嗎？")) {
@@ -881,10 +874,11 @@
         document.getElementById('preview-filename').innerText = file.name;
         document.getElementById('preview-meta').innerText = `${personName} 的相關證件附件`;
         contentArea.innerHTML = '';
+
         if (file.type === 'pdf') {
             contentArea.innerHTML = `<iframe src="${file.url}" class="w-full h-full border-none"></iframe>`;
-        } else {
-            contentArea.innerHTML = `<div class="overflow-auto w-full h-full flex items-center justify-center p-4"><img src="${file.url}" class="max-w-full max-h-full object-contain"></div>`;
+        } else if (file.type === 'image') {
+            contentArea.innerHTML = `<div class="overflow-auto w-full h-full flex items-center justify-center p-4"><img src="${file.url}" alt="${file.name}" class="max-w-full max-h-full object-contain"></div>`;
         }
         overlay.classList.remove('hidden');
         initIcons();
@@ -892,38 +886,86 @@
 
     function closeFilePreview() { document.getElementById('file-preview-overlay').classList.add('hidden'); }
 
+    // --- 匯出功能 ---
+
     function exportToExcel() {
         if (records.length === 0) { alert('目前沒有數據可匯出'); return; }
-        let csvContent = "\uFEFF";
+        let csvContent = "\uFEFF"; // UTF-8 BOM
         csvContent += "項次,作業單位,姓名,訓練項目,證書號碼,複訓週期,上次受訓日期,下次複訓日期,狀態\n";
+        
         records.forEach((r, index) => {
             const nextDate = calculateNextDate(r.lastDate, r.cycle);
             const status = getStatusInfo(nextDate, r.lastDate).label;
             const displayNextDate = nextDate ? nextDate.toISOString().split('T')[0] : "待補件";
-            csvContent += `${index + 1},"${r.dept}","${r.name}","${r.item}","${r.certNo}","${r.cycle}",${r.lastDate},${displayNextDate},${status}\n`;
+            
+            const row = [
+                index + 1,
+                `"${r.dept}"`,
+                `"${r.name}"`,
+                `"${r.item}"`,
+                `"${r.certNo}"`,
+                `"${r.cycle}"`,
+                r.lastDate,
+                displayNextDate,
+                status
+            ].join(",");
+            csvContent += row + "\n";
         });
+
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `證照管理報表_${new Date().toISOString().split('T')[0]}.csv`;
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `證照管理報表_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
     }
 
-    function openLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); setTimeout(() => document.getElementById('login-pwd').focus(), 100); }
+    // --- 驗證與登入邏輯 ---
+
+    function openLoginModal() { 
+        document.getElementById('login-modal').classList.remove('hidden'); 
+        setTimeout(() => document.getElementById('login-pwd').focus(), 100);
+    }
+    
     function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
+    
     function checkPassword() {
-        if (document.getElementById('login-pwd').value === systemPassword) { 
-            isAdmin = true; closeLoginModal(); updateUIForAdmin(); renderReport(); 
-        } else { alert('密碼錯誤'); }
+        const pwd = document.getElementById('login-pwd').value;
+        if (pwd === systemPassword) { 
+            isAdmin = true; 
+            closeLoginModal(); 
+            updateUIForAdmin(); 
+            renderReport(); 
+        } else { 
+            alert('密碼錯誤'); 
+        }
         document.getElementById('login-pwd').value = '';
     }
 
-    function openChangePasswordModal() { document.getElementById('change-pwd-modal').classList.remove('hidden'); }
-    function closeChangePasswordModal() { document.getElementById('change-pwd-modal').classList.add('hidden'); }
+    function openChangePasswordModal() {
+        document.getElementById('change-pwd-modal').classList.remove('hidden');
+    }
+    
+    function closeChangePasswordModal() {
+        document.getElementById('change-pwd-modal').classList.add('hidden');
+    }
+    
     async function saveNewPassword() {
-        if (document.getElementById('old-pwd').value !== systemPassword) { alert("舊密碼不正確"); return; }
-        systemPassword = document.getElementById('new-pwd').value;
-        await setConfig('admin_password', systemPassword);
+        const oldP = document.getElementById('old-pwd').value;
+        const newP = document.getElementById('new-pwd').value;
+        if (oldP !== systemPassword) {
+            alert("舊密碼不正確");
+            return;
+        }
+        if (!newP) {
+            alert("新密碼不可為空");
+            return;
+        }
+        systemPassword = newP;
+        await setConfig('admin_password', newP);
         alert("密碼已更新成功！");
         closeChangePasswordModal();
     }
@@ -933,14 +975,25 @@
         const loginBtn = document.getElementById('login-toggle-btn');
         loginBtn.innerText = "完成並登出系統";
         loginBtn.className = "bg-red-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-red-700 transition";
-        loginBtn.onclick = async () => { await persistAllRecords(records); showSyncSuccess(); };
+        loginBtn.onclick = async () => {
+            await persistAllRecords(records);
+            showSyncSuccess();
+        };
         document.getElementById('add-person-btn').classList.remove('hidden');
         initIcons();
     }
 
-    function showSyncSuccess() { document.getElementById('sync-success-modal').classList.remove('hidden'); initIcons(); }
-    function closeSyncSuccessModal() { document.getElementById('sync-success-modal').classList.add('hidden'); logout(); }
-    function logout() {
+    function showSyncSuccess() {
+        document.getElementById('sync-success-modal').classList.remove('hidden');
+        initIcons();
+    }
+
+    function closeSyncSuccessModal() {
+        document.getElementById('sync-success-modal').classList.add('hidden');
+        finalLogoutConfirm();
+    }
+
+    function finalLogoutConfirm() {
         isAdmin = false;
         document.getElementById('admin-badge').innerHTML = '<i data-lucide="eye" class="w-4 h-4"></i> 檢視模式';
         const loginBtn = document.getElementById('login-toggle-btn');
@@ -951,10 +1004,13 @@
         renderReport();
     }
 
+    // --- 資料編輯功能 ---
+
     function openEditModal(id) {
         if (!isAdmin) { openLoginModal(); return; }
         const record = records.find(r => r.id === id);
         if (!record) return;
+        
         document.getElementById('modal-title').innerText = "編輯紀錄明細";
         document.getElementById('edit-id').value = record.id;
         document.getElementById('edit-dept').value = record.dept;
@@ -963,6 +1019,7 @@
         document.getElementById('edit-certNo').value = record.certNo;
         document.getElementById('edit-cycle').value = record.cycle;
         document.getElementById('edit-lastDate').value = record.lastDate;
+        
         document.getElementById('save-btn').innerText = "更新資料";
         document.getElementById('remove-btn').classList.remove('hidden');
         document.getElementById('edit-modal').classList.remove('hidden');
@@ -991,78 +1048,98 @@
             cycle: document.getElementById('edit-cycle').value || "1Y",
             lastDate: document.getElementById('edit-lastDate').value || ""
         };
+
         if (idVal === "") {
             const newId = records.length > 0 ? Math.max(...records.map(r => r.id)) + 1 : 1;
             records.push({ id: newId, ...data, attachments: [] });
         } else {
             const id = parseInt(idVal);
-            const idx = records.findIndex(r => r.id === id);
-            if (idx !== -1) records[idx] = { ...records[idx], ...data };
+            const index = records.findIndex(r => r.id === id);
+            if (index !== -1) records[index] = { ...records[index], ...data };
         }
+        
         await persistAllRecords(records);
         renderReport();
         closeEditModal();
     }
 
     async function confirmRemove() {
-        if(confirm("確定要移除嗎？")) {
-            records = records.filter(r => r.id !== parseInt(document.getElementById('edit-id').value));
+        if(confirm("確定要永久移除此紀錄嗎？")) {
+            const id = parseInt(document.getElementById('edit-id').value);
+            records = records.filter(r => r.id !== id);
             await persistAllRecords(records);
             renderReport();
             closeEditModal();
         }
     }
 
+    // --- 備份與同步 ---
+
     function exportJSON() {
+        const blob = new Blob([JSON.stringify(records, null, 2)], { type: 'application/json' });
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(new Blob([JSON.stringify(records, null, 2)], { type: 'application/json' }));
-        link.download = `OSH_Backup_${new Date().toISOString().split('T')[0]}.json`;
+        link.href = URL.createObjectURL(blob);
+        link.download = `OSH_DB_Backup_${new Date().toISOString().split('T')[0]}.json`;
         link.click();
     }
 
     function triggerImportJSON() { document.getElementById('json-file-input').click(); }
+
     async function importJSON(event) {
         const file = event.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = async (e) => {
             try {
-                records = JSON.parse(e.target.result);
-                await persistAllRecords(records);
-                renderReport();
-                alert("導入成功！");
-            } catch (err) { alert("導入失敗"); }
+                const data = JSON.parse(e.target.result);
+                if (Array.isArray(data)) { 
+                    records = data; 
+                    await persistAllRecords(records);
+                    renderReport(); 
+                    alert("數據備份導入成功！"); 
+                }
+            } catch (err) { alert("導入失敗：檔案格式不正確"); }
         };
         reader.readAsText(file);
     }
 
     async function startAutoUpdate() {
-        document.getElementById('update-animation-modal').classList.remove('hidden');
-        const pb = document.getElementById('update-progress-bar');
-        pb.style.width = '0%';
-        void pb.offsetWidth;
-        pb.classList.add('animate-progress');
+        const animModal = document.getElementById('update-animation-modal');
+        const progressBar = document.getElementById('update-progress-bar');
+        
+        progressBar.classList.remove('animate-progress');
+        progressBar.style.width = '0%';
+        animModal.classList.remove('hidden');
+        
+        // Trigger reflow
+        void progressBar.offsetWidth;
+        progressBar.classList.add('animate-progress');
+        
         setTimeout(async () => { 
             records = await fetchAllRecords();
-            document.getElementById('update-animation-modal').classList.add('hidden'); 
+            animModal.classList.add('hidden'); 
             renderReport(); 
         }, 3000);
     }
+
+    // --- 應用程式啟動 ---
 
     window.onload = async () => { 
         setTodayDate(); 
         try {
             await initDB();
+            
+            // 讀取密碼配置
             const savedPwd = await getConfig('admin_password');
             if (savedPwd) systemPassword = savedPwd;
             
+            // 讀取證照數據
             records = await fetchAllRecords();
-            if (records.length === 0) {
-                records = imageDataset;
-                await persistAllRecords(records);
-            }
             renderReport(); 
-        } catch(e) { alert('啟動失敗'); }
+        } catch(e) { 
+            console.error('應用程式啟動失敗', e); 
+            alert('無法載入本地數據庫，請檢查瀏覽器隱私設定或嘗試清除快取。');
+        }
     };
 </script>
 </body>
