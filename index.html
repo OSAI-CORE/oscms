@@ -1101,7 +1101,7 @@ async function checkPassword() {
         const blob = new Blob([JSON.stringify(records, null, 2)], { type: 'application/json' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `OSH_DB_Backup_${new Date().toISOString().split('T')[0]}.json`;
+        link.download = `職業安全證照管理系統_${new Date().toISOString().split('T')[0]}.json`;
         link.click();
     }
 
