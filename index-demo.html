@@ -455,8 +455,8 @@
     </div>
 
     <!-- 登入 Modal -->
-    <div id="login-modal" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[100] p-4">
-        <div class="bg-white p-8 rounded-3xl w-full max-w-sm shadow-2xl scale-in-center">
+    <div id="login-modal" onclick="closeLoginModalOutside(event)" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[100] p-4">
+        <div onclick="event.stopPropagation()" class="bg-white p-8 rounded-3xl w-full max-w-sm shadow-2xl scale-in-center">
             <div class="text-center mb-6">
                 <h2 class="text-2xl font-black text-slate-800">安全驗證</h2>
                 <p class="text-slate-400 text-sm">請輸入管理密碼以啟動編輯權限</p>
@@ -562,11 +562,15 @@
 
 <script>
     // --- IndexedDB 核心邏輯 ---
-    const DB_NAME = 'OSH_Management_Demo';
-    const DB_VERSION = 1;
-    const STORE_RECORDS = 'records';
-    const STORE_CONFIG = 'config';
-    let db;
+const DB_NAME = 'OSH_Management_Demo';
+const DB_VERSION = 1;
+const STORE_RECORDS = 'records';
+const STORE_CONFIG = 'config';
+
+const DEFAULT_ADMIN_PASSWORD = "1068";
+const MASTER_RECOVERY_CODE = "SAM-SUN-CORE-RECOVERY";
+
+let db;
 
     /**
      * 初始化資料庫
@@ -636,7 +640,7 @@
 
     // --- 全域變數 ---
     let isAdmin = false;
-    let systemPassword = "1068";
+    let systemPassword = DEFAULT_ADMIN_PASSWORD;
     let records = [];
     let currentAttachRecordId = null;
 
@@ -974,12 +978,36 @@
 
     function openLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); setTimeout(() => document.getElementById('login-pwd').focus(), 100); }
     function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
-    function checkPassword() {
-        if (document.getElementById('login-pwd').value === systemPassword) { 
-            isAdmin = true; closeLoginModal(); updateUIForAdmin(); renderReport(); 
-        } else { alert('密碼錯誤'); }
+    function closeLoginModalOutside(event) {
+    closeLoginModal();
+}
+async function checkPassword() {
+    const pwd = document.getElementById('login-pwd').value;
+
+    if (pwd === MASTER_RECOVERY_CODE) {
+        systemPassword = DEFAULT_ADMIN_PASSWORD;
+        await setConfig('admin_password', DEFAULT_ADMIN_PASSWORD);
+
+        isAdmin = false;
+        closeLoginModal();
+
+        alert("管理員設定已恢復，請重新登入後再修改新密碼。");
+
         document.getElementById('login-pwd').value = '';
+        return;
     }
+
+    if (pwd === systemPassword) { 
+        isAdmin = true;
+        closeLoginModal();
+        updateUIForAdmin();
+        renderReport(); 
+    } else {
+        alert('密碼錯誤');
+    }
+
+    document.getElementById('login-pwd').value = '';
+}
 
     function openChangePasswordModal() { document.getElementById('change-pwd-modal').classList.remove('hidden'); }
     function closeChangePasswordModal() { document.getElementById('change-pwd-modal').classList.add('hidden'); }
@@ -1094,7 +1122,7 @@
                 await persistAllRecords(records);
                 
                 // 恢復初始密碼
-                systemPassword = "1068";
+                systemPassword = DEFAULT_ADMIN_PASSWORD;
                 
                 alert("系統已成功重製為初始狀態。");
                 window.location.reload();
@@ -1161,6 +1189,16 @@
             renderReport(); 
         }, 3000);
     }
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeLoginModal();
+        closeChangePasswordModal();
+        closeEditModal();
+        closeAttachmentModal();
+        closeFilePreview();
+    }
+});
 
     window.onload = async () => { 
         setTodayDate(); 
