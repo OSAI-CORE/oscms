@@ -376,8 +376,8 @@
 </footer>
     
     <!-- 檔案預覽 Modal -->
-    <div id="file-preview-overlay" class="fixed inset-0 bg-black/90 hidden flex flex-col items-center justify-center p-4 md:p-10 text-white animate-in fade-in duration-200 z-[400]">
-        <div class="w-full max-w-5xl flex justify-between items-center mb-4">
+    <div id="file-preview-overlay" onclick="closeFilePreviewOutside(event)" class="fixed inset-0 bg-black/90 hidden flex flex-col items-center justify-center p-4 md:p-10 text-white animate-in fade-in duration-200 z-[400] overflow-y-auto">
+        <div onclick="event.stopPropagation()" class="w-full max-w-5xl flex justify-between items-center mb-4">
             <div>
                 <h3 id="preview-filename" class="text-lg font-bold">檔案預覽</h3>
                 <p id="preview-meta" class="text-xs text-slate-400">附件內容</p>
@@ -386,8 +386,8 @@
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
         </div>
-        <div id="preview-content-area" class="w-full max-w-5xl flex-1 bg-white rounded-xl overflow-hidden shadow-2xl flex items-center justify-center text-slate-800"></div>
-        <div class="mt-6 flex gap-4">
+        <div id="preview-content-area" onclick="event.stopPropagation()" class="w-full max-w-5xl flex-1 bg-white rounded-xl overflow-hidden shadow-2xl flex items-center justify-center text-slate-800"></div>
+        <div onclick="event.stopPropagation()" class="mt-6 flex gap-4">
             <button onclick="closeFilePreview()" class="bg-indigo-600 hover:bg-indigo-700 px-8 py-3 rounded-xl font-bold transition shadow-lg">關閉視窗</button>
         </div>
     </div>
@@ -458,11 +458,11 @@
     </div>
 
     <!-- 附件管理 Modal -->
-    <div id="attachment-modal" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[150] p-4">
-        <div class="bg-white p-8 rounded-3xl w-full max-w-md shadow-2xl scale-in-center">
+    <div id="attachment-modal" onclick="closeAttachmentModalOutside(event)" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[150] p-4">
+        <div onclick="event.stopPropagation()" class="bg-white p-8 rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl scale-in-center">
             <div class="flex justify-between items-center mb-6">
                 <div>
-                    <h2 class="text-xl font-black text-slate-800">附件資料管理</h2>
+                    <h2 id="attachment-modal-title" class="text-xl font-black text-slate-800">附件資料管理</h2>
                     <p class="text-xs text-slate-400" id="attach-record-info">姓名 - 訓練項目</p>
                 </div>
                 <button onclick="closeAttachmentModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-6 h-6"></i></button>
@@ -766,29 +766,49 @@ let db;
         } else {
             const record = records.find(r => r.id === id);
             if (record && record.attachments && record.attachments.length > 0) {
-                openFilePreview(record.attachments[0], record.name);
+                openAttachmentPreviewModal(id);
             }
         }
+    }
+
+    function openAttachmentPreviewModal(id) {
+        currentAttachRecordId = id;
+        const record = records.find(r => r.id === id);
+        if (!record) return;
+        document.getElementById('attachment-modal-title').innerText = '附件資料預覽';
+        document.getElementById('attach-record-info').innerText = `${record.name} - ${record.item}`;
+        document.getElementById('upload-area').classList.add('hidden');
+        renderAttachmentList(true);
+        document.getElementById('attachment-modal').classList.remove('hidden');
+        initIcons();
     }
 
     function openAttachmentModal(id) {
         currentAttachRecordId = id;
         const record = records.find(r => r.id === id);
         if (!record) return;
+        document.getElementById('attachment-modal-title').innerText = '附件資料管理';
         document.getElementById('attach-record-info').innerText = `${record.name} - ${record.item}`;
-        renderAttachmentList();
+        document.getElementById('upload-area').classList.remove('hidden');
+        renderAttachmentList(false);
         document.getElementById('attachment-modal').classList.remove('hidden');
         initIcons();
     }
 
     async function closeAttachmentModal() {
         document.getElementById('attachment-modal').classList.add('hidden');
+        document.getElementById('upload-area').classList.remove('hidden');
+        document.getElementById('attachment-modal-title').innerText = '附件資料管理';
         currentAttachRecordId = null;
         await persistAllRecords(records);
         renderReport();
     }
 
-    function renderAttachmentList() {
+    function closeAttachmentModalOutside(event) {
+        if (event.target === event.currentTarget) closeAttachmentModal();
+    }
+
+    function renderAttachmentList(previewOnly = false) {
         const listContainer = document.getElementById('attachment-list');
         const record = records.find(r => r.id === currentAttachRecordId);
         listContainer.innerHTML = '';
@@ -801,6 +821,11 @@ let db;
         record.attachments.forEach((file, index) => {
             const item = document.createElement('div');
             item.className = "flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 group";
+            const actionsClass = previewOnly ? "flex items-center gap-1" : "flex items-center gap-1 opacity-0 group-hover:opacity-100 transition";
+            const removeButton = previewOnly ? '' : `
+                    <button onclick="removeAttachment(${index})" class="p-1.5 text-slate-400 hover:text-red-500">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>`;
             item.innerHTML = `
                 <div class="flex items-center gap-3 overflow-hidden">
                     <div class="bg-white p-2 rounded-lg border border-slate-200">
@@ -808,13 +833,10 @@ let db;
                     </div>
                     <span class="text-xs font-bold text-slate-700 truncate">${file.name}</span>
                 </div>
-                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+                <div class="${actionsClass}">
                     <button onclick='openFilePreview(${JSON.stringify(file)}, "${record.name}")' class="p-1.5 text-slate-400 hover:text-blue-500">
                         <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                    </button>
-                    <button onclick="removeAttachment(${index})" class="p-1.5 text-slate-400 hover:text-red-500">
-                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                    </button>
+                    </button>${removeButton}
                 </div>
             `;
             listContainer.appendChild(item);
@@ -889,6 +911,10 @@ let db;
     }
 
     function closeFilePreview() { document.getElementById('file-preview-overlay').classList.add('hidden'); }
+
+    function closeFilePreviewOutside(event) {
+        if (event.target === event.currentTarget) closeFilePreview();
+    }
 
     // --- 匯出功能 ---
 
