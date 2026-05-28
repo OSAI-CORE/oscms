@@ -1798,11 +1798,21 @@ function calculateNextDate(lastDateStr, cycleStr) {
                                 ${status.label}
                             </span>
                         </td>
-                        <td class="table-cell text-center">
-                            <button onclick="openEditModal(${record.id})" class="p-2 hover:bg-slate-100 text-slate-400 hover:text-indigo-600 rounded-lg transition">
-                                <i data-lucide="${isAdmin ? 'edit-3' : 'settings'}" class="w-4 h-4"></i>
-                            </button>
-                        </td>
+<td class="table-cell text-center">
+    <div class="flex items-center justify-center gap-1">
+        ${isAdmin ? `
+            <button onclick="moveRecordUp(${record.id})" class="p-2 hover:bg-slate-100 text-slate-400 hover:text-indigo-600 rounded-lg transition" title="上移">
+                <i data-lucide="arrow-up" class="w-4 h-4"></i>
+            </button>
+            <button onclick="moveRecordDown(${record.id})" class="p-2 hover:bg-slate-100 text-slate-400 hover:text-indigo-600 rounded-lg transition" title="下移">
+                <i data-lucide="arrow-down" class="w-4 h-4"></i>
+            </button>
+        ` : ''}
+        <button onclick="openEditModal(${record.id})" class="p-2 hover:bg-slate-100 text-slate-400 hover:text-indigo-600 rounded-lg transition">
+            <i data-lucide="${isAdmin ? 'edit-3' : 'settings'}" class="w-4 h-4"></i>
+        </button>
+    </div>
+</td>
                     `;
                     tableBody.appendChild(row);
                 }
@@ -2343,6 +2353,61 @@ async function checkPassword() {
 
     // --- 資料編輯功能 ---
 
+async function moveRecordUp(id) {
+    if (!isAdmin) {
+        openLoginModal();
+        return;
+    }
+
+    const index = records.findIndex(r => r.id === id);
+    if (index <= 0) return;
+
+    const temp = records[index - 1];
+    records[index - 1] = records[index];
+    records[index] = temp;
+
+    await persistAllRecords(records);
+    renderReport();
+}
+
+async function moveRecordDown(id) {
+    if (!isAdmin) {
+        openLoginModal();
+        return;
+    }
+
+    const index = records.findIndex(r => r.id === id);
+    if (index === -1 || index >= records.length - 1) return;
+
+    const temp = records[index + 1];
+    records[index + 1] = records[index];
+    records[index] = temp;
+
+    await persistAllRecords(records);
+    renderReport();
+}
+
+function insertRecordUnderSameDept(record) {
+    const targetDept = String(record.dept || '').trim();
+
+    let insertIndex = -1;
+
+    for (let i = records.length - 1; i >= 0; i--) {
+        const currentDept = String(records[i].dept || '').trim();
+
+        if (currentDept === targetDept) {
+            insertIndex = i + 1;
+            break;
+        }
+    }
+
+    if (insertIndex === -1) {
+        records.push(record);
+    } else {
+        records.splice(insertIndex, 0, record);
+    }
+}
+
     function openEditModal(id) {
         if (!isAdmin) { openLoginModal(); return; }
         const record = records.find(r => r.id === id);
@@ -2386,14 +2451,22 @@ async function checkPassword() {
             lastDate: document.getElementById('edit-lastDate').value || ""
         };
 
-        if (idVal === "") {
-            const newId = records.length > 0 ? Math.max(...records.map(r => r.id)) + 1 : 1;
-            records.push({ id: newId, ...data, attachments: [] });
-        } else {
-            const id = parseInt(idVal);
-            const index = records.findIndex(r => r.id === id);
-            if (index !== -1) records[index] = { ...records[index], ...data };
-        }
+if (idVal === "") {
+    const newId = records.length > 0 ? Math.max(...records.map(r => r.id)) + 1 : 1;
+    const newRecord = { id: newId, ...data, attachments: [] };
+
+    insertRecordUnderSameDept(newRecord);
+} else {
+    const id = parseInt(idVal);
+    const index = records.findIndex(r => r.id === id);
+
+    if (index !== -1) {
+        const updatedRecord = { ...records[index], ...data };
+
+        records.splice(index, 1);
+        insertRecordUnderSameDept(updatedRecord);
+    }
+}
         
         await persistAllRecords(records);
         renderReport();
