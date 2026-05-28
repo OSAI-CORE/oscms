@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>職業安全證照管理系統</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
         
@@ -189,54 +190,239 @@
             background-color: #f5f3ff;
         }
 
-        @media print {
-            @page {
-                size: A4 landscape;
-                margin: 1cm;
-            }
-            header.hero-section, 
-            #login-toggle-btn, 
-            #export-btn, 
-            #print-btn, 
-            #auto-update-btn, 
-            .db-action-btn, 
-            #add-person-btn, 
-            .search-container, 
-            select, 
-            .table-cell:last-child, 
-            .table-header-cell:last-child, 
-            .link-icon-btn {
-                display: none !important;
-            }
-            body { 
-                background: white; 
-                padding: 0;
-                margin: 0;
-            }
-            main { 
-                padding: 0 !important; 
-                max-width: 100% !important;
-            }
-            .report-table-container { 
-                box-shadow: none; 
-                border: 1px solid #000;
-                border-radius: 0;
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-            .table-header-cell, .table-cell {
-                border: 1px solid #ddd;
-                padding: 6px 8px;
-                color: black !important;
-            }
-            .badge-status {
-                border: 1px solid #ccc;
-                color: black !important;
-                background: none !important;
-            }
+
+        #compliance-basis-drop-zone.drag-over {
+            border-color: #6366f1;
+            background-color: #eef2ff;
+            transform: scale(1.01);
         }
+
+        .legal-duty-tooltip-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .legal-duty-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 7px;
+            border-radius: 999px;
+            border: 1px solid #f59e0b;
+            background: #fffbeb;
+            color: #b45309;
+            font-size: 10px;
+            line-height: 1;
+            font-weight: 900;
+            cursor: help;
+            transition: all 0.18s ease;
+            white-space: nowrap;
+        }
+
+        .legal-duty-trigger:hover,
+        .legal-duty-trigger:focus {
+            background: #f59e0b;
+            color: #ffffff;
+            outline: none;
+            box-shadow: 0 8px 18px rgba(245, 158, 11, 0.25);
+        }
+
+        .legal-duty-panel {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 10px);
+            width: min(360px, 82vw);
+            padding: 14px 15px;
+            border-radius: 18px;
+            background: #0f172a;
+            color: #f8fafc;
+            box-shadow: 0 20px 35px rgba(15, 23, 42, 0.32);
+            opacity: 0;
+            transform: translateY(-4px) scale(0.98);
+            pointer-events: none;
+            transition: all 0.18s ease;
+            z-index: 80;
+        }
+
+        .legal-duty-panel::before {
+            content: "";
+            position: absolute;
+            right: 22px;
+            top: -7px;
+            width: 14px;
+            height: 14px;
+            background: #0f172a;
+            transform: rotate(45deg);
+        }
+
+        .legal-duty-tooltip-wrap:hover .legal-duty-panel,
+        .legal-duty-tooltip-wrap:focus-within .legal-duty-panel,
+        .legal-duty-tooltip-wrap.is-open .legal-duty-panel {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .auxiliary-tooltip-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .auxiliary-tooltip-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            border: 1px solid #38bdf8;
+            background: #f0f9ff;
+            color: #0369a1;
+            font-size: 10px;
+            line-height: 1;
+            font-weight: 900;
+            cursor: help;
+            transition: all 0.18s ease;
+            white-space: nowrap;
+        }
+
+        .auxiliary-tooltip-trigger:hover,
+        .auxiliary-tooltip-trigger:focus {
+            background: #0ea5e9;
+            color: #ffffff;
+            outline: none;
+            box-shadow: 0 8px 18px rgba(14, 165, 233, 0.22);
+        }
+
+        .auxiliary-tooltip-panel {
+            position: absolute;
+            left: 0;
+            top: calc(100% + 10px);
+            width: min(380px, 82vw);
+            padding: 14px 15px;
+            border-radius: 18px;
+            background: #0f172a;
+            color: #f8fafc;
+            box-shadow: 0 20px 35px rgba(15, 23, 42, 0.32);
+            opacity: 0;
+            transform: translateY(-4px) scale(0.98);
+            pointer-events: none;
+            transition: all 0.18s ease;
+            z-index: 80;
+        }
+
+        .auxiliary-tooltip-panel::before {
+            content: "";
+            position: absolute;
+            left: 24px;
+            top: -7px;
+            width: 14px;
+            height: 14px;
+            background: #0f172a;
+            transform: rotate(45deg);
+        }
+
+        .auxiliary-tooltip-wrap:hover .auxiliary-tooltip-panel,
+        .auxiliary-tooltip-wrap:focus-within .auxiliary-tooltip-panel,
+        .auxiliary-tooltip-wrap.is-open .auxiliary-tooltip-panel {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+@media print {
+    @page {
+        size: A4 landscape;
+        margin: 1cm;
+    }
+
+    body.print-certificate-report {
+        background: white !important;
+        color: black !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    body.print-certificate-report header.hero-section,
+    body.print-certificate-report footer.system-footer,
+    body.print-certificate-report #compliance-dashboard,
+    body.print-certificate-report #login-toggle-btn,
+    body.print-certificate-report #export-btn,
+    body.print-certificate-report #print-btn,
+    body.print-certificate-report #auto-update-btn,
+    body.print-certificate-report .db-action-btn,
+    body.print-certificate-report #add-person-btn,
+    body.print-certificate-report .search-container,
+    body.print-certificate-report select,
+    body.print-certificate-report .year-training-pill,
+    body.print-certificate-report .link-icon-btn,
+    body.print-certificate-report .table-cell:last-child,
+    body.print-certificate-report .table-header-cell:last-child {
+        display: none !important;
+    }
+
+    body.print-certificate-report main {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    body.print-certificate-report #certificate-report-print-area {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    body.print-certificate-report #certificate-report-print-area h2 {
+        font-size: 18px !important;
+        font-weight: 900 !important;
+        color: black !important;
+        margin-bottom: 12px !important;
+    }
+
+    body.print-certificate-report .report-table-container {
+        box-shadow: none !important;
+        border: 1px solid #000 !important;
+        border-radius: 0 !important;
+        overflow: visible !important;
+    }
+
+    body.print-certificate-report .overflow-x-auto {
+        overflow: visible !important;
+    }
+
+    body.print-certificate-report table {
+        width: 100% !important;
+        min-width: 0 !important;
+        border-collapse: collapse !important;
+        table-layout: fixed !important;
+    }
+
+    body.print-certificate-report .table-header-cell,
+    body.print-certificate-report .table-cell {
+        border: 1px solid #999 !important;
+        padding: 6px 8px !important;
+        color: black !important;
+        font-size: 11px !important;
+        vertical-align: middle !important;
+        word-break: break-word !important;
+    }
+
+    body.print-certificate-report .table-header-cell {
+        background: #e5e7eb !important;
+        font-weight: 900 !important;
+        text-align: center !important;
+    }
+
+    body.print-certificate-report .badge-status {
+        border: 1px solid #999 !important;
+        color: black !important;
+        background: none !important;
+        padding: 0 !important;
+        font-size: 11px !important;
+    }
+}
     </style>
 </head>
 <body>
@@ -273,9 +459,9 @@
                             <button id="export-btn" onclick="exportToExcel()" class="bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-700 transition flex items-center gap-2 min-w-[120px] justify-center">
                                 <i data-lucide="download" class="w-4 h-4"></i> <span>匯出報表</span>
                             </button>
-                            <button id="print-btn" onclick="window.print()" class="bg-slate-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-700 transition flex items-center gap-2 min-w-[120px] justify-center shadow-lg">
-                                <i data-lucide="printer" class="w-4 h-4"></i> <span>列印報告</span>
-                            </button>
+<button id="print-btn" onclick="printCertificateReport()" class="bg-slate-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-700 transition flex items-center gap-2 min-w-[120px] justify-center shadow-lg">
+    <i data-lucide="printer" class="w-4 h-4"></i> <span>列印報告</span>
+</button>
                         </div>
                     </div>
                     
@@ -313,6 +499,60 @@
     </header>
 
     <main class="max-w-7xl mx-auto p-6 md:p-8">
+
+        <section id="compliance-dashboard" class="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-6">
+            <div id="compliance-status-card" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden relative">
+                <div class="absolute -right-8 -top-8 w-28 h-28 bg-emerald-50 rounded-full"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-5 gap-3">
+                        <div>
+                            <p class="text-xs font-black text-slate-400 tracking-[0.18em] uppercase">Compliance</p>
+                            <h3 class="text-lg font-black text-slate-800 mt-1">法規配置合規狀態</h3>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button id="edit-compliance-btn" onclick="openComplianceSettingsModal()" class="compliance-admin-only hidden text-[11px] font-black text-indigo-600 bg-indigo-50 border border-indigo-100 px-3 py-2 rounded-xl hover:bg-indigo-100 transition" title="編輯法規檢核基準">編輯基準</button>
+                            <div id="compliance-icon-wrap" class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center">
+                                <i id="compliance-icon" data-lucide="shield-check" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-end gap-3 mb-3">
+                        <span id="compliance-percent" class="text-5xl font-black text-emerald-600 leading-none">0%</span>
+                        <span id="compliance-status-label" class="mb-1 px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-xs font-black">資料待確認</span>
+                    </div>
+                    <p id="compliance-profile-summary" class="text-sm text-slate-500 leading-relaxed">第一類事業單位（非營造業）｜100人以上未滿300人</p>
+                    <p id="compliance-note" class="text-xs text-slate-400 mt-3 leading-relaxed">系統以訓練項目與證照效期自動檢核職安人員與急救人員；任命狀態仍請依內部正式任命資料確認。</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 xl:col-span-2">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+                    <div>
+                        <p class="text-xs font-black text-slate-400 tracking-[0.18em] uppercase">Required Roles</p>
+                        <h3 class="text-lg font-black text-slate-800 mt-1">法定應置人員檢核</h3>
+                    </div>
+                    <button id="compliance-basis-btn" onclick="openComplianceBasisModal()" class="text-xs font-bold text-slate-500 bg-slate-50 border border-slate-100 rounded-full px-3 py-1 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-100 transition inline-flex items-center gap-1.5" title="預覽法定人員設置基準依據">
+                        <i data-lucide="file-search" class="w-3.5 h-3.5"></i>
+                        <span>法定人員設置基準</span>
+                        <span id="compliance-basis-count" class="text-[10px] text-slate-400 font-black">尚未附檔</span>
+                    </button>
+                </div>
+                <div id="compliance-role-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 xl:col-span-3">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+                    <div>
+                        <p class="text-xs font-black text-slate-400 tracking-[0.18em] uppercase">Training Statistics</p>
+                        <h3 class="text-lg font-black text-slate-800 mt-1">訓練項目人員統計</h3>
+                    </div>
+                    <div class="text-xs text-slate-400 font-bold">有效、待受訓、已過期依目前證照效期自動統計</div>
+                </div>
+                <div id="training-stats-list" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 max-h-[320px] overflow-y-auto pr-1"></div>
+            </div>
+        </section>
+
+<section id="certificate-report-print-area">
         <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <div class="flex items-center gap-4">
                 <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
@@ -336,6 +576,12 @@
                     <option value="待受訓">需注意 (待受訓)</option>
                     <option value="已過期">已過期</option>
                 </select>
+                <select id="yearFilter" onchange="renderReport()" class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer shadow-sm min-w-[150px]">
+                    <option value="">所有年度</option>
+                </select>
+                <div id="yearTrainingCount" class="year-training-pill hidden bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-xl px-3 py-2 text-xs font-black whitespace-nowrap shadow-sm">
+                    年度需複訓 0 人
+                </div>
             </div>
         </div>
 
@@ -360,6 +606,7 @@
                 </table>
             </div>
         </div>
+</section>        
     </main>
 
         <!-- 頁尾資訊 -->
@@ -376,7 +623,7 @@
 </footer>
     
     <!-- 檔案預覽 Modal -->
-    <div id="file-preview-overlay" onclick="closeFilePreviewOutside(event)" class="fixed inset-0 bg-black/90 hidden flex flex-col items-center justify-center p-4 md:p-10 text-white animate-in fade-in duration-200 z-[400] overflow-y-auto">
+    <div id="file-preview-overlay" onclick="closeFilePreviewOutside(event)" class="fixed inset-0 bg-black/90 hidden flex flex-col items-center justify-center p-4 md:p-10 text-white animate-in fade-in duration-200 z-[700] overflow-y-auto">
         <div onclick="event.stopPropagation()" class="w-full max-w-5xl flex justify-between items-center mb-4">
             <div>
                 <h3 id="preview-filename" class="text-lg font-bold">檔案預覽</h3>
@@ -457,6 +704,75 @@
         </div>
     </div>
 
+
+
+    <!-- 法規合規基準設定 Modal -->
+    <div id="compliance-settings-modal" onclick="closeComplianceSettingsModalOutside(event)" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[550] p-4">
+        <div onclick="event.stopPropagation()" class="bg-white p-8 rounded-3xl w-full max-w-lg shadow-2xl scale-in-center max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start gap-4 mb-6">
+                <div>
+                    <p class="text-xs font-black text-slate-400 tracking-[0.18em] uppercase">Compliance Profile</p>
+                    <h2 class="text-2xl font-black text-slate-800 mt-1">編輯法規配置基準</h2>
+                    <p class="text-sm text-slate-400 mt-1">依事業類別與勞工人數，自動套用附表二應置人員。</p>
+                </div>
+                <button onclick="closeComplianceSettingsModal()" class="text-slate-400 hover:text-slate-600 transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">事業類別</label>
+                    <select id="compliance-business-type" onchange="updateComplianceRequirementPreview()" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500 bg-white"></select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">勞工人數</label>
+                    <input type="number" min="0" step="1" id="compliance-employee-count" oninput="updateComplianceRequirementPreview()" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="例如：150">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">自動判定級距</label>
+                    <div id="compliance-range-preview" class="w-full min-h-[50px] border border-slate-100 bg-slate-50 rounded-xl p-3 text-sm font-bold text-slate-600 flex items-center">--</div>
+                </div>
+            </div>
+            <div class="mt-5">
+                <label class="block text-xs font-bold text-slate-500 mb-2">應置人員預覽</label>
+                <div id="compliance-requirement-preview" class="space-y-2 bg-slate-50 border border-slate-100 rounded-2xl p-4"></div>
+            </div>
+            <p class="text-xs text-slate-400 mt-4 leading-relaxed">提示：本功能只調整看板檢核基準，不會修改人員資料、證照資料、附件或既有匯入匯出邏輯。專職、常駐與正式任命狀態仍請依內部任命資料確認。</p>
+            <div class="flex gap-3 mt-6">
+                <button onclick="saveComplianceSettings()" class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">儲存基準</button>
+                <button onclick="closeComplianceSettingsModal()" class="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold hover:bg-slate-200 transition">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 法定人員設置基準依據 Modal -->
+    <div id="compliance-basis-modal" onclick="closeComplianceBasisModalOutside(event)" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[560] p-4">
+        <div onclick="event.stopPropagation()" class="bg-white p-8 rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl scale-in-center">
+            <div class="flex justify-between items-start gap-4 mb-6">
+                <div>
+                    <p class="text-xs font-black text-slate-400 tracking-[0.18em] uppercase">Legal Basis</p>
+                    <h2 class="text-2xl font-black text-slate-800 mt-1">法定人員設置基準依據</h2>
+                    <p class="text-sm text-slate-400 mt-1">可預覽職業安全衛生管理辦法附表二、勞工健康保護規則第15條、內部對照表或最新版法規依據檔案。</p>
+                </div>
+                <button onclick="closeComplianceBasisModal()" class="text-slate-400 hover:text-slate-600 transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+            </div>
+            <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 mb-5">
+                <p class="text-xs font-black text-slate-500 mb-1">目前看板基準</p>
+                <p id="compliance-basis-profile-display" class="text-sm font-bold text-slate-700 leading-relaxed">--</p>
+            </div>
+            <div id="compliance-basis-admin-tools" class="hidden mb-5">
+                <div id="compliance-basis-drop-zone" class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-indigo-400 transition cursor-pointer group" onclick="document.getElementById('compliance-basis-file-input').click()">
+                    <input type="file" id="compliance-basis-file-input" class="hidden" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="handleComplianceBasisUpload(event)">
+                    <div class="bg-white w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-3 border border-slate-100 group-hover:bg-indigo-50">
+                        <i data-lucide="upload-cloud" class="w-5 h-5 text-slate-400 group-hover:text-indigo-500"></i>
+                    </div>
+                    <p class="text-sm font-bold text-slate-600">管理員可上傳新版基準依據檔案</p>
+                    <p class="text-[10px] text-slate-400 mt-1">支援 PDF, PNG, JPG；可點擊或直接拖移檔案至此上傳</p>
+                </div>
+            </div>
+            <div id="compliance-basis-list" class="space-y-3 max-h-[320px] overflow-y-auto pr-1"></div>
+            <button onclick="closeComplianceBasisModal()" class="w-full mt-6 bg-slate-800 text-white py-3 rounded-xl font-bold hover:bg-slate-900 transition">關閉視窗</button>
+        </div>
+    </div>
+
     <!-- 附件管理 Modal -->
     <div id="attachment-modal" onclick="closeAttachmentModalOutside(event)" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[150] p-4">
         <div onclick="event.stopPropagation()" class="bg-white p-8 rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl scale-in-center">
@@ -509,7 +825,7 @@
                     <input type="text" id="edit-certNo" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">複訓週期 (例如: 3Y)</label>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">複訓週期 (例如: 3H/3Y)</label>
                     <input type="text" id="edit-cycle" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
@@ -626,6 +942,651 @@ let db;
     let systemPassword = DEFAULT_ADMIN_PASSWORD; // 預設密碼
     let records = [];
     let currentAttachRecordId = null;
+    let complianceBasisFiles = [];
+
+
+    const COMPLIANCE_ROLE_TEMPLATES = {
+        classA: {
+            label: "甲種職業安全衛生業務主管",
+            keywords: ["甲種職業安全衛生業務主管", "甲種業務主管", "甲種職安業務主管", "甲種職業安全衛生", "營造業甲種"]
+        },
+        classB: {
+            label: "乙種職業安全衛生業務主管",
+            keywords: ["乙種職業安全衛生業務主管", "乙種業務主管", "乙種職安業務主管", "乙種職業安全衛生", "營造業乙種"]
+        },
+        classC: {
+            label: "丙種職業安全衛生業務主管",
+            keywords: ["丙種職業安全衛生業務主管", "丙種業務主管", "丙種職安業務主管", "丙種職業安全衛生", "營造業丙種"]
+        },
+        manager: {
+            label: "職業安全衛生管理員",
+            keywords: ["職業安全衛生管理員", "職安衛管理員", "職業安全衛生管理乙級", "乙級職業安全衛生管理", "乙級職安衛管理"]
+        },
+        professional: {
+            label: "職業安全（衛生）管理師",
+            keywords: ["職業安全管理師", "職業衛生管理師", "職業安全衛生管理師", "職業安全（衛生）管理師", "職業安全(衛生)管理師", "甲級職業安全管理", "甲級職業衛生管理"]
+        },
+        firstAid: {
+            label: "急救人員",
+            keywords: ["急救人員", "急救訓練", "急救人員安全衛生教育訓練", "急救", "救護技術員", "緊急救護", "EMT", "醫護人員"]
+        }
+    };
+
+    const COMPLIANCE_BUSINESS_TYPES = [
+        {
+            key: "first_construction",
+            label: "第一類事業單位（營造業）",
+            ranges: [
+                { min: 0, max: 29, label: "未滿30人", roles: [{ type: "classC", required: 1 }] },
+                { min: 30, max: 99, label: "30人以上未滿100人", roles: [{ type: "classB", required: 1 }, { type: "manager", required: 1 }] },
+                { min: 100, max: 299, label: "100人以上未滿300人", roles: [{ type: "classA", required: 1 }, { type: "manager", required: 1 }] },
+                { min: 300, max: 499, label: "300人以上未滿500人", roles: [{ type: "classA", required: 1 }, { type: "professional", required: 1 }, { type: "manager", required: 2 }] },
+                { min: 500, max: Infinity, label: "500人以上", roles: [{ type: "classA", required: 1 }, { type: "professional", required: 2 }, { type: "manager", required: 2 }] }
+            ]
+        },
+        {
+            key: "first_nonconstruction",
+            label: "第一類事業單位（非營造業）",
+            ranges: [
+                { min: 0, max: 29, label: "未滿30人", roles: [{ type: "classC", required: 1 }] },
+                { min: 30, max: 99, label: "30人以上未滿100人", roles: [{ type: "classB", required: 1 }] },
+                { min: 100, max: 299, label: "100人以上未滿300人", roles: [{ type: "classA", required: 1 }, { type: "manager", required: 1 }] },
+                { min: 300, max: 499, label: "300人以上未滿500人", roles: [{ type: "classA", required: 1 }, { type: "professional", required: 1 }, { type: "manager", required: 1 }] },
+                { min: 500, max: 999, label: "500人以上未滿1000人", roles: [{ type: "classA", required: 1 }, { type: "professional", required: 1 }, { type: "manager", required: 2 }] },
+                { min: 1000, max: Infinity, label: "1000人以上", roles: [{ type: "classA", required: 1 }, { type: "professional", required: 2 }, { type: "manager", required: 2 }] }
+            ]
+        },
+        {
+            key: "second",
+            label: "第二類事業單位（中度風險事業）",
+            ranges: [
+                { min: 0, max: 29, label: "未滿30人", roles: [{ type: "classC", required: 1 }] },
+                { min: 30, max: 99, label: "30人以上未滿100人", roles: [{ type: "classB", required: 1 }] },
+                { min: 100, max: 299, label: "100人以上未滿300人", roles: [{ type: "classA", required: 1 }] },
+                { min: 300, max: 499, label: "300人以上未滿500人", roles: [{ type: "classA", required: 1 }, { type: "manager", required: 1 }] },
+                { min: 500, max: Infinity, label: "500人以上", roles: [{ type: "classA", required: 1 }, { type: "professional", required: 1 }, { type: "manager", required: 1 }] }
+            ]
+        },
+        {
+            key: "third",
+            label: "第三類事業單位（低度風險事業）",
+            ranges: [
+                { min: 0, max: 29, label: "未滿30人", roles: [{ type: "classC", required: 1 }] },
+                { min: 30, max: 99, label: "30人以上未滿100人", roles: [{ type: "classB", required: 1 }] },
+                { min: 100, max: 499, label: "100人以上未滿500人", roles: [{ type: "classA", required: 1 }] },
+                { min: 500, max: Infinity, label: "500人以上", roles: [{ type: "classA", required: 1 }, { type: "manager", required: 1 }] }
+            ]
+        }
+    ];
+
+    const DEFAULT_COMPLIANCE_SETTINGS = {
+        businessTypeKey: "first_nonconstruction",
+        employeeCount: 100
+    };
+
+    let complianceSettings = { ...DEFAULT_COMPLIANCE_SETTINGS };
+    let complianceProfile = buildComplianceProfile(complianceSettings.businessTypeKey, complianceSettings.employeeCount);
+
+    function findComplianceBusinessType(typeKey) {
+        return COMPLIANCE_BUSINESS_TYPES.find(type => type.key === typeKey) || COMPLIANCE_BUSINESS_TYPES.find(type => type.key === DEFAULT_COMPLIANCE_SETTINGS.businessTypeKey);
+    }
+
+    function findComplianceRange(typeKey, employeeCount) {
+        const type = findComplianceBusinessType(typeKey);
+        const count = Math.max(parseInt(employeeCount, 10) || 0, 0);
+        return type.ranges.find(range => count >= range.min && count <= range.max) || type.ranges[type.ranges.length - 1];
+    }
+
+    function buildFirstAidRequirement(employeeCount) {
+        const count = Math.max(parseInt(employeeCount, 10) || 0, 0);
+        const required = count > 0 ? Math.max(1, Math.ceil(count / 50)) : 0;
+        return {
+            ...COMPLIANCE_ROLE_TEMPLATES.firstAid,
+            type: "firstAid",
+            required,
+            auxiliary: true,
+            auxiliaryLabel: "兼任 / 輔助",
+            legalBasis: "勞工健康保護規則第15條",
+            requirementNote: "每一輪班次至少置一人；每一輪班次勞工人數超過50人者，每增加50人應再置一人。系統以目前設定勞工人數推估應置人數，實際仍應依各輪班人數確認。"
+        };
+    }
+
+    function buildComplianceProfile(typeKey, employeeCount) {
+        const type = findComplianceBusinessType(typeKey);
+        const count = Math.max(parseInt(employeeCount, 10) || 0, 0);
+        const range = findComplianceRange(type.key, count);
+        return {
+            businessTypeKey: type.key,
+            businessType: type.label,
+            employeeCount: count,
+            employeeRange: range.label,
+            legalBasis: "職業安全衛生管理辦法附表二、勞工健康保護規則第15條",
+            requiredRoles: range.roles.map(role => ({
+                ...COMPLIANCE_ROLE_TEMPLATES[role.type],
+                type: role.type,
+                required: role.required,
+                auxiliary: false
+            })),
+            auxiliaryRoles: [buildFirstAidRequirement(count)]
+        };
+    }
+
+    function applyComplianceSettings(settings) {
+        const nextSettings = { ...DEFAULT_COMPLIANCE_SETTINGS, ...(settings || {}) };
+        nextSettings.employeeCount = Math.max(parseInt(nextSettings.employeeCount, 10) || 0, 0);
+        if (!COMPLIANCE_BUSINESS_TYPES.some(type => type.key === nextSettings.businessTypeKey)) {
+            nextSettings.businessTypeKey = DEFAULT_COMPLIANCE_SETTINGS.businessTypeKey;
+        }
+        complianceSettings = nextSettings;
+        complianceProfile = buildComplianceProfile(complianceSettings.businessTypeKey, complianceSettings.employeeCount);
+    }
+
+    function escapeHTML(value) {
+        return String(value ?? '').replace(/[&<>'"]/g, function(char) {
+            return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char];
+        });
+    }
+
+    function getStoredFileType(file) {
+        if (!file) return 'unknown';
+        const mime = String(file.type || file.mime || '').toLowerCase();
+        const name = String(file.name || '').toLowerCase();
+        if (mime.includes('pdf') || name.endsWith('.pdf')) return 'pdf';
+        if (mime.includes('image') || /\.(png|jpg|jpeg)$/i.test(name)) return 'image';
+        return 'unknown';
+    }
+
+    function updateComplianceBasisButton() {
+        const countEl = document.getElementById('compliance-basis-count');
+        if (!countEl) return;
+        const count = Array.isArray(complianceBasisFiles) ? complianceBasisFiles.length : 0;
+        countEl.innerText = count > 0 ? `已附 ${count} 份` : '尚未附檔';
+        countEl.className = `text-[10px] font-black ${count > 0 ? 'text-indigo-500' : 'text-slate-400'}`;
+    }
+
+    function openComplianceBasisModal() {
+        renderComplianceBasisModal();
+        document.getElementById('compliance-basis-modal').classList.remove('hidden');
+        initIcons();
+    }
+
+    function closeComplianceBasisModal() {
+        document.getElementById('compliance-basis-modal').classList.add('hidden');
+        const input = document.getElementById('compliance-basis-file-input');
+        if (input) input.value = '';
+    }
+
+    function closeComplianceBasisModalOutside(event) {
+        if (event.target === event.currentTarget) closeComplianceBasisModal();
+    }
+
+    function renderComplianceBasisModal() {
+        const adminTools = document.getElementById('compliance-basis-admin-tools');
+        const profileDisplay = document.getElementById('compliance-basis-profile-display');
+        const list = document.getElementById('compliance-basis-list');
+        if (adminTools) adminTools.classList.toggle('hidden', !isAdmin);
+        if (profileDisplay) profileDisplay.innerText = `${complianceProfile.legalBasis}｜${complianceProfile.businessType}｜${complianceProfile.employeeRange}｜勞工人數 ${complianceProfile.employeeCount} 人`;
+        if (!list) return;
+
+        const files = Array.isArray(complianceBasisFiles) ? complianceBasisFiles : [];
+        if (!files.length) {
+            list.innerHTML = `
+                <div class="text-center text-slate-400 text-sm font-bold py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                    ${isAdmin ? '尚未上傳法定人員設置基準依據檔案，可由上方區塊點擊或拖移新增。' : '目前尚未上傳法定人員設置基準依據檔案，請洽管理員補充。'}
+                </div>`;
+            updateComplianceBasisButton();
+            initIcons();
+            return;
+        }
+
+        list.innerHTML = '';
+        files.forEach((file, index) => {
+            const item = document.createElement('div');
+            item.className = 'flex items-center justify-between gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100 group';
+
+            const info = document.createElement('div');
+            info.className = 'flex items-center gap-3 overflow-hidden min-w-0';
+            info.innerHTML = `
+                <div class="bg-white p-2 rounded-lg border border-slate-200 shrink-0">
+                    <i data-lucide="${getStoredFileType(file) === 'pdf' ? 'file-text' : 'image'}" class="w-4 h-4 text-slate-400"></i>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-xs font-bold text-slate-700 truncate">${escapeHTML(file.name)}</p>
+                    <p class="text-[10px] text-slate-400 font-bold">${getStoredFileType(file) === 'pdf' ? 'PDF 基準依據' : '圖片基準依據'}${file.uploadedAt ? '｜' + escapeHTML(file.uploadedAt) : ''}</p>
+                </div>`;
+
+            const actions = document.createElement('div');
+            actions.className = 'flex items-center gap-2 shrink-0';
+
+            const previewBtn = document.createElement('button');
+            previewBtn.type = 'button';
+            previewBtn.className = 'w-9 h-9 bg-white border border-blue-100 rounded-lg text-blue-600 hover:bg-blue-50 hover:border-blue-200 transition flex items-center justify-center shadow-sm';
+            previewBtn.title = '預覽基準依據';
+            previewBtn.setAttribute('aria-label', '預覽基準依據');
+            previewBtn.innerHTML = '<i data-lucide="eye" class="w-4 h-4"></i>';
+            previewBtn.onclick = () => openFilePreview(file, '法定人員設置基準依據');
+            actions.appendChild(previewBtn);
+
+            if (isAdmin) {
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'p-1.5 text-slate-400 hover:text-red-500 opacity-100 md:opacity-0 group-hover:opacity-100 transition';
+                removeBtn.title = '移除此基準依據檔案';
+                removeBtn.innerHTML = '<i data-lucide="trash-2" class="w-3.5 h-3.5"></i>';
+                removeBtn.onclick = () => removeComplianceBasisFile(index);
+                actions.appendChild(removeBtn);
+            }
+
+            item.appendChild(info);
+            item.appendChild(actions);
+            list.appendChild(item);
+        });
+        updateComplianceBasisButton();
+        initIcons();
+    }
+
+    function validateComplianceBasisFile(file) {
+        if (!file) return false;
+        const type = getStoredFileType(file);
+        if (!['pdf', 'image'].includes(type)) {
+            alert('僅支援 PDF、PNG、JPG 檔案作為法定人員設置基準依據。');
+            return false;
+        }
+        if (file.size && file.size > 10 * 1024 * 1024) {
+            alert('單一依據檔案不可超過 10MB。');
+            return false;
+        }
+        return true;
+    }
+
+    async function handleComplianceBasisUpload(event) {
+        if (!isAdmin) return;
+        const files = Array.from(event.target.files || []);
+        await processComplianceBasisFiles(files);
+        event.target.value = '';
+    }
+
+    async function processComplianceBasisFiles(files) {
+        if (!isAdmin) return;
+        const validFiles = Array.from(files || []).filter(validateComplianceBasisFile);
+        if (!validFiles.length) return;
+
+        const today = new Date().toISOString().split('T')[0];
+        const storedFiles = await Promise.all(validFiles.map(file => new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve({
+                name: file.name,
+                url: e.target.result,
+                type: getStoredFileType(file),
+                mime: file.type,
+                size: file.size,
+                lastModified: file.lastModified,
+                uploadedAt: today
+            });
+            reader.readAsDataURL(file);
+        })));
+
+        complianceBasisFiles.push(...storedFiles);
+        await setConfig('compliance_basis_files', complianceBasisFiles);
+        renderComplianceBasisModal();
+        renderComplianceDashboard();
+    }
+
+    async function removeComplianceBasisFile(index) {
+        if (!isAdmin) return;
+        if (index < 0 || index >= complianceBasisFiles.length) return;
+        if (!confirm('確定移除此法定人員設置基準依據檔案嗎？')) return;
+        complianceBasisFiles.splice(index, 1);
+        await setConfig('compliance_basis_files', complianceBasisFiles);
+        renderComplianceBasisModal();
+        renderComplianceDashboard();
+    }
+
+    function normalizeForMatch(value) {
+        return String(value || '').replace(/\s+/g, '').toLowerCase();
+    }
+
+    function matchesComplianceRole(record, role) {
+        const itemText = normalizeForMatch(record.item);
+        return role.keywords.some(keyword => itemText.includes(normalizeForMatch(keyword)));
+    }
+
+    function getPersonUniqueKey(record) {
+        const certNo = String(record.certNo || '').trim();
+        if (certNo && certNo !== '無' && certNo !== '-' && certNo.toUpperCase() !== 'N/A') return `cert:${certNo}`;
+        return `person:${record.dept || ''}|${record.name || ''}|${record.item || ''}`;
+    }
+
+    function getPersonIdentityKey(record) {
+        const dept = String(record.dept || '').trim();
+        const name = String(record.name || '').trim();
+        if (name) return `person:${dept}|${name}`;
+        return getPersonUniqueKey(record);
+    }
+
+    function getComplianceRoleCountKey(record, role) {
+        // 急救人員屬兼任 / 輔助角色，同一人若同時具備核心職安資格與急救資格，急救人員仍照實列入檢核；
+        // 同時以姓名 / 單位去重，避免同一人多張急救紀錄被重複計算。
+        if (role && role.type === 'firstAid') return getPersonIdentityKey(record);
+        return getPersonUniqueKey(record);
+    }
+
+    function getRecordValidity(record) {
+        const nextDate = calculateNextDate(record.lastDate, record.cycle);
+        const status = getStatusInfo(nextDate, record.lastDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (nextDate) nextDate.setHours(0, 0, 0, 0);
+        const hasValidDate = Boolean(record.lastDate && nextDate);
+        const isCurrentlyValid = hasValidDate && nextDate >= today;
+        return { nextDate, status, hasValidDate, isCurrentlyValid };
+    }
+
+    function analyzeCompliance() {
+        const analyzeRoleGroup = (roleList) => (roleList || []).map(role => {
+            const matchingRecords = records.filter(record => matchesComplianceRole(record, role));
+            const validMap = new Map();
+            let warningCount = 0;
+            let expiredCount = 0;
+            let incompleteCount = 0;
+
+            matchingRecords.forEach(record => {
+                const validity = getRecordValidity(record);
+                if (validity.isCurrentlyValid) {
+                    validMap.set(getComplianceRoleCountKey(record, role), record);
+                    if (validity.status.label === '待受訓') warningCount++;
+                } else if (validity.status.label === '已過期') {
+                    expiredCount++;
+                } else {
+                    incompleteCount++;
+                }
+            });
+
+            const validPeople = Array.from(validMap.values());
+            const validCount = validPeople.length;
+            const required = Math.max(parseInt(role.required, 10) || 0, 0);
+            const missing = Math.max(required - validCount, 0);
+            return {
+                ...role,
+                required,
+                validPeople,
+                validCount,
+                matchingCount: matchingRecords.length,
+                warningCount,
+                expiredCount,
+                incompleteCount,
+                missing,
+                complete: missing === 0
+            };
+        });
+
+        const coreRoles = analyzeRoleGroup(complianceProfile.requiredRoles);
+        const auxiliaryRoles = analyzeRoleGroup(complianceProfile.auxiliaryRoles);
+        const allRoles = [...coreRoles, ...auxiliaryRoles];
+        const completeRoles = allRoles.filter(role => role.complete).length;
+        const percent = allRoles.length ? Math.round((completeRoles / allRoles.length) * 100) : 0;
+        let statusKey = 'insufficient';
+        let label = '資料待確認';
+        if (records.length > 0 && percent === 100) { statusKey = 'compliant'; label = '合規'; }
+        else if (records.length > 0 && percent > 0) { statusKey = 'partial'; label = '部分符合'; }
+        else if (records.length > 0) { statusKey = 'noncompliant'; label = '不符合'; }
+
+        return { roles: allRoles, coreRoles, auxiliaryRoles, completeRoles, percent, statusKey, label };
+    }
+
+    function getTrainingItemStats() {
+        const statsMap = new Map();
+        records.forEach(record => {
+            const itemName = record.item || '未設定項目';
+            if (!statsMap.has(itemName)) {
+                statsMap.set(itemName, { item: itemName, total: 0, valid: 0, warning: 0, expired: 0, incomplete: 0 });
+            }
+            const stat = statsMap.get(itemName);
+            const validity = getRecordValidity(record);
+            stat.total++;
+            if (validity.status.label === '已過期') stat.expired++;
+            else if (validity.status.label === '待受訓') stat.warning++;
+            else stat.valid++;
+            if (!validity.hasValidDate) stat.incomplete++;
+        });
+
+        return Array.from(statsMap.values()).sort((a, b) => {
+            const trackedRoles = [...(complianceProfile.requiredRoles || []), ...(complianceProfile.auxiliaryRoles || [])];
+            const aRequired = trackedRoles.some(role => role.keywords.some(keyword => normalizeForMatch(a.item).includes(normalizeForMatch(keyword))));
+            const bRequired = trackedRoles.some(role => role.keywords.some(keyword => normalizeForMatch(b.item).includes(normalizeForMatch(keyword))));
+            if (aRequired !== bRequired) return aRequired ? -1 : 1;
+            return a.item.localeCompare(b.item, 'zh-Hant');
+        });
+    }
+
+    function shouldShowFullTimeTooltip(role) {
+        return ['professional', 'manager'].includes(role.type);
+    }
+
+    function renderFullTimeTooltip(role) {
+        if (!shouldShowFullTimeTooltip(role)) return '';
+        return `
+            <span class="legal-duty-tooltip-wrap" onclick="event.stopPropagation(); this.classList.toggle('is-open');">
+                <button type="button" class="legal-duty-trigger" aria-label="法定專職不可兼任說明">
+                    <i data-lucide="alert-triangle" class="w-3 h-3"></i>
+                    法定專職 (不可兼任)
+                </button>
+                <span class="legal-duty-panel" role="tooltip">
+                    <span class="block text-amber-300 text-sm font-black mb-2">💡 法定專職限制</span>
+                    <span class="block text-xs leading-relaxed text-slate-100">依《職業安全衛生管理辦法》第3條及第4條規定，此員額必須為「常駐廠場執行職務之專職人員」，不得兼任其他與職安無關之工作（如一般行政、總務、廠務、採購等）。</span>
+                    <span class="block text-xs leading-relaxed text-amber-100 mt-2">系統已將其綁定為專職狀態，避免外部勞檢違規風險。</span>
+                </span>
+            </span>`;
+    }
+
+    function renderFullTimeCompactTooltip(role) {
+        if (!shouldShowFullTimeTooltip(role)) return '';
+        return `
+            <span class="legal-duty-tooltip-wrap" onclick="event.stopPropagation(); this.classList.toggle('is-open');">
+                <button type="button" class="legal-duty-trigger" aria-label="專職註記說明">
+                    專職
+                </button>
+                <span class="legal-duty-panel" role="tooltip">
+                    <span class="block text-amber-300 text-sm font-black mb-2">💡 法定專職限制</span>
+                    <span class="block text-xs leading-relaxed text-slate-100">依《職業安全衛生管理辦法》第3條及第4條規定，此員額必須為「常駐廠場執行職務之專職人員」，不得兼任其他與職安無關之工作（如一般行政、總務、廠務、採購等）。</span>
+                    <span class="block text-xs leading-relaxed text-amber-100 mt-2">系統已將其綁定為專職狀態，避免外部勞檢違規風險。</span>
+                </span>
+            </span>`;
+    }
+
+function renderAuxiliaryTooltip(role) {
+    return `
+        <span class="auxiliary-tooltip-wrap"
+              onclick="toggleAuxiliaryTooltip(event, this)"
+              onmouseleave="closeAuxiliaryTooltip(this)">
+            <button type="button" class="auxiliary-tooltip-trigger" aria-label="兼任輔助角色說明">
+                ${escapeHTML(role.auxiliaryLabel || '兼任 / 輔助')}
+            </button>
+            <span class="auxiliary-tooltip-panel" role="tooltip">
+                <span class="block text-sky-300 text-sm font-black mb-2">💡 急救人員設置說明</span>
+                <span class="block text-xs leading-relaxed text-slate-100">${escapeHTML(role.requirementNote || '每一輪班次至少置一人；每一輪班次勞工人數超過50人者，每增加50人應再置一人。系統以目前設定勞工人數推估應置人數，實際仍應依各輪班人數確認。')}</span>
+            </span>
+        </span>`;
+}
+
+function toggleAuxiliaryTooltip(event, element) {
+    event.stopPropagation();
+
+    document.querySelectorAll('.auxiliary-tooltip-wrap.is-open').forEach(item => {
+        if (item !== element) item.classList.remove('is-open');
+    });
+
+    element.classList.toggle('is-open');
+}
+
+function closeAuxiliaryTooltip(element) {
+    if (!element) return;
+    element.classList.remove('is-open');
+}
+
+    function renderStatusIconHTML(isComplete, completeIcon = 'check-circle-2') {
+        if (isComplete) return `<i data-lucide="${completeIcon}" class="w-5 h-5"></i>`;
+        return `<span class="text-lg font-black leading-none" aria-hidden="true">!</span>`;
+    }
+
+    function renderComplianceRoleCard(role) {
+        const statusClass = role.complete ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-rose-100 text-rose-700 border-rose-200';
+        const statusText = role.complete ? '達標' : `缺少 ${role.missing}`;
+        const statusIconHTML = renderStatusIconHTML(role.complete, 'check-circle-2');
+        const reminderText = role.complete ? `已達法定最低配置要求，有效配置 ${role.validCount} 人。` : `有效配置 ${role.validCount} 人，仍需補足 ${role.missing} 人。`;
+        return `
+            <div class="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="flex items-start gap-3 min-w-0">
+                        <div class="w-9 h-9 rounded-xl ${role.complete ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600 ring-2 ring-rose-100'} flex items-center justify-center shrink-0">
+                            ${statusIconHTML}
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <p class="font-black text-slate-800 text-sm leading-snug">${escapeHTML(role.label)}</p>
+                                ${renderFullTimeTooltip(role)}
+                            </div>
+                            <p class="text-xs text-slate-400 font-bold mt-1">應置 ${role.required} 人｜有效 ${role.validCount} 人｜待受訓 ${role.warningCount}｜已過期 ${role.expiredCount}</p>
+                        </div>
+                    </div>
+                    <span class="shrink-0 text-[11px] font-black px-2.5 py-1 rounded-full border ${statusClass}">${statusText}</span>
+                </div>
+                <div class="text-xs text-slate-500 leading-relaxed bg-white rounded-xl border border-slate-100 px-3 py-2">
+                    ${reminderText}
+                </div>
+            </div>`;
+    }
+
+    function renderAuxiliaryComplianceCard(role) {
+        const statusClass = role.complete ? 'bg-sky-100 text-sky-700 border-sky-200' : 'bg-amber-100 text-amber-700 border-amber-200';
+        const statusText = role.complete ? '達標' : `缺少 ${role.missing}`;
+        const statusIconHTML = renderStatusIconHTML(role.complete, 'badge-check');
+        return `
+            <div class="md:col-span-2 rounded-2xl border border-sky-100 bg-gradient-to-r from-sky-50 to-white p-4">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                    <div class="flex items-start gap-3 min-w-0">
+                        <div class="w-10 h-10 rounded-xl ${role.complete ? 'bg-sky-100 text-sky-600' : 'bg-amber-100 text-amber-600 ring-2 ring-amber-100'} flex items-center justify-center shrink-0">
+                            ${statusIconHTML}
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <p class="font-black text-slate-800 text-sm leading-snug">${escapeHTML(role.label)}</p>
+                                ${renderAuxiliaryTooltip(role)}
+                            </div>
+                            <p class="text-xs text-slate-500 font-bold mt-1">應置 ${role.required} 人｜有效 ${role.validCount} 人｜待受訓 ${role.warningCount}｜已過期 ${role.expiredCount}</p>
+                        </div>
+                    </div>
+                    <span class="shrink-0 text-[11px] font-black px-3 py-1.5 rounded-full border ${statusClass}">${statusText}</span>
+                </div>
+            </div>`;
+    }
+
+    function renderComplianceDashboard() {
+        const dashboard = document.getElementById('compliance-dashboard');
+        if (!dashboard) return;
+
+        const result = analyzeCompliance();
+        const percentEl = document.getElementById('compliance-percent');
+        const labelEl = document.getElementById('compliance-status-label');
+        const iconWrap = document.getElementById('compliance-icon-wrap');
+        const iconEl = document.getElementById('compliance-icon');
+        const roleList = document.getElementById('compliance-role-list');
+        const trainingList = document.getElementById('training-stats-list');
+
+        const styleMap = {
+            compliant: { text: 'text-emerald-600', badge: 'bg-emerald-100 text-emerald-700', iconBg: 'bg-emerald-100 text-emerald-600', icon: 'shield-check' },
+            partial: { text: 'text-amber-600', badge: 'bg-amber-100 text-amber-700', iconBg: 'bg-amber-100 text-amber-600', icon: 'alert-triangle' },
+            noncompliant: { text: 'text-rose-600', badge: 'bg-rose-100 text-rose-700', iconBg: 'bg-rose-100 text-rose-600', icon: 'x-circle' },
+            insufficient: { text: 'text-slate-500', badge: 'bg-slate-100 text-slate-600', iconBg: 'bg-slate-100 text-slate-500', icon: 'help-circle' }
+        };
+        const style = styleMap[result.statusKey];
+
+        percentEl.className = `text-5xl font-black ${style.text} leading-none`;
+        percentEl.innerText = `${result.percent}%`;
+        labelEl.className = `mb-1 px-3 py-1 rounded-full ${style.badge} text-xs font-black`;
+        labelEl.innerText = result.label;
+        iconWrap.className = `w-12 h-12 ${style.iconBg} rounded-2xl flex items-center justify-center`;
+        iconEl.setAttribute('data-lucide', style.icon);
+
+        const summaryEl = document.getElementById('compliance-profile-summary');
+        if (summaryEl) summaryEl.innerText = `${complianceProfile.businessType}｜${complianceProfile.employeeRange}｜勞工人數 ${complianceProfile.employeeCount} 人`;
+        const editComplianceBtn = document.getElementById('edit-compliance-btn');
+        if (editComplianceBtn) editComplianceBtn.classList.toggle('hidden', !isAdmin);
+        updateComplianceBasisButton();
+
+        const coreRoleHTML = result.coreRoles.map(role => renderComplianceRoleCard(role)).join('');
+        const auxiliaryRoleHTML = result.auxiliaryRoles.map(role => renderAuxiliaryComplianceCard(role)).join('');
+        roleList.innerHTML = coreRoleHTML + auxiliaryRoleHTML;
+
+        const trainingStats = getTrainingItemStats();
+        if (trainingStats.length === 0) {
+            trainingList.innerHTML = '<div class="xl:col-span-3 text-center text-slate-400 text-sm font-bold py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200">目前尚無訓練項目資料</div>';
+        } else {
+            trainingList.innerHTML = trainingStats.map(stat => `
+                <div class="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <p class="font-black text-slate-800 text-sm truncate" title="${escapeHTML(stat.item)}">${escapeHTML(stat.item)}</p>
+                        <span class="text-xs font-black text-indigo-600 bg-indigo-50 rounded-full px-2.5 py-1">${stat.total} 人</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div class="bg-white rounded-xl border border-slate-100 px-2 py-2"><p class="text-[10px] text-slate-400 font-bold">有效</p><p class="text-sm font-black text-emerald-600">${stat.valid}</p></div>
+                        <div class="bg-white rounded-xl border border-slate-100 px-2 py-2"><p class="text-[10px] text-slate-400 font-bold">待受訓</p><p class="text-sm font-black text-amber-600">${stat.warning}</p></div>
+                        <div class="bg-white rounded-xl border border-slate-100 px-2 py-2"><p class="text-[10px] text-slate-400 font-bold">已過期</p><p class="text-sm font-black text-rose-600">${stat.expired}</p></div>
+                    </div>
+                </div>`).join('');
+        }
+    }
+
+
+    function openComplianceSettingsModal() {
+        if (!isAdmin) { openLoginModal(); return; }
+        const typeSelect = document.getElementById('compliance-business-type');
+        if (!typeSelect) return;
+        typeSelect.innerHTML = COMPLIANCE_BUSINESS_TYPES.map(type => `<option value="${type.key}">${escapeHTML(type.label)}</option>`).join('');
+        typeSelect.value = complianceSettings.businessTypeKey;
+        document.getElementById('compliance-employee-count').value = complianceSettings.employeeCount;
+        updateComplianceRequirementPreview();
+        document.getElementById('compliance-settings-modal').classList.remove('hidden');
+        initIcons();
+    }
+
+    function closeComplianceSettingsModal() {
+        document.getElementById('compliance-settings-modal').classList.add('hidden');
+    }
+
+    function closeComplianceSettingsModalOutside(event) {
+        if (event.target === event.currentTarget) closeComplianceSettingsModal();
+    }
+
+    function updateComplianceRequirementPreview() {
+        const typeKey = document.getElementById('compliance-business-type')?.value || complianceSettings.businessTypeKey;
+        const employeeCount = Math.max(parseInt(document.getElementById('compliance-employee-count')?.value, 10) || 0, 0);
+        const previewProfile = buildComplianceProfile(typeKey, employeeCount);
+        const rangePreview = document.getElementById('compliance-range-preview');
+        const requirementPreview = document.getElementById('compliance-requirement-preview');
+        if (rangePreview) rangePreview.innerText = previewProfile.employeeRange;
+        if (requirementPreview) {
+            const previewRoles = [...(previewProfile.requiredRoles || []), ...(previewProfile.auxiliaryRoles || [])];
+            requirementPreview.innerHTML = previewRoles.map(role => `
+                <div class="flex items-center justify-between gap-3 bg-white border border-slate-100 rounded-xl px-4 py-3">
+                    <span class="text-sm font-bold text-slate-700 flex flex-wrap items-center gap-2">
+                        <span>${escapeHTML(role.label)}</span>
+                        ${renderFullTimeCompactTooltip(role)}
+                        ${role.auxiliary ? renderAuxiliaryTooltip(role) : ''}
+                    </span>
+                    <span class="text-xs font-black text-indigo-600 bg-indigo-50 rounded-full px-2.5 py-1">應置 ${role.required} 人</span>
+                </div>`).join('');
+        }
+    }
+
+    async function saveComplianceSettings() {
+        const typeKey = document.getElementById('compliance-business-type').value;
+        const employeeCount = Math.max(parseInt(document.getElementById('compliance-employee-count').value, 10) || 0, 0);
+        applyComplianceSettings({ businessTypeKey: typeKey, employeeCount });
+        await setConfig('compliance_settings', complianceSettings);
+        closeComplianceSettingsModal();
+        renderReport();
+    }
 
     // --- UI 初始化功能 ---
 
@@ -643,16 +1604,68 @@ let db;
 
     // --- 核心邏輯計算 ---
 
-    function calculateNextDate(lastDateStr, cycleStr) {
-        if (!lastDateStr) return null;
-        const lastDate = new Date(lastDateStr);
-        if (isNaN(lastDate.getTime())) return null;
-        
-        const years = parseInt(cycleStr.replace('Y', '')) || 0;
-        const nextDate = new Date(lastDate);
-        nextDate.setFullYear(lastDate.getFullYear() + years);
-        return nextDate;
+function parseLocalDate(dateStr) {
+    if (!dateStr) return null;
+
+    const parts = String(dateStr).trim().match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if (parts) {
+        const date = new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]));
+        return isNaN(date.getTime()) ? null : date;
     }
+
+    const fallback = new Date(dateStr);
+    return isNaN(fallback.getTime()) ? null : fallback;
+}
+
+function formatLocalDate(date) {
+    if (!date || isNaN(date.getTime())) return '';
+
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+
+    return `${yyyy}-${mm}-${dd}`;
+}
+
+function parseHYRetrainingYears(cycleStr) {
+    const raw = String(cycleStr || '').trim();
+    if (!raw) return null;
+
+    const compact = raw.replace(/\s+/g, '').toUpperCase();
+
+    // 標準格式：3H/1Y、6H/3Y、12H/2Y
+    // H = 小時，只做記錄用途；Y = 年，用來推算下次複訓日期
+    const hyMatch = compact.match(/^\d+(?:\.\d+)?H\/(\d+(?:\.\d+)?)Y$/);
+    if (hyMatch) return Number(hyMatch[1]);
+
+    // 備援格式：1Y、2Y、3年
+    const yearMatch = compact.match(/^(\d+(?:\.\d+)?)(Y|年)$/);
+    if (yearMatch) return Number(yearMatch[1]);
+
+    return null;
+}
+
+function calculateNextDate(lastDateStr, cycleStr) {
+    if (!lastDateStr) return null;
+
+    const lastDate = parseLocalDate(lastDateStr);
+    if (!lastDate) return null;
+
+    const years = parseHYRetrainingYears(cycleStr);
+    if (!years || years <= 0) return null;
+
+    const targetYear = lastDate.getFullYear() + Math.floor(years);
+    const targetMonth = lastDate.getMonth();
+
+    // 避免 2/29 加年份後變成錯誤日期
+    const lastDayOfTargetMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
+    const targetDay = Math.min(lastDate.getDate(), lastDayOfTargetMonth);
+
+    const nextDate = new Date(targetYear, targetMonth, targetDay);
+    nextDate.setHours(0, 0, 0, 0);
+
+    return nextDate;
+}
 
     function getStatusInfo(nextDate, lastDateStr) {
         if (!lastDateStr) return { label: '待受訓', bg: 'bg-amber-100', text: 'text-amber-600' };
@@ -682,11 +1695,52 @@ let db;
         });
     }
 
+    function getRecordRetrainingYear(record) {
+        const nextDate = calculateNextDate(record.lastDate, record.cycle);
+        return nextDate ? nextDate.getFullYear() : null;
+    }
+
+    function updateYearFilter() {
+        const yearFilter = document.getElementById('yearFilter');
+        if (!yearFilter) return;
+        const currentVal = yearFilter.value;
+        const currentYear = new Date().getFullYear();
+        const years = new Set();
+        for (let year = currentYear - 1; year <= currentYear + 5; year++) years.add(year);
+        records.forEach(record => {
+            const year = getRecordRetrainingYear(record);
+            if (year) years.add(year);
+        });
+        const sortedYears = Array.from(years).sort((a, b) => a - b);
+        yearFilter.innerHTML = '<option value="">所有年度</option>';
+        sortedYears.forEach(year => {
+            const option = document.createElement('option');
+            option.value = String(year);
+            option.textContent = year === currentYear ? `當年度 (${year})` : `${year} 年度`;
+            if (String(year) === currentVal) option.selected = true;
+            yearFilter.appendChild(option);
+        });
+    }
+
+    function updateYearTrainingCount(yearValue, count) {
+        const el = document.getElementById('yearTrainingCount');
+        if (!el) return;
+        if (!yearValue) {
+            el.classList.add('hidden');
+            el.innerText = '年度需複訓 0 人';
+            return;
+        }
+        el.classList.remove('hidden');
+        el.innerText = `${yearValue} 年需複訓 ${count} 人`;
+    }
+
     async function renderReport() {
         const tableBody = document.getElementById('report-body');
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         const statusFilter = document.getElementById('statusFilter').value;
         const itemFilter = document.getElementById('itemFilter').value;
+        const yearFilter = document.getElementById('yearFilter')?.value || '';
+        const yearRetrainingPeople = new Set();
         
         tableBody.innerHTML = '';
         let stats = { total: 0, expired: 0, warning: 0, valid: 0 };
@@ -710,10 +1764,16 @@ let db;
                                     (record.certNo || "").toLowerCase().includes(searchTerm);
                 const matchesStatus = statusFilter === "" || status.label === statusFilter;
                 const matchesItem = itemFilter === "" || record.item === itemFilter;
+                const retrainingYear = nextDate ? String(nextDate.getFullYear()) : '';
+                const matchesYear = yearFilter === "" || retrainingYear === yearFilter;
+                const matchesAllActiveFilters = matchesSearch && matchesStatus && matchesItem && matchesYear;
+                if (yearFilter && retrainingYear === yearFilter && matchesSearch && matchesStatus && matchesItem) {
+                    yearRetrainingPeople.add(getPersonIdentityKey(record));
+                }
 
-                if (matchesSearch && matchesStatus && matchesItem) {
+                if (matchesAllActiveFilters) {
                     visibleCount++;
-                    const displayNextDate = nextDate ? nextDate.toISOString().split('T')[0] : "待補件";
+                    const displayNextDate = nextDate ? formatLocalDate(nextDate) : "待補件";
                     const row = document.createElement('tr');
                     row.className = "table-row";
                     row.innerHTML = `
@@ -754,7 +1814,10 @@ let db;
         document.getElementById('stat-warning').innerText = stats.warning;
         document.getElementById('stat-valid').innerText = stats.valid;
         
+        renderComplianceDashboard();
         updateItemFilter();
+        updateYearFilter();
+        updateYearTrainingCount(yearFilter, yearRetrainingPeople.size);
         initIcons();
     }
 
@@ -820,22 +1883,21 @@ let db;
 
         record.attachments.forEach((file, index) => {
             const item = document.createElement('div');
-            item.className = "flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 group";
-            const actionsClass = previewOnly ? "flex items-center gap-1" : "flex items-center gap-1 opacity-0 group-hover:opacity-100 transition";
+            item.className = "flex items-center justify-between gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100 group";
             const removeButton = previewOnly ? '' : `
-                    <button onclick="removeAttachment(${index})" class="p-1.5 text-slate-400 hover:text-red-500">
+                    <button onclick="removeAttachment(${index})" class="p-1.5 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition" title="移除附件">
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                     </button>`;
             item.innerHTML = `
-                <div class="flex items-center gap-3 overflow-hidden">
-                    <div class="bg-white p-2 rounded-lg border border-slate-200">
+                <div class="flex items-center gap-3 overflow-hidden min-w-0">
+                    <div class="bg-white p-2 rounded-lg border border-slate-200 shrink-0">
                         <i data-lucide="${file.type === 'pdf' ? 'file-text' : 'image'}" class="w-4 h-4 text-slate-400"></i>
                     </div>
                     <span class="text-xs font-bold text-slate-700 truncate">${file.name}</span>
                 </div>
-                <div class="${actionsClass}">
-                    <button onclick='openFilePreview(${JSON.stringify(file)}, "${record.name}")' class="p-1.5 text-slate-400 hover:text-blue-500">
-                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button onclick='openFilePreview(${JSON.stringify(file)}, "${record.name}")' class="w-9 h-9 bg-white border border-blue-100 rounded-lg text-blue-600 hover:bg-blue-50 hover:border-blue-200 transition flex items-center justify-center shadow-sm" title="預覽附件" aria-label="預覽附件">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
                     </button>${removeButton}
                 </div>
             `;
@@ -886,6 +1948,18 @@ let db;
         }
     });
 
+    const complianceBasisDropZone = document.getElementById('compliance-basis-drop-zone');
+    if (complianceBasisDropZone) {
+        complianceBasisDropZone.addEventListener('dragover', (e) => { e.preventDefault(); if (isAdmin) complianceBasisDropZone.classList.add('drag-over'); });
+        complianceBasisDropZone.addEventListener('dragleave', () => complianceBasisDropZone.classList.remove('drag-over'));
+        complianceBasisDropZone.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            complianceBasisDropZone.classList.remove('drag-over');
+            if (!isAdmin) return;
+            await processComplianceBasisFiles(Array.from(e.dataTransfer.files || []));
+        });
+    }
+
     function removeAttachment(index) {
         if (confirm("確定要移除此附件嗎？")) {
             const record = records.find(r => r.id === currentAttachRecordId);
@@ -898,7 +1972,7 @@ let db;
         const overlay = document.getElementById('file-preview-overlay');
         const contentArea = document.getElementById('preview-content-area');
         document.getElementById('preview-filename').innerText = file.name;
-        document.getElementById('preview-meta').innerText = `${personName} 的相關證件附件`;
+        document.getElementById('preview-meta').innerText = personName ? `${personName} 的相關附件` : '附件內容';
         contentArea.innerHTML = '';
 
         if (file.type === 'pdf') {
@@ -918,40 +1992,254 @@ let db;
 
     // --- 匯出功能 ---
 
-    function exportToExcel() {
-        if (records.length === 0) { alert('目前沒有數據可匯出'); return; }
-        let csvContent = "\uFEFF"; // UTF-8 BOM
-        csvContent += "項次,作業單位,姓名,訓練項目,證書號碼,複訓週期,上次受訓日期,下次複訓日期,狀態\n";
-        
-        records.forEach((r, index) => {
-            const nextDate = calculateNextDate(r.lastDate, r.cycle);
-            const status = getStatusInfo(nextDate, r.lastDate).label;
-            const displayNextDate = nextDate ? nextDate.toISOString().split('T')[0] : "待補件";
-            
-            const row = [
-                index + 1,
-                `"${r.dept}"`,
-                `"${r.name}"`,
-                `"${r.item}"`,
-                `"${r.certNo}"`,
-                `"${r.cycle}"`,
-                r.lastDate,
-                displayNextDate,
-                status
-            ].join(",");
-            csvContent += row + "\n";
-        });
+function printCertificateReport() {
+    document.body.classList.add('print-certificate-report');
 
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", `證照管理報表_${new Date().toISOString().split('T')[0]}.csv`);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    setTimeout(() => {
+        window.print();
+    }, 50);
+}
+
+window.addEventListener('afterprint', function() {
+    document.body.classList.remove('print-certificate-report');
+});
+
+function escapeExcelHTML(value) {
+    return String(value ?? '').replace(/[&<>'"]/g, function(char) {
+        return ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        })[char];
+    });
+}
+
+function getExcelStatusStyle(statusLabel) {
+    if (statusLabel === '已過期') {
+        return 'background:#fee2e2;color:#991b1b;font-weight:700;';
     }
+
+    if (statusLabel === '待受訓') {
+        return 'background:#fef3c7;color:#92400e;font-weight:700;';
+    }
+
+    return 'background:#dcfce7;color:#166534;font-weight:700;';
+}
+
+function exportToExcel() {
+    if (records.length === 0) {
+        alert('目前沒有數據可匯出');
+        return;
+    }
+
+    if (typeof XLSX === 'undefined') {
+        alert('Excel 匯出套件尚未載入，請確認網路連線後再試一次。');
+        return;
+    }
+
+    const exportDate = formatLocalDate(new Date());
+
+    const header = [
+        '項次',
+        '作業單位',
+        '姓名',
+        '訓練項目',
+        '證書號碼',
+        '複訓週期',
+        '上次受訓日期',
+        '下次複訓日期',
+        '狀態'
+    ];
+
+    const dataRows = records.map((r, index) => {
+        const nextDate = calculateNextDate(r.lastDate, r.cycle);
+        const status = getStatusInfo(nextDate, r.lastDate).label;
+        const displayNextDate = nextDate ? formatLocalDate(nextDate) : '待補件';
+
+        return [
+            index + 1,
+            r.dept || '',
+            r.name || '',
+            r.item || '',
+            r.certNo || '',
+            r.cycle || '',
+            r.lastDate || '',
+            displayNextDate,
+            status
+        ];
+    });
+
+    const sheetData = [
+        ['證照清單明細報表'],
+        [`匯出日期：${exportDate}｜資料筆數：${records.length}`],
+        header,
+        ...dataRows
+    ];
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(sheetData);
+
+    ws['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 8 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 8 } }
+    ];
+
+    ws['!cols'] = [
+        { wch: 8 },
+        { wch: 16 },
+        { wch: 12 },
+        { wch: 34 },
+        { wch: 24 },
+        { wch: 12 },
+        { wch: 16 },
+        { wch: 16 },
+        { wch: 12 }
+    ];
+
+    ws['!freeze'] = {
+        xSplit: 0,
+        ySplit: 3
+    };
+
+    const range = XLSX.utils.decode_range(ws['!ref']);
+
+    const borderStyle = {
+        top: { style: 'thin', color: { rgb: 'CBD5E1' } },
+        bottom: { style: 'thin', color: { rgb: 'CBD5E1' } },
+        left: { style: 'thin', color: { rgb: 'CBD5E1' } },
+        right: { style: 'thin', color: { rgb: 'CBD5E1' } }
+    };
+
+    for (let row = range.s.r; row <= range.e.r; row++) {
+        for (let col = range.s.c; col <= range.e.c; col++) {
+            const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+            if (!ws[cellAddress]) continue;
+
+            ws[cellAddress].s = {
+                font: {
+                    name: 'Microsoft JhengHei',
+                    sz: 11,
+                    color: { rgb: '1E293B' }
+                },
+                alignment: {
+                    vertical: 'center',
+                    wrapText: true
+                },
+                border: borderStyle
+            };
+        }
+    }
+
+    ws['A1'].s = {
+        font: {
+            name: 'Microsoft JhengHei',
+            sz: 18,
+            bold: true,
+            color: { rgb: 'FFFFFF' }
+        },
+        fill: {
+            fgColor: { rgb: '1E293B' }
+        },
+        alignment: {
+            horizontal: 'center',
+            vertical: 'center'
+        },
+        border: borderStyle
+    };
+
+    ws['A2'].s = {
+        font: {
+            name: 'Microsoft JhengHei',
+            sz: 10,
+            color: { rgb: '475569' }
+        },
+        fill: {
+            fgColor: { rgb: 'F8FAFC' }
+        },
+        alignment: {
+            horizontal: 'right',
+            vertical: 'center'
+        },
+        border: borderStyle
+    };
+
+    for (let col = 0; col <= 8; col++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: 2, c: col });
+        if (!ws[cellAddress]) continue;
+
+        ws[cellAddress].s = {
+            font: {
+                name: 'Microsoft JhengHei',
+                sz: 11,
+                bold: true,
+                color: { rgb: 'FFFFFF' }
+            },
+            fill: {
+                fgColor: { rgb: '334155' }
+            },
+            alignment: {
+                horizontal: 'center',
+                vertical: 'center'
+            },
+            border: borderStyle
+        };
+    }
+
+    for (let row = 3; row <= range.e.r; row++) {
+        for (let col of [0, 2, 5, 6, 7, 8]) {
+            const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+            if (!ws[cellAddress]) continue;
+
+            ws[cellAddress].s.alignment = {
+                horizontal: 'center',
+                vertical: 'center',
+                wrapText: true
+            };
+        }
+
+        const certCell = XLSX.utils.encode_cell({ r: row, c: 4 });
+        if (ws[certCell]) {
+            ws[certCell].t = 's';
+            ws[certCell].z = '@';
+        }
+
+        const statusCell = XLSX.utils.encode_cell({ r: row, c: 8 });
+        if (ws[statusCell]) {
+            const statusValue = ws[statusCell].v;
+
+            if (statusValue === '已過期') {
+                ws[statusCell].s.fill = { fgColor: { rgb: 'FEE2E2' } };
+                ws[statusCell].s.font = {
+                    name: 'Microsoft JhengHei',
+                    sz: 11,
+                    bold: true,
+                    color: { rgb: '991B1B' }
+                };
+            } else if (statusValue === '待受訓') {
+                ws[statusCell].s.fill = { fgColor: { rgb: 'FEF3C7' } };
+                ws[statusCell].s.font = {
+                    name: 'Microsoft JhengHei',
+                    sz: 11,
+                    bold: true,
+                    color: { rgb: '92400E' }
+                };
+            } else {
+                ws[statusCell].s.fill = { fgColor: { rgb: 'DCFCE7' } };
+                ws[statusCell].s.font = {
+                    name: 'Microsoft JhengHei',
+                    sz: 11,
+                    bold: true,
+                    color: { rgb: '166534' }
+                };
+            }
+        }
+    }
+
+    XLSX.utils.book_append_sheet(wb, ws, '證照清單明細報表');
+    XLSX.writeFile(wb, `職安證照管理系統報表_${exportDate}.xlsx`);
+}
 
     // --- 驗證與登入邏輯 ---
 
@@ -1028,6 +2316,7 @@ async function checkPassword() {
             showSyncSuccess();
         };
         document.getElementById('add-person-btn').classList.remove('hidden');
+        renderComplianceDashboard();
         initIcons();
     }
 
@@ -1172,13 +2461,29 @@ async function checkPassword() {
 
     // --- 應用程式啟動 ---
 
+document.addEventListener('click', function(event) {
+        document.querySelectorAll('.legal-duty-tooltip-wrap.is-open').forEach(el => {
+            if (!el.contains(event.target)) el.classList.remove('is-open');
+        });
+    });
+
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         closeLoginModal();
         closeChangePasswordModal();
+        closeComplianceSettingsModal();
+        closeComplianceBasisModal();
         closeEditModal();
         closeAttachmentModal();
         closeFilePreview();
+    }
+});
+
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.auxiliary-tooltip-wrap')) {
+        document.querySelectorAll('.auxiliary-tooltip-wrap.is-open').forEach(item => {
+            item.classList.remove('is-open');
+        });
     }
 });
     
@@ -1190,6 +2495,14 @@ document.addEventListener('keydown', function(event) {
             // 讀取密碼配置
             const savedPwd = await getConfig('admin_password');
             if (savedPwd) systemPassword = savedPwd;
+            
+            // 讀取法規合規檢核基準
+            const savedComplianceSettings = await getConfig('compliance_settings');
+            if (savedComplianceSettings) applyComplianceSettings(savedComplianceSettings);
+
+            // 讀取法定人員設置基準依據檔案
+            const savedComplianceBasisFiles = await getConfig('compliance_basis_files');
+            if (Array.isArray(savedComplianceBasisFiles)) complianceBasisFiles = savedComplianceBasisFiles;
             
             // 讀取證照數據
             records = await fetchAllRecords();
