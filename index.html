@@ -3710,7 +3710,7 @@ if (idVal === "") {
         const blob = new Blob([JSON.stringify(records, null, 2)], { type: 'application/json' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `職業安全證照管理系統_OSCMS_${new Date().toISOString().split('T')[0]}.json`;
+        link.download = `職業安全證照管理系統_CMS_${new Date().toISOString().split('T')[0]}.json`;
         link.click();
     }
 
