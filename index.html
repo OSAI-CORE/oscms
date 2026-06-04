@@ -358,7 +358,7 @@
 .budget-money-cell {
     font-weight: 900;
     color: #4338ca;
-    text-align: right;
+    text-align: left;
 }
 
 .budget-table-wrap {
@@ -395,12 +395,44 @@
     line-height: 1.25rem;
 }
 
+.budget-type-header {
+    text-align: left !important;
+    padding-left: 0.65rem !important;
+}
+
 .budget-type-wrap {
     display: inline-flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
     gap: 7px;
+    transform: translateX(2px);
+}
+
+.budget-type-cell {
+    text-align: left !important;
+    padding-left: 0.9rem !important;
+}
+
+.budget-fee-header {
+    text-align: left !important;
+    padding-left: 0.55rem !important;
+    padding-right: 0 !important;
+}
+
+.budget-fee-cell {
+    text-align: left;
+}
+
+.budget-fee-cell .budget-money-cell {
+    text-align: left;
+    padding-left: 0.55rem;
+    padding-right: 0.35rem;
+}
+
+.budget-fee-cell .budget-money-cell:disabled {
+    padding-left: 0.55rem;
+    padding-right: 0.35rem;
 }
 
 .budget-type-option {
@@ -476,10 +508,38 @@
 
 
 .budget-textarea {
+    height: 38px;
     min-height: 38px;
     overflow: hidden;
     resize: vertical;
     line-height: 1.45;
+}
+
+.budget-resize-field,
+.edit-resize-field {
+    height: 38px;
+    min-height: 38px;
+    overflow: hidden;
+    resize: vertical;
+    line-height: 1.45;
+}
+
+.budget-resize-field:disabled,
+.budget-textarea:disabled {
+    resize: none;
+}
+
+.edit-resize-field {
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    outline: none;
+}
+
+.edit-resize-field:focus {
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.35);
+    border-color: #6366f1;
 }
 
 .budget-admin-only {
@@ -911,8 +971,8 @@
                         <col style="width: 7%">
                         <col style="width: 11%">
                         <col style="width: 9%">
-                        <col style="width: 18%">
-                        <col style="width: 11%">
+                        <col style="width: 17%">
+                        <col style="width: 12%">
                         <col style="width: 13%">
                         <col style="width: 12%">
                         <col style="width: 9%">
@@ -924,10 +984,10 @@
                             <th class="table-header-cell">作業單位</th>
                             <th class="table-header-cell">姓名</th>
                             <th class="table-header-cell">訓練項目</th>
-                            <th class="table-header-cell text-center">初訓 / 複訓</th>
+                            <th class="table-header-cell budget-type-header">初訓 / 複訓</th>
                             <th class="table-header-cell">受訓日期</th>
                             <th class="table-header-cell">受訓單位</th>
-                            <th class="table-header-cell">費用</th>
+                            <th class="table-header-cell budget-fee-header">預算費用 (NTD)</th>
                             <th class="table-header-cell">備註</th>
                         </tr>
                     </thead>
@@ -1183,19 +1243,19 @@
                 <input type="hidden" id="edit-id">
                 <div class="md:col-span-1">
                     <label class="block text-xs font-bold text-slate-500 mb-1">作業單位</label>
-                    <input type="text" id="edit-dept" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="例如：物流部">
+                    <textarea id="edit-dept" class="edit-resize-field" placeholder="例如：物流部" oninput="autoResizeEditableField(this)"></textarea>
                 </div>
                 <div class="md:col-span-1">
                     <label class="block text-xs font-bold text-slate-500 mb-1">姓名</label>
-                    <input type="text" id="edit-name" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
+                    <textarea id="edit-name" class="edit-resize-field" oninput="autoResizeEditableField(this)"></textarea>
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-xs font-bold text-slate-500 mb-1">訓練項目</label>
-                    <input type="text" id="edit-item" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
+                    <textarea id="edit-item" class="edit-resize-field" oninput="autoResizeEditableField(this)"></textarea>
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-xs font-bold text-slate-500 mb-1">證書號碼</label>
-                    <input type="text" id="edit-certNo" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
+                    <textarea id="edit-certNo" class="edit-resize-field" oninput="autoResizeEditableField(this)"></textarea>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-500 mb-1">複訓週期 (例如: 3H/3Y)</label>
@@ -2287,6 +2347,31 @@ function calculateNextDate(lastDateStr, cycleStr) {
         return true;
     }
 
+    function updateBudgetSummaryOnly() {
+        const itemFilter = document.getElementById('budgetItemFilter')?.value || '';
+        const yearFilter = document.getElementById('budgetYearFilter')?.value || '';
+        const rows = getBudgetSourceRows().filter(row => {
+            const matchesItem = itemFilter === '' || row.item === itemFilter;
+            const matchesYear = yearFilter === '' || String(row.year) === yearFilter;
+            return matchesItem && matchesYear;
+        });
+
+        const itemCount = new Set(rows.map(row => row.item)).size;
+        const totalFee = rows.reduce((sum, row) => sum + (Number(normalizeMoneyInput(row.fee)) || 0), 0);
+
+        const countSummary = document.getElementById('budget-summary-count');
+        const itemSummary = document.getElementById('budget-summary-items');
+        const feeSummary = document.getElementById('budget-summary-fee');
+
+        if (countSummary) countSummary.innerText = `${rows.length} 人次`;
+        if (itemSummary) itemSummary.innerText = `${itemCount} 項`;
+        if (feeSummary) feeSummary.innerText = formatMoney(totalFee);
+    }
+
+    function shouldRerenderBudgetAfterFieldChange(field) {
+        return ['dept', 'name', 'item', 'retrainingDate'].includes(field);
+    }
+
     async function saveBudgetField(rowId, year, field, value, itemName = '', sourceType = 'synced') {
         if (!isAdmin) return;
 
@@ -2305,7 +2390,11 @@ function calculateNextDate(lastDateStr, cycleStr) {
         }
 
         await persistBudgetData();
-        renderBudgetReport();
+        if (shouldRerenderBudgetAfterFieldChange(field)) {
+            renderBudgetReport();
+        } else {
+            updateBudgetSummaryOnly();
+        }
     }
 
     function propagateBudgetFeeDefault(itemName, feeValue) {
@@ -2348,10 +2437,23 @@ function calculateNextDate(lastDateStr, cycleStr) {
         el.style.height = `${Math.max(38, el.scrollHeight)}px`;
     }
 
+    function autoResizeEditableField(el) {
+        autoResizeBudgetTextarea(el);
+    }
+
+    function resetEditableFieldHeight(el) {
+        if (!el) return;
+        el.style.height = '38px';
+    }
+
     function focusBudgetCell(rowIndex, colIndex) {
         const next = document.querySelector(`[data-budget-row="${rowIndex}"][data-budget-col="${colIndex}"]`);
         if (!next || next.disabled) return false;
-        next.focus();
+        try {
+            next.focus({ preventScroll: true });
+        } catch (error) {
+            next.focus();
+        }
         if (typeof next.select === 'function' && next.tagName !== 'SELECT') next.select();
         return true;
     }
@@ -2371,7 +2473,6 @@ function calculateNextDate(lastDateStr, cycleStr) {
         else if (event.key === 'ArrowUp') nextRow--;
         else if (event.key === 'Enter') {
             event.preventDefault();
-            target.blur();
             nextRow++;
         } else return;
 
@@ -2379,22 +2480,37 @@ function calculateNextDate(lastDateStr, cycleStr) {
         if (!focusBudgetCell(nextRow, nextCol) && event.key === 'Enter') focusBudgetCell(rowIndex + 1, 0);
     }
 
+    function handleBudgetTypeChange(checkbox, rowId, year, trainingType, itemName = '', sourceType = 'synced') {
+        if (!checkbox.checked) {
+            checkbox.checked = true;
+            return;
+        }
+        const wrap = checkbox.closest('.budget-type-wrap');
+        if (wrap) {
+            wrap.querySelectorAll('input[type="checkbox"]').forEach(input => {
+                if (input !== checkbox) input.checked = false;
+            });
+        }
+        saveBudgetField(rowId, year, 'trainingType', trainingType, itemName, sourceType);
+    }
+
     function renderBudgetTypeSelector(row, rowIndex, colIndex, disabledAttr) {
         const safeItem = escapeJSString(row.item);
         const safeSource = escapeJSString(row.sourceType);
+        const safeRecordId = escapeJSString(row.recordId);
         const isInitial = row.trainingType === '初訓';
         return `
             <div class="budget-type-wrap" data-budget-row="${rowIndex}" data-budget-col="${colIndex}">
                 <label class="budget-type-option">
                     <input type="checkbox" ${disabledAttr} ${isInitial ? 'checked' : ''}
                            data-budget-row="${rowIndex}" data-budget-col="${colIndex}" onkeydown="handleBudgetCellKeydown(event)"
-                           onchange="if(this.checked) saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'trainingType', '初訓', '${safeItem}', '${safeSource}'); else this.checked = true;">
+                           onchange="handleBudgetTypeChange(this, '${safeRecordId}', ${row.year}, '初訓', '${safeItem}', '${safeSource}')">
                     <span>初訓</span>
                 </label>
                 <label class="budget-type-option">
                     <input type="checkbox" ${disabledAttr} ${!isInitial ? 'checked' : ''}
                            data-budget-row="${rowIndex}" data-budget-col="${colIndex}" onkeydown="handleBudgetCellKeydown(event)"
-                           onchange="if(this.checked) saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'trainingType', '複訓', '${safeItem}', '${safeSource}'); else this.checked = true;">
+                           onchange="handleBudgetTypeChange(this, '${safeRecordId}', ${row.year}, '複訓', '${safeItem}', '${safeSource}')">
                     <span>複訓</span>
                 </label>
             </div>`;
@@ -2447,21 +2563,21 @@ function calculateNextDate(lastDateStr, cycleStr) {
                         ${row.sourceType === 'manual' && isAdmin ? `<div class="budget-index-actions"><button type="button" onclick="removeBudgetManualRow('${escapeJSString(row.recordId)}')" class="p-1.5 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-lg transition" title="移除"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>` : ''}
                     </td>
                     <td class="table-cell font-medium text-slate-500">
-                        <input type="text" class="budget-input" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單同步'}" value="${escapeHTML(row.dept)}" ${baseDisabled}
-                               data-budget-row="${index}" data-budget-col="0" onkeydown="handleBudgetCellKeydown(event)"
-                               onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'dept', this.value, '${safeItem}', '${safeSource}')">
+                        <textarea class="budget-input budget-resize-field" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單同步'}" ${baseDisabled}
+                                  data-budget-row="${index}" data-budget-col="0" onkeydown="handleBudgetCellKeydown(event)" oninput="autoResizeBudgetTextarea(this)"
+                                  onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'dept', this.value, '${safeItem}', '${safeSource}')">${escapeHTML(row.dept)}</textarea>
                     </td>
                     <td class="table-cell font-bold text-slate-800">
-                        <input type="text" class="budget-input" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單同步'}" value="${escapeHTML(row.name)}" ${baseDisabled}
-                               data-budget-row="${index}" data-budget-col="1" onkeydown="handleBudgetCellKeydown(event)"
-                               onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'name', this.value, '${safeItem}', '${safeSource}')">
+                        <textarea class="budget-input budget-resize-field" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單同步'}" ${baseDisabled}
+                                  data-budget-row="${index}" data-budget-col="1" onkeydown="handleBudgetCellKeydown(event)" oninput="autoResizeBudgetTextarea(this)"
+                                  onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'name', this.value, '${safeItem}', '${safeSource}')">${escapeHTML(row.name)}</textarea>
                     </td>
                     <td class="table-cell font-semibold text-indigo-600">
-                        <input type="text" class="budget-input" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單同步'}" value="${escapeHTML(row.item)}" ${baseDisabled}
-                               data-budget-row="${index}" data-budget-col="2" onkeydown="handleBudgetCellKeydown(event)"
-                               onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'item', this.value, '${safeItem}', '${safeSource}')">
+                        <textarea class="budget-input budget-resize-field" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單同步'}" ${baseDisabled}
+                                  data-budget-row="${index}" data-budget-col="2" onkeydown="handleBudgetCellKeydown(event)" oninput="autoResizeBudgetTextarea(this)"
+                                  onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'item', this.value, '${safeItem}', '${safeSource}')">${escapeHTML(row.item)}</textarea>
                     </td>
-                    <td class="table-cell text-center">
+                    <td class="table-cell budget-type-cell">
                         ${renderBudgetTypeSelector(row, index, 3, disabledAttr)}
                     </td>
                     <td class="table-cell text-slate-500">
@@ -2470,14 +2586,14 @@ function calculateNextDate(lastDateStr, cycleStr) {
                                onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'retrainingDate', this.value, '${safeItem}', '${safeSource}')">
                     </td>
                     <td class="table-cell">
-                        <input type="text" class="budget-input" title="${inputTitle}" value="${escapeHTML(row.trainingUnit)}" ${disabledAttr}
-                               data-budget-row="${index}" data-budget-col="5" onkeydown="handleBudgetCellKeydown(event)"
-                               onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'trainingUnit', this.value, '${safeItem}', '${safeSource}')">
+                        <textarea class="budget-input budget-resize-field" title="${inputTitle}" ${disabledAttr}
+                                  data-budget-row="${index}" data-budget-col="5" onkeydown="handleBudgetCellKeydown(event)" oninput="autoResizeBudgetTextarea(this)"
+                                  onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'trainingUnit', this.value, '${safeItem}', '${safeSource}')">${escapeHTML(row.trainingUnit)}</textarea>
                     </td>
-                    <td class="table-cell">
-                        <input type="text" inputmode="numeric" class="budget-input budget-money-cell" title="${inputTitle}" value="${escapeHTML(formatMoneyInput(row.fee))}" ${disabledAttr}
-                               data-budget-row="${index}" data-budget-col="6" onkeydown="handleBudgetCellKeydown(event)" onblur="this.value = formatMoneyInput(this.value)"
-                               onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'fee', this.value, '${safeItem}', '${safeSource}')">
+                    <td class="table-cell budget-fee-cell">
+                        <textarea inputmode="numeric" class="budget-input budget-resize-field budget-money-cell" title="${inputTitle}" ${disabledAttr}
+                                  data-budget-row="${index}" data-budget-col="6" onkeydown="handleBudgetCellKeydown(event)" oninput="autoResizeBudgetTextarea(this)" onblur="this.value = formatMoneyInput(this.value); autoResizeBudgetTextarea(this)"
+                                  onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'fee', this.value, '${safeItem}', '${safeSource}')">${escapeHTML(formatMoneyInput(row.fee))}</textarea>
                     </td>
                     <td class="table-cell">
                         <textarea class="budget-input budget-textarea" title="${inputTitle}" ${disabledAttr}
@@ -2488,7 +2604,7 @@ function calculateNextDate(lastDateStr, cycleStr) {
         }).join('');
 
         setTimeout(() => {
-            document.querySelectorAll('.budget-textarea').forEach(autoResizeBudgetTextarea);
+            document.querySelectorAll('.budget-textarea, .budget-resize-field').forEach(resetEditableFieldHeight);
             initIcons();
         }, 0);
     }
@@ -2576,7 +2692,7 @@ function calculateNextDate(lastDateStr, cycleStr) {
         const sheetData = [
             ['新年度外訓預算統計表'],
             [`匯出日期：${exportDate}｜年度：${yearFilter}｜資料筆數：${rows.length}｜預估費用合計：${formatMoney(totalFee)}`],
-            ['項次', '作業單位', '姓名', '訓練項目', '初訓 / 複訓', '受訓日期', '受訓單位', '費用', '備註'],
+            ['項次', '作業單位', '姓名', '訓練項目', '初訓 / 複訓', '受訓日期', '受訓單位', '預算費用 (NTD)', '備註'],
             ...rows.map((row, index) => [
                 index + 1,
                 row.dept,
@@ -3524,6 +3640,9 @@ function insertRecordUnderSameDept(record) {
         document.getElementById('save-btn').innerText = "更新資料";
         document.getElementById('remove-btn').classList.remove('hidden');
         document.getElementById('edit-modal').classList.remove('hidden');
+        setTimeout(() => {
+            document.querySelectorAll('#edit-modal .edit-resize-field').forEach(resetEditableFieldHeight);
+        }, 0);
         initIcons();
     }
 
@@ -3534,6 +3653,9 @@ function insertRecordUnderSameDept(record) {
         document.getElementById('save-btn').innerText = "新增紀錄";
         document.getElementById('remove-btn').classList.add('hidden');
         document.getElementById('edit-modal').classList.remove('hidden');
+        setTimeout(() => {
+            document.querySelectorAll('#edit-modal .edit-resize-field').forEach(resetEditableFieldHeight);
+        }, 0);
         initIcons();
     }
 
