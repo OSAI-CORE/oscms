@@ -331,6 +331,170 @@
             pointer-events: auto;
         }
 
+.budget-input {
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    outline: none;
+    background: #ffffff;
+    color: #1e293b;
+}
+
+.budget-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+}
+
+.budget-input:disabled {
+    border-color: transparent;
+    background: transparent;
+    color: #334155;
+    opacity: 1;
+    padding-left: 0;
+}
+
+.budget-money-cell {
+    font-weight: 900;
+    color: #4338ca;
+    text-align: right;
+}
+
+.budget-table-wrap {
+    overflow-x: visible;
+}
+
+.budget-table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+}
+
+.budget-table .table-header-cell,
+.budget-table .table-cell {
+    padding: 0.65rem 0.55rem;
+    font-size: 0.78rem;
+    word-break: break-word;
+}
+
+.budget-index-cell {
+    text-align: center;
+    vertical-align: top;
+}
+
+.budget-index-actions {
+    margin-top: 6px;
+    display: flex;
+    justify-content: center;
+}
+
+.budget-index-number {
+    text-align: center;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.budget-type-wrap {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 7px;
+}
+
+.budget-type-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 900;
+    color: #475569;
+    white-space: nowrap;
+}
+
+.budget-type-option input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    accent-color: #4f46e5;
+    appearance: auto;
+    -webkit-appearance: checkbox;
+    cursor: pointer;
+}
+
+.budget-type-option input[type="checkbox"]:disabled {
+    opacity: 0.95;
+    cursor: default;
+}
+
+.budget-summary-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 16px;
+}
+
+
+.report-tab-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 20px;
+}
+
+.report-tab-btn {
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 14px 14px 0 0;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 900;
+    color: #64748b;
+    background: #f8fafc;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.report-tab-btn.active {
+    color: #4f46e5;
+    background: #ffffff;
+    border-color: #e2e8f0;
+    box-shadow: 0 -2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.report-tab-panel {
+    display: none;
+}
+
+.report-tab-panel.active {
+    display: block;
+}
+
+
+.budget-textarea {
+    min-height: 38px;
+    overflow: hidden;
+    resize: vertical;
+    line-height: 1.45;
+}
+
+.budget-admin-only {
+    display: none;
+}
+
+.budget-admin-enabled .budget-admin-only {
+    display: inline-flex;
+}
+
+
+.print-item-people-summary {
+    display: none;
+}
+
 @media print {
     @page {
         size: A4 landscape;
@@ -347,7 +511,7 @@
     body.print-certificate-report header.hero-section,
     body.print-certificate-report footer.system-footer,
     body.print-certificate-report #compliance-dashboard,
-    body.print-certificate-report #login-toggle-btn,
+        body.print-certificate-report #login-toggle-btn,
     body.print-certificate-report #export-btn,
     body.print-certificate-report #print-btn,
     body.print-certificate-report #auto-update-btn,
@@ -367,6 +531,18 @@
         margin: 0 !important;
         max-width: 100% !important;
         width: 100% !important;
+    }
+
+
+
+    body.print-certificate-report .report-tab-controls,
+    body.print-certificate-report #budget-panel,
+    body.print-certificate-report .budget-admin-only {
+        display: none !important;
+    }
+
+    body.print-certificate-report #certificate-panel {
+        display: block !important;
     }
 
     body.print-certificate-report #certificate-report-print-area {
@@ -422,6 +598,60 @@
         padding: 0 !important;
         font-size: 11px !important;
     }
+
+    body.print-certificate-report .certificate-report-title-row {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: flex-start !important;
+        justify-content: space-between !important;
+        gap: 12px !important;
+        margin-bottom: 10px !important;
+    }
+
+    body.print-certificate-report .certificate-report-title-left {
+        flex: 0 0 auto !important;
+        max-width: 38% !important;
+    }
+
+    body.print-certificate-report .print-item-people-summary {
+        display: block !important;
+        flex: 1 1 auto !important;
+        max-width: 58% !important;
+        padding: 6px 8px !important;
+        border: 1px solid #999 !important;
+        background: #f8fafc !important;
+        color: black !important;
+        font-size: 9px !important;
+        line-height: 1.45 !important;
+        page-break-inside: avoid !important;
+    }
+
+    body.print-certificate-report .print-item-people-summary-title {
+        font-size: 11px !important;
+        font-weight: 900 !important;
+        margin-bottom: 4px !important;
+        color: black !important;
+    }
+
+    body.print-certificate-report .print-item-people-summary-list {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 3px 8px !important;
+    }
+
+    body.print-certificate-report .print-item-people-summary-item {
+        white-space: nowrap !important;
+        color: black !important;
+    }
+
+    body.print-certificate-report .print-item-people-summary-count {
+        font-weight: 900 !important;
+    }
+
+    body.print-certificate-report .certificate-report-filters {
+    display: none !important;
+}
+
 }
     </style>
 </head>
@@ -552,17 +782,33 @@
             </div>
         </section>
 
-<section id="certificate-report-print-area">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-            <div class="flex items-center gap-4">
-                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                    <i data-lucide="table-2" class="w-5 h-5"></i> 證照清單明細報表
-                </h2>
+<section id="certificate-report-print-area" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+    <div class="report-tab-controls">
+        <button type="button" id="certificate-tab-btn" class="report-tab-btn active" onclick="switchReportTab('certificate')">
+            <i data-lucide="table-2" class="w-4 h-4"></i> 證照清單明細報表
+        </button>
+        <button type="button" id="budget-tab-btn" class="report-tab-btn" onclick="switchReportTab('budget')">
+            <i data-lucide="calculator" class="w-4 h-4"></i> 新年度外訓預算統計表
+        </button>
+    </div>
+
+    <div id="certificate-panel" class="report-tab-panel active">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 certificate-report-title-row">
+            <div class="flex items-center gap-4 certificate-report-title-left">
+                <div>
+                    <p class="text-xs font-black text-slate-400 tracking-[0.18em] uppercase">Certificate Detail Report</p>
+                    <h2 class="text-xl font-black text-slate-800 flex items-center gap-2 mt-1">
+                        <i data-lucide="table-2" class="w-5 h-5"></i> 證照清單明細報表
+                    </h2>
+                </div>
                 <button id="add-person-btn" onclick="openAddModal()" class="hidden bg-emerald-600 text-white px-4 py-1.5 rounded-lg font-bold text-sm hover:bg-emerald-700 transition flex items-center gap-2 shadow-sm">
                     <i data-lucide="user-plus" class="w-4 h-4"></i> 新增人員
                 </button>
             </div>
-            <div class="flex flex-1 justify-end gap-3 w-full flex-wrap">
+
+            <div id="print-item-people-summary" class="print-item-people-summary"></div>
+
+            <div class="flex flex-1 justify-end gap-3 w-full flex-wrap certificate-report-filters">
                 <div class="search-container border border-slate-200 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500">
                     <i data-lucide="search" class="w-4 h-4 text-slate-400 ml-2"></i>
                     <input type="text" id="searchInput" oninput="renderReport()" placeholder="搜尋姓名、證號..." class="w-full p-2 text-sm outline-none bg-transparent">
@@ -606,7 +852,92 @@
                 </table>
             </div>
         </div>
-</section>        
+    </div>
+
+    <div id="budget-panel" class="report-tab-panel">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-5">
+            <div>
+                <p class="text-xs font-black text-slate-400 tracking-[0.18em] uppercase">Annual Training Budget</p>
+                <div class="flex flex-wrap items-center gap-3 mt-1">
+                    <h2 class="text-xl font-black text-slate-800 flex items-center gap-2">
+                        <i data-lucide="calculator" class="w-5 h-5 text-indigo-600"></i>
+                        新年度外訓預算統計表
+                    </h2>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3 justify-end">
+                <button type="button" onclick="openBudgetAddModal()" class="budget-admin-only bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-emerald-700 transition items-center gap-2 shadow-sm min-w-[120px] justify-center">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i> 新增人員
+                </button>
+                <button type="button" onclick="saveBudgetRecordsNow()" class="budget-admin-only bg-amber-500 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-amber-600 transition items-center gap-2 shadow-sm min-w-[120px] justify-center">
+                    <i data-lucide="save" class="w-4 h-4"></i> 儲存記錄
+                </button>
+                <button type="button" onclick="exportBudgetToExcel()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-indigo-700 transition flex items-center gap-2 shadow-sm">
+                    <i data-lucide="file-up" class="w-4 h-4"></i> 匯出預算報表
+                </button>
+                <select id="budgetItemFilter" onchange="renderBudgetReport()" class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer shadow-sm min-w-[160px]">
+                    <option value="">所有項目</option>
+                </select>
+                <select id="budgetYearFilter" onchange="renderBudgetReport()" class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer shadow-sm min-w-[150px]">
+                    <option value="">所有年度</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-5">
+            <div class="budget-summary-card">
+                <p class="text-xs text-slate-400 font-black">預算年度</p>
+                <p id="budget-summary-year" class="text-xl font-black text-slate-800 mt-1">--</p>
+            </div>
+            <div class="budget-summary-card">
+                <p class="text-xs text-slate-400 font-black">需受訓人次</p>
+                <p id="budget-summary-count" class="text-xl font-black text-indigo-600 mt-1">0</p>
+            </div>
+            <div class="budget-summary-card">
+                <p class="text-xs text-slate-400 font-black">訓練項目數</p>
+                <p id="budget-summary-items" class="text-xl font-black text-slate-800 mt-1">0</p>
+            </div>
+            <div class="budget-summary-card">
+                <p class="text-xs text-slate-400 font-black">預估費用合計</p>
+                <p id="budget-summary-fee" class="text-xl font-black text-emerald-600 mt-1">$0</p>
+            </div>
+        </div>
+
+        <div class="report-table-container">
+            <div class="budget-table-wrap">
+                <table class="budget-table border-collapse">
+                    <colgroup>
+                        <col style="width: 7%">
+                        <col style="width: 11%">
+                        <col style="width: 9%">
+                        <col style="width: 18%">
+                        <col style="width: 11%">
+                        <col style="width: 13%">
+                        <col style="width: 12%">
+                        <col style="width: 9%">
+                        <col style="width: 10%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="table-header-cell">項次</th>
+                            <th class="table-header-cell">作業單位</th>
+                            <th class="table-header-cell">姓名</th>
+                            <th class="table-header-cell">訓練項目</th>
+                            <th class="table-header-cell text-center">初訓 / 複訓</th>
+                            <th class="table-header-cell">受訓日期</th>
+                            <th class="table-header-cell">受訓單位</th>
+                            <th class="table-header-cell">費用</th>
+                            <th class="table-header-cell">備註</th>
+                        </tr>
+                    </thead>
+                    <tbody id="budget-report-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
     </main>
 
         <!-- 頁尾資訊 -->
@@ -799,6 +1130,48 @@
         </div>
     </div>
 
+    <!-- 預算新增人員 Modal -->
+    <div id="budget-add-modal" onclick="closeBudgetAddModalOutside(event)" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[130] p-4">
+        <div onclick="event.stopPropagation()" class="bg-white p-8 rounded-3xl w-full max-w-lg shadow-2xl scale-in-center max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <p class="text-xs font-black text-slate-400 tracking-[0.18em] uppercase">Budget Manual Entry</p>
+                    <h2 class="text-2xl font-black text-slate-800 mt-1">新增預算人員</h2>
+                </div>
+                <button onclick="closeBudgetAddModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-6 h-6"></i></button>
+            </div>
+            <form id="budget-add-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">作業單位</label>
+                    <input type="text" id="budget-add-dept" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">姓名</label>
+                    <input type="text" id="budget-add-name" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">訓練項目</label>
+                    <input type="text" id="budget-add-item" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">受訓日期</label>
+                    <input type="date" id="budget-add-date" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">初訓 / 複訓</label>
+                    <select id="budget-add-type" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                        <option value="初訓">初訓</option>
+                        <option value="複訓" selected>複訓</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2 flex gap-3 mt-4">
+                    <button type="button" onclick="saveBudgetManualRow()" class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition">新增至預算表</button>
+                    <button type="button" onclick="closeBudgetAddModal()" class="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold hover:bg-slate-200 transition">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- 編輯紀錄 Modal -->
     <div id="edit-modal" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[120] p-4">
         <div class="bg-white p-8 rounded-3xl w-full max-w-lg shadow-2xl scale-in-center max-h-[90vh] overflow-y-auto">
@@ -943,6 +1316,9 @@ let db;
     let records = [];
     let currentAttachRecordId = null;
     let complianceBasisFiles = [];
+    let budgetRecords = {};
+    let budgetFeeDefaults = {};
+    let manualBudgetRows = [];
 
 
     const COMPLIANCE_ROLE_TEMPLATES = {
@@ -1333,6 +1709,30 @@ let db;
 
         return { roles: allRoles, coreRoles, auxiliaryRoles, completeRoles, percent, statusKey, label };
     }
+
+function getReportItemPeopleStats() {
+    const statsMap = new Map();
+
+    records.forEach(record => {
+        const itemName = record.item || '未設定項目';
+
+        if (!statsMap.has(itemName)) {
+            statsMap.set(itemName, {
+                item: itemName,
+                peopleKeys: new Set()
+            });
+        }
+
+        statsMap.get(itemName).peopleKeys.add(getPersonIdentityKey(record));
+    });
+
+    return Array.from(statsMap.values())
+        .map(stat => ({
+            item: stat.item,
+            totalPeople: stat.peopleKeys.size
+        }))
+        .sort((a, b) => a.item.localeCompare(b.item, 'zh-Hant'));
+}
 
     function getTrainingItemStats() {
         const statsMap = new Map();
@@ -1733,6 +2133,531 @@ function calculateNextDate(lastDateStr, cycleStr) {
         el.innerText = `${yearValue} 年需複訓 ${count} 人`;
     }
 
+    function switchReportTab(tabName) {
+        const certificatePanel = document.getElementById('certificate-panel');
+        const budgetPanel = document.getElementById('budget-panel');
+        const certificateBtn = document.getElementById('certificate-tab-btn');
+        const budgetBtn = document.getElementById('budget-tab-btn');
+
+        const showBudget = tabName === 'budget';
+        certificatePanel?.classList.toggle('active', !showBudget);
+        budgetPanel?.classList.toggle('active', showBudget);
+        certificateBtn?.classList.toggle('active', !showBudget);
+        budgetBtn?.classList.toggle('active', showBudget);
+        if (showBudget) {
+            updateBudgetFilters();
+            renderBudgetReport();
+        }
+        initIcons();
+    }
+
+    function getBudgetRecordKey(recordId, year) {
+        return `${recordId}|${year || '未設定年度'}`;
+    }
+
+    function getBudgetExtra(recordId, year, itemName = '') {
+        const key = getBudgetRecordKey(recordId, year);
+        const current = budgetRecords[key] || { trainingUnit: '', fee: '', note: '', trainingType: '複訓' };
+        return {
+            trainingUnit: current.trainingUnit || '',
+            fee: current.fee !== undefined ? current.fee : '',
+            note: current.note || '',
+            trainingType: current.trainingType || '複訓'
+        };
+    }
+
+    function normalizeBudgetManualRows() {
+        if (!Array.isArray(manualBudgetRows)) manualBudgetRows = [];
+        manualBudgetRows = manualBudgetRows.map(row => ({
+            id: row.id || `manual-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+            dept: row.dept || '',
+            name: row.name || '',
+            item: row.item || '',
+            retrainingDate: row.retrainingDate || '',
+            trainingType: row.trainingType || '複訓',
+            trainingUnit: row.trainingUnit || '',
+            fee: row.fee || '',
+            note: row.note || ''
+        }));
+    }
+
+    function getBudgetSourceRows() {
+        normalizeBudgetManualRows();
+        const syncedRows = records
+            .map(record => {
+                const nextDate = calculateNextDate(record.lastDate, record.cycle);
+                if (!nextDate) return null;
+                const year = nextDate.getFullYear();
+                const nextDateText = formatLocalDate(nextDate);
+                const extra = getBudgetExtra(record.id, year, record.item || '');
+                return {
+                    sourceType: 'synced',
+                    rowId: getBudgetRecordKey(record.id, year),
+                    record,
+                    recordId: record.id,
+                    year,
+                    dept: record.dept || '',
+                    name: record.name || '',
+                    item: record.item || '',
+                    retrainingDate: nextDateText,
+                    trainingType: extra.trainingType || '複訓',
+                    trainingUnit: extra.trainingUnit || '',
+                    fee: extra.fee || '',
+                    note: extra.note || ''
+                };
+            })
+            .filter(Boolean);
+
+        const manualRows = manualBudgetRows.map(row => {
+            const parsedDate = parseLocalDate(row.retrainingDate);
+            const year = parsedDate ? parsedDate.getFullYear() : (parseInt(document.getElementById('budgetYearFilter')?.value, 10) || new Date().getFullYear());
+            return {
+                sourceType: 'manual',
+                rowId: row.id,
+                record: null,
+                recordId: row.id,
+                year,
+                dept: row.dept || '',
+                name: row.name || '',
+                item: row.item || '',
+                retrainingDate: row.retrainingDate || '',
+                trainingType: row.trainingType || '複訓',
+                trainingUnit: row.trainingUnit || '',
+                fee: row.fee !== undefined ? row.fee : '',
+                note: row.note || ''
+            };
+        });
+
+        return [...syncedRows, ...manualRows].sort((a, b) => {
+            const itemCompare = (a.item || '').localeCompare(b.item || '', 'zh-Hant');
+            if (itemCompare !== 0) return itemCompare;
+            const yearCompare = (Number(a.year) || 0) - (Number(b.year) || 0);
+            if (yearCompare !== 0) return yearCompare;
+            const dateCompare = (a.retrainingDate || '').localeCompare(b.retrainingDate || '');
+            if (dateCompare !== 0) return dateCompare;
+            const deptCompare = (a.dept || '').localeCompare(b.dept || '', 'zh-Hant');
+            if (deptCompare !== 0) return deptCompare;
+            return (a.name || '').localeCompare(b.name || '', 'zh-Hant');
+        });
+    }
+
+    function updateBudgetFilters() {
+        const itemFilter = document.getElementById('budgetItemFilter');
+        const yearFilter = document.getElementById('budgetYearFilter');
+        if (!itemFilter || !yearFilter) return;
+
+        const rows = getBudgetSourceRows();
+        const currentItem = itemFilter.value;
+        const currentYear = new Date().getFullYear();
+        const wasYearInitialized = yearFilter.dataset.initialized === 'true';
+        const selectedYear = wasYearInitialized ? yearFilter.value : String(currentYear);
+
+        const items = [...new Set(rows.map(row => row.item).filter(Boolean))].sort();
+        itemFilter.innerHTML = '<option value="">所有項目</option>';
+        items.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item;
+            option.textContent = item;
+            if (item === currentItem) option.selected = true;
+            itemFilter.appendChild(option);
+        });
+
+        const years = new Set();
+        for (let year = currentYear - 1; year <= currentYear + 5; year++) years.add(year);
+        rows.forEach(row => years.add(row.year));
+        const sortedYears = Array.from(years).sort((a, b) => a - b);
+
+        yearFilter.innerHTML = '<option value="">所有年度</option>';
+        sortedYears.forEach(year => {
+            const option = document.createElement('option');
+            option.value = String(year);
+            option.textContent = year === currentYear ? `當年度 (${year})` : `${year} 年度`;
+            if (String(year) === selectedYear) option.selected = true;
+            yearFilter.appendChild(option);
+        });
+        if (!sortedYears.some(year => String(year) === selectedYear)) yearFilter.value = '';
+        yearFilter.dataset.initialized = 'true';
+    }
+
+    function updateManualBudgetRow(rowId, field, value) {
+        const row = manualBudgetRows.find(item => item.id === rowId);
+        if (!row) return false;
+        if (field === 'fee') row[field] = normalizeMoneyInput(value);
+        else row[field] = String(value || '').trim();
+        return true;
+    }
+
+    async function saveBudgetField(rowId, year, field, value, itemName = '', sourceType = 'synced') {
+        if (!isAdmin) return;
+
+        if (sourceType === 'manual') {
+            updateManualBudgetRow(rowId, field, value);
+        } else {
+            const key = getBudgetRecordKey(rowId, year);
+            const current = budgetRecords[key] || { trainingUnit: '', fee: '', note: '', trainingType: '複訓' };
+            if (field === 'fee') {
+                const numericValue = normalizeMoneyInput(value);
+                current[field] = numericValue;
+            } else {
+                current[field] = String(value || '').trim();
+            }
+            budgetRecords[key] = current;
+        }
+
+        await persistBudgetData();
+        renderBudgetReport();
+    }
+
+    function propagateBudgetFeeDefault(itemName, feeValue) {
+        // 保留函式名稱以相容舊版資料流程；新版費用改為各別人員獨立輸入，不再自動套用到同訓練項目。
+        return;
+    }
+
+    async function persistBudgetData() {
+        await setConfig('budget_records', budgetRecords);
+        await setConfig('budget_fee_defaults', budgetFeeDefaults);
+        await setConfig('manual_budget_rows', manualBudgetRows);
+    }
+
+    function formatMoney(value) {
+        const number = Number(String(value || '0').replace(/,/g, ''));
+        if (!isFinite(number)) return '$0';
+        return `$${number.toLocaleString('zh-TW')}`;
+    }
+
+    function normalizeMoneyInput(value) {
+        return String(value || '').replace(/,/g, '').replace(/[^\d.]/g, '');
+    }
+
+    function formatMoneyInput(value) {
+        const raw = normalizeMoneyInput(value);
+        if (raw === '') return '';
+        const parts = raw.split('.');
+        const integerPart = parts.shift() || '0';
+        const decimalPart = parts.length ? `.${parts.join('').slice(0, 2)}` : '';
+        return `${Number(integerPart || 0).toLocaleString('zh-TW')}${decimalPart}`;
+    }
+
+    function escapeJSString(value) {
+        return String(value ?? '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '');
+    }
+
+    function autoResizeBudgetTextarea(el) {
+        if (!el) return;
+        el.style.height = 'auto';
+        el.style.height = `${Math.max(38, el.scrollHeight)}px`;
+    }
+
+    function focusBudgetCell(rowIndex, colIndex) {
+        const next = document.querySelector(`[data-budget-row="${rowIndex}"][data-budget-col="${colIndex}"]`);
+        if (!next || next.disabled) return false;
+        next.focus();
+        if (typeof next.select === 'function' && next.tagName !== 'SELECT') next.select();
+        return true;
+    }
+
+    function handleBudgetCellKeydown(event) {
+        if (!isAdmin) return;
+        const target = event.target;
+        const rowIndex = parseInt(target.dataset.budgetRow, 10);
+        const colIndex = parseInt(target.dataset.budgetCol, 10);
+        if (Number.isNaN(rowIndex) || Number.isNaN(colIndex)) return;
+
+        let nextRow = rowIndex;
+        let nextCol = colIndex;
+        if (event.key === 'ArrowRight') nextCol++;
+        else if (event.key === 'ArrowLeft') nextCol--;
+        else if (event.key === 'ArrowDown') nextRow++;
+        else if (event.key === 'ArrowUp') nextRow--;
+        else if (event.key === 'Enter') {
+            event.preventDefault();
+            target.blur();
+            nextRow++;
+        } else return;
+
+        if (['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'].includes(event.key)) event.preventDefault();
+        if (!focusBudgetCell(nextRow, nextCol) && event.key === 'Enter') focusBudgetCell(rowIndex + 1, 0);
+    }
+
+    function renderBudgetTypeSelector(row, rowIndex, colIndex, disabledAttr) {
+        const safeItem = escapeJSString(row.item);
+        const safeSource = escapeJSString(row.sourceType);
+        const isInitial = row.trainingType === '初訓';
+        return `
+            <div class="budget-type-wrap" data-budget-row="${rowIndex}" data-budget-col="${colIndex}">
+                <label class="budget-type-option">
+                    <input type="checkbox" ${disabledAttr} ${isInitial ? 'checked' : ''}
+                           data-budget-row="${rowIndex}" data-budget-col="${colIndex}" onkeydown="handleBudgetCellKeydown(event)"
+                           onchange="if(this.checked) saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'trainingType', '初訓', '${safeItem}', '${safeSource}'); else this.checked = true;">
+                    <span>初訓</span>
+                </label>
+                <label class="budget-type-option">
+                    <input type="checkbox" ${disabledAttr} ${!isInitial ? 'checked' : ''}
+                           data-budget-row="${rowIndex}" data-budget-col="${colIndex}" onkeydown="handleBudgetCellKeydown(event)"
+                           onchange="if(this.checked) saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'trainingType', '複訓', '${safeItem}', '${safeSource}'); else this.checked = true;">
+                    <span>複訓</span>
+                </label>
+            </div>`;
+    }
+
+    function renderBudgetReport() {
+        const tableBody = document.getElementById('budget-report-body');
+        if (!tableBody) return;
+
+        document.body.classList.toggle('budget-admin-enabled', isAdmin);
+
+        const itemFilter = document.getElementById('budgetItemFilter')?.value || '';
+        const yearFilter = document.getElementById('budgetYearFilter')?.value || '';
+
+        const rows = getBudgetSourceRows().filter(row => {
+            const matchesItem = itemFilter === '' || row.item === itemFilter;
+            const matchesYear = yearFilter === '' || String(row.year) === yearFilter;
+            return matchesItem && matchesYear;
+        });
+
+        const itemCount = new Set(rows.map(row => row.item)).size;
+        const totalFee = rows.reduce((sum, row) => sum + (Number(normalizeMoneyInput(row.fee)) || 0), 0);
+
+        const yearSummary = document.getElementById('budget-summary-year');
+        const countSummary = document.getElementById('budget-summary-count');
+        const itemSummary = document.getElementById('budget-summary-items');
+        const feeSummary = document.getElementById('budget-summary-fee');
+
+        if (yearSummary) yearSummary.innerText = yearFilter ? `${yearFilter} 年` : '所有年度';
+        if (countSummary) countSummary.innerText = `${rows.length} 人次`;
+        if (itemSummary) itemSummary.innerText = `${itemCount} 項`;
+        if (feeSummary) feeSummary.innerText = formatMoney(totalFee);
+
+        if (!rows.length) {
+            tableBody.innerHTML = '<tr><td colspan="9" class="p-12 text-center text-slate-400 font-bold">目前沒有符合條件的年度預算資料。</td></tr>';
+            return;
+        }
+
+        tableBody.innerHTML = rows.map((row, index) => {
+            const disabledAttr = isAdmin ? '' : 'disabled';
+            const inputTitle = isAdmin ? '可編輯，支援方向鍵與 Enter 跳欄' : '請登入管理員模式後編輯';
+            const safeItem = escapeJSString(row.item);
+            const safeSource = escapeJSString(row.sourceType);
+            const canEditBase = isAdmin && row.sourceType === 'manual';
+            const baseDisabled = canEditBase ? '' : 'disabled';
+            return `
+                <tr class="table-row">
+                    <td class="table-cell font-mono text-slate-400 text-sm text-center budget-index-cell">
+                        <div class="budget-index-number">${index + 1}</div>
+                        ${row.sourceType === 'manual' && isAdmin ? `<div class="budget-index-actions"><button type="button" onclick="removeBudgetManualRow('${escapeJSString(row.recordId)}')" class="p-1.5 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-lg transition" title="移除"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>` : ''}
+                    </td>
+                    <td class="table-cell font-medium text-slate-500">
+                        <input type="text" class="budget-input" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單同步'}" value="${escapeHTML(row.dept)}" ${baseDisabled}
+                               data-budget-row="${index}" data-budget-col="0" onkeydown="handleBudgetCellKeydown(event)"
+                               onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'dept', this.value, '${safeItem}', '${safeSource}')">
+                    </td>
+                    <td class="table-cell font-bold text-slate-800">
+                        <input type="text" class="budget-input" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單同步'}" value="${escapeHTML(row.name)}" ${baseDisabled}
+                               data-budget-row="${index}" data-budget-col="1" onkeydown="handleBudgetCellKeydown(event)"
+                               onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'name', this.value, '${safeItem}', '${safeSource}')">
+                    </td>
+                    <td class="table-cell font-semibold text-indigo-600">
+                        <input type="text" class="budget-input" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單同步'}" value="${escapeHTML(row.item)}" ${baseDisabled}
+                               data-budget-row="${index}" data-budget-col="2" onkeydown="handleBudgetCellKeydown(event)"
+                               onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'item', this.value, '${safeItem}', '${safeSource}')">
+                    </td>
+                    <td class="table-cell text-center">
+                        ${renderBudgetTypeSelector(row, index, 3, disabledAttr)}
+                    </td>
+                    <td class="table-cell text-slate-500">
+                        <input type="date" class="budget-input" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單受訓日期同步'}" value="${escapeHTML(row.retrainingDate)}" ${baseDisabled}
+                               data-budget-row="${index}" data-budget-col="4" onkeydown="handleBudgetCellKeydown(event)"
+                               onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'retrainingDate', this.value, '${safeItem}', '${safeSource}')">
+                    </td>
+                    <td class="table-cell">
+                        <input type="text" class="budget-input" title="${inputTitle}" value="${escapeHTML(row.trainingUnit)}" ${disabledAttr}
+                               data-budget-row="${index}" data-budget-col="5" onkeydown="handleBudgetCellKeydown(event)"
+                               onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'trainingUnit', this.value, '${safeItem}', '${safeSource}')">
+                    </td>
+                    <td class="table-cell">
+                        <input type="text" inputmode="numeric" class="budget-input budget-money-cell" title="${inputTitle}" value="${escapeHTML(formatMoneyInput(row.fee))}" ${disabledAttr}
+                               data-budget-row="${index}" data-budget-col="6" onkeydown="handleBudgetCellKeydown(event)" onblur="this.value = formatMoneyInput(this.value)"
+                               onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'fee', this.value, '${safeItem}', '${safeSource}')">
+                    </td>
+                    <td class="table-cell">
+                        <textarea class="budget-input budget-textarea" title="${inputTitle}" ${disabledAttr}
+                                  data-budget-row="${index}" data-budget-col="7" onkeydown="handleBudgetCellKeydown(event)" oninput="autoResizeBudgetTextarea(this)"
+                                  onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'note', this.value, '${safeItem}', '${safeSource}')">${escapeHTML(row.note)}</textarea>
+                    </td>
+                </tr>`;
+        }).join('');
+
+        setTimeout(() => {
+            document.querySelectorAll('.budget-textarea').forEach(autoResizeBudgetTextarea);
+            initIcons();
+        }, 0);
+    }
+
+    async function saveBudgetRecordsNow() {
+        if (!isAdmin) { openLoginModal(); return; }
+        await persistAllRecords(records);
+        await persistBudgetData();
+        alert('預算記錄已儲存，並已登出管理員模式。');
+        finalLogoutConfirm();
+    }
+
+    function openBudgetAddModal() {
+        if (!isAdmin) { openLoginModal(); return; }
+        const form = document.getElementById('budget-add-form');
+        if (form) form.reset();
+        const year = document.getElementById('budgetYearFilter')?.value || String(new Date().getFullYear());
+        const dateInput = document.getElementById('budget-add-date');
+        if (dateInput && year) dateInput.value = `${year}-01-01`;
+        document.getElementById('budget-add-modal')?.classList.remove('hidden');
+        initIcons();
+    }
+
+    function closeBudgetAddModal() {
+        document.getElementById('budget-add-modal')?.classList.add('hidden');
+    }
+
+    function closeBudgetAddModalOutside(event) {
+        if (event.target === event.currentTarget) closeBudgetAddModal();
+    }
+
+    async function saveBudgetManualRow() {
+        if (!isAdmin) return;
+        const row = {
+            id: `manual-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+            dept: document.getElementById('budget-add-dept')?.value || '未設定',
+            name: document.getElementById('budget-add-name')?.value || '未命名',
+            item: document.getElementById('budget-add-item')?.value || '未設定項目',
+            retrainingDate: document.getElementById('budget-add-date')?.value || `${new Date().getFullYear()}-01-01`,
+            trainingType: document.getElementById('budget-add-type')?.value || '複訓',
+            trainingUnit: '',
+            fee: '',
+            note: ''
+        };
+        manualBudgetRows.push(row);
+        await persistBudgetData();
+        closeBudgetAddModal();
+        updateBudgetFilters();
+        renderBudgetReport();
+    }
+
+    async function removeBudgetManualRow(rowId) {
+        if (!isAdmin) return;
+        if (!confirm('確定要移除此筆預算人員資料嗎？')) return;
+        manualBudgetRows = manualBudgetRows.filter(row => row.id !== rowId);
+        await persistBudgetData();
+        updateBudgetFilters();
+        renderBudgetReport();
+    }
+
+    function getCurrentBudgetRowsForExport() {
+        const itemFilter = document.getElementById('budgetItemFilter')?.value || '';
+        const yearFilter = document.getElementById('budgetYearFilter')?.value || '';
+        return getBudgetSourceRows().filter(row => {
+            const matchesItem = itemFilter === '' || row.item === itemFilter;
+            const matchesYear = yearFilter === '' || String(row.year) === yearFilter;
+            return matchesItem && matchesYear;
+        });
+    }
+
+    function exportBudgetToExcel() {
+        const rows = getCurrentBudgetRowsForExport();
+        if (!rows.length) {
+            alert('目前沒有可匯出的預算資料');
+            return;
+        }
+        if (typeof XLSX === 'undefined') {
+            alert('Excel 匯出套件尚未載入，請確認網路連線後再試一次。');
+            return;
+        }
+
+        const exportDate = formatLocalDate(new Date());
+        const yearFilter = document.getElementById('budgetYearFilter')?.value || '所有年度';
+        const totalFee = rows.reduce((sum, row) => sum + (Number(normalizeMoneyInput(row.fee)) || 0), 0);
+        const sheetData = [
+            ['新年度外訓預算統計表'],
+            [`匯出日期：${exportDate}｜年度：${yearFilter}｜資料筆數：${rows.length}｜預估費用合計：${formatMoney(totalFee)}`],
+            ['項次', '作業單位', '姓名', '訓練項目', '初訓 / 複訓', '受訓日期', '受訓單位', '費用', '備註'],
+            ...rows.map((row, index) => [
+                index + 1,
+                row.dept,
+                row.name,
+                row.item,
+                row.trainingType || '複訓',
+                row.retrainingDate,
+                row.trainingUnit,
+                Number(normalizeMoneyInput(row.fee)) || 0,
+                row.note
+            ]),
+            ['', '', '', '', '', '', '費用合計', totalFee, '']
+        ];
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(sheetData);
+        ws['!merges'] = [
+            { s: { r: 0, c: 0 }, e: { r: 0, c: 8 } },
+            { s: { r: 1, c: 0 }, e: { r: 1, c: 8 } }
+        ];
+        ws['!cols'] = [
+            { wch: 8 }, { wch: 16 }, { wch: 12 }, { wch: 34 }, { wch: 16 },
+            { wch: 14 }, { wch: 22 }, { wch: 12 }, { wch: 36 }
+        ];
+        ws['!freeze'] = { xSplit: 0, ySplit: 3 };
+        ws['!pageSetup'] = { orientation: 'landscape', fitToWidth: 1, fitToHeight: 1 };
+        ws['!margins'] = { left: 0.25, right: 0.25, top: 0.35, bottom: 0.35, header: 0.2, footer: 0.2 };
+
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        const borderStyle = {
+            top: { style: 'thin', color: { rgb: 'CBD5E1' } },
+            bottom: { style: 'thin', color: { rgb: 'CBD5E1' } },
+            left: { style: 'thin', color: { rgb: 'CBD5E1' } },
+            right: { style: 'thin', color: { rgb: 'CBD5E1' } }
+        };
+        for (let row = range.s.r; row <= range.e.r; row++) {
+            for (let col = range.s.c; col <= range.e.c; col++) {
+                const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+                if (!ws[cellAddress]) continue;
+                ws[cellAddress].s = {
+                    font: { name: 'Microsoft JhengHei', sz: 11, color: { rgb: '1E293B' } },
+                    alignment: { vertical: 'center', wrapText: true },
+                    border: borderStyle
+                };
+            }
+        }
+        ws['A1'].s = {
+            font: { name: 'Microsoft JhengHei', sz: 18, bold: true, color: { rgb: 'FFFFFF' } },
+            fill: { fgColor: { rgb: '1E293B' } },
+            alignment: { horizontal: 'center', vertical: 'center' },
+            border: borderStyle
+        };
+        ws['A2'].s = {
+            font: { name: 'Microsoft JhengHei', sz: 10, color: { rgb: '475569' } },
+            fill: { fgColor: { rgb: 'F8FAFC' } },
+            alignment: { horizontal: 'right', vertical: 'center' },
+            border: borderStyle
+        };
+        for (let col = 0; col <= 8; col++) {
+            const cellAddress = XLSX.utils.encode_cell({ r: 2, c: col });
+            if (!ws[cellAddress]) continue;
+            ws[cellAddress].s = {
+                font: { name: 'Microsoft JhengHei', sz: 11, bold: true, color: { rgb: 'FFFFFF' } },
+                fill: { fgColor: { rgb: '334155' } },
+                alignment: { horizontal: 'center', vertical: 'center' },
+                border: borderStyle
+            };
+        }
+        for (let row = 3; row <= range.e.r; row++) {
+            const feeCell = XLSX.utils.encode_cell({ r: row, c: 7 });
+            if (ws[feeCell]) {
+                ws[feeCell].t = 'n';
+                ws[feeCell].z = '#,##0';
+                ws[feeCell].s.font = { name: 'Microsoft JhengHei', sz: 11, bold: true, color: { rgb: '166534' } };
+                ws[feeCell].s.alignment = { horizontal: 'right', vertical: 'center' };
+            }
+        }
+        XLSX.utils.book_append_sheet(wb, ws, '新年度外訓預算統計表');
+        XLSX.writeFile(wb, `新年度外訓預算統計表_${yearFilter}_${exportDate}.xlsx`);
+    }
+
     async function renderReport() {
         const tableBody = document.getElementById('report-body');
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -1827,6 +2752,8 @@ function calculateNextDate(lastDateStr, cycleStr) {
         updateItemFilter();
         updateYearFilter();
         updateYearTrainingCount(yearFilter, yearRetrainingPeople.size);
+        updateBudgetFilters();
+        renderBudgetReport();
         initIcons();
     }
 
@@ -2001,7 +2928,37 @@ function calculateNextDate(lastDateStr, cycleStr) {
 
     // --- 匯出功能 ---
 
+function renderPrintItemPeopleSummary() {
+    const container = document.getElementById('print-item-people-summary');
+    if (!container) return;
+
+    const itemPeopleStats = getReportItemPeopleStats();
+
+    if (!itemPeopleStats.length) {
+        container.innerHTML = '';
+        return;
+    }
+
+    const totalPeople = itemPeopleStats.reduce((sum, item) => sum + item.totalPeople, 0);
+
+    container.innerHTML = `
+        <div class="print-item-people-summary-title">
+            項目人員統計｜共 ${itemPeopleStats.length} 項｜合計 ${totalPeople} 人
+        </div>
+        <div class="print-item-people-summary-list">
+            ${itemPeopleStats.map(item => `
+                <span class="print-item-people-summary-item">
+                    ${escapeHTML(item.item)}
+                    <span class="print-item-people-summary-count">${item.totalPeople}人</span>
+                </span>
+            `).join('')}
+        </div>
+    `;
+}
+
 function printCertificateReport() {
+    renderPrintItemPeopleSummary();
+
     document.body.classList.add('print-certificate-report');
 
     setTimeout(() => {
@@ -2011,6 +2968,9 @@ function printCertificateReport() {
 
 window.addEventListener('afterprint', function() {
     document.body.classList.remove('print-certificate-report');
+
+    const container = document.getElementById('print-item-people-summary');
+    if (container) container.innerHTML = '';
 });
 
 function escapeExcelHTML(value) {
@@ -2088,6 +3048,38 @@ function exportToExcel() {
     ];
 
     const wb = XLSX.utils.book_new();
+
+    const itemPeopleStats = getReportItemPeopleStats();
+
+    const summarySheetData = [
+        ['項目人員統計'],
+        [`匯出日期：${exportDate}｜項目數：${itemPeopleStats.length}｜合計人次：${itemPeopleStats.reduce((sum, item) => sum + item.totalPeople, 0)}`],
+        ['項次', '訓練項目', '人數'],
+        ...itemPeopleStats.map((item, index) => [
+            index + 1,
+            item.item,
+            item.totalPeople
+        ])
+    ];
+
+const summaryWs = XLSX.utils.aoa_to_sheet(summarySheetData);
+
+summaryWs['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 2 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 2 } }
+    ];
+
+    summaryWs['!cols'] = [
+        { wch: 8 },
+        { wch: 42 },
+        { wch: 12 }
+    ];
+
+    summaryWs['!freeze'] = {
+        xSplit: 0,
+        ySplit: 3
+    };
+
     const ws = XLSX.utils.aoa_to_sheet(sheetData);
 
     ws['!merges'] = [
@@ -2120,6 +3112,108 @@ function exportToExcel() {
         left: { style: 'thin', color: { rgb: 'CBD5E1' } },
         right: { style: 'thin', color: { rgb: 'CBD5E1' } }
     };
+
+    const summaryRange = XLSX.utils.decode_range(summaryWs['!ref']);
+
+    for (let row = summaryRange.s.r; row <= summaryRange.e.r; row++) {
+        for (let col = summaryRange.s.c; col <= summaryRange.e.c; col++) {
+            const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+            if (!summaryWs[cellAddress]) continue;
+
+            summaryWs[cellAddress].s = {
+                font: {
+                    name: 'Microsoft JhengHei',
+                    sz: 11,
+                    color: { rgb: '1E293B' }
+                },
+                alignment: {
+                    vertical: 'center',
+                    wrapText: true
+                },
+                border: borderStyle
+            };
+        }
+    }
+
+    summaryWs['A1'].s = {
+        font: {
+            name: 'Microsoft JhengHei',
+            sz: 18,
+            bold: true,
+            color: { rgb: 'FFFFFF' }
+        },
+        fill: {
+            fgColor: { rgb: '1E293B' }
+        },
+        alignment: {
+            horizontal: 'center',
+            vertical: 'center'
+        },
+        border: borderStyle
+    };
+
+    summaryWs['A2'].s = {
+        font: {
+            name: 'Microsoft JhengHei',
+            sz: 10,
+            color: { rgb: '475569' }
+        },
+        fill: {
+            fgColor: { rgb: 'F8FAFC' }
+        },
+        alignment: {
+            horizontal: 'right',
+            vertical: 'center'
+        },
+        border: borderStyle
+    };
+
+    for (let col = 0; col <= 2; col++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: 2, c: col });
+        if (!summaryWs[cellAddress]) continue;
+
+        summaryWs[cellAddress].s = {
+            font: {
+                name: 'Microsoft JhengHei',
+                sz: 11,
+                bold: true,
+                color: { rgb: 'FFFFFF' }
+            },
+            fill: {
+                fgColor: { rgb: '334155' }
+            },
+            alignment: {
+                horizontal: 'center',
+                vertical: 'center'
+            },
+            border: borderStyle
+        };
+    }
+
+    for (let row = 3; row <= summaryRange.e.r; row++) {
+        const indexCell = XLSX.utils.encode_cell({ r: row, c: 0 });
+        const countCell = XLSX.utils.encode_cell({ r: row, c: 2 });
+
+        if (summaryWs[indexCell]) {
+            summaryWs[indexCell].s.alignment = {
+                horizontal: 'center',
+                vertical: 'center'
+            };
+        }
+
+        if (summaryWs[countCell]) {
+            summaryWs[countCell].s.alignment = {
+                horizontal: 'center',
+                vertical: 'center'
+            };
+            summaryWs[countCell].s.font = {
+                name: 'Microsoft JhengHei',
+                sz: 11,
+                bold: true,
+                color: { rgb: '4338CA' }
+            };
+        }
+    }
 
     for (let row = range.s.r; row <= range.e.r; row++) {
         for (let col = range.s.c; col <= range.e.c; col++) {
@@ -2246,6 +3340,7 @@ function exportToExcel() {
         }
     }
 
+    XLSX.utils.book_append_sheet(wb, summaryWs, '項目人員統計');
     XLSX.utils.book_append_sheet(wb, ws, '證照清單明細報表');
     XLSX.writeFile(wb, `職安證照管理系統報表_${exportDate}.xlsx`);
 }
@@ -2322,10 +3417,13 @@ async function checkPassword() {
         loginBtn.className = "bg-red-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-red-700 transition";
         loginBtn.onclick = async () => {
             await persistAllRecords(records);
+            await persistBudgetData();
             showSyncSuccess();
         };
         document.getElementById('add-person-btn').classList.remove('hidden');
+        document.body.classList.add('budget-admin-enabled');
         renderComplianceDashboard();
+        renderBudgetReport();
         initIcons();
     }
 
@@ -2347,7 +3445,9 @@ async function checkPassword() {
         loginBtn.className = "bg-white text-slate-800 px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-slate-100 transition";
         loginBtn.onclick = openLoginModal;
         document.getElementById('add-person-btn').classList.add('hidden');
+        document.body.classList.remove('budget-admin-enabled');
         renderReport();
+        renderBudgetReport();
     }
 
     // --- 資料編輯功能 ---
@@ -2546,6 +3646,7 @@ document.addEventListener('keydown', function(event) {
         closeComplianceSettingsModal();
         closeComplianceBasisModal();
         closeEditModal();
+        closeBudgetAddModal();
         closeAttachmentModal();
         closeFilePreview();
     }
@@ -2576,6 +3677,15 @@ document.addEventListener('click', function(event) {
             const savedComplianceBasisFiles = await getConfig('compliance_basis_files');
             if (Array.isArray(savedComplianceBasisFiles)) complianceBasisFiles = savedComplianceBasisFiles;
             
+            // 讀取年度預算統計資料
+            const savedBudgetRecords = await getConfig('budget_records');
+            if (savedBudgetRecords && typeof savedBudgetRecords === 'object') budgetRecords = savedBudgetRecords;
+            budgetFeeDefaults = {};
+            const savedManualBudgetRows = await getConfig('manual_budget_rows');
+            if (Array.isArray(savedManualBudgetRows)) manualBudgetRows = savedManualBudgetRows;
+            normalizeBudgetManualRows();
+            document.body.classList.toggle('budget-admin-enabled', isAdmin);
+
             // 讀取證照數據
             records = await fetchAllRecords();
             renderReport(); 
