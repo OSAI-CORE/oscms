@@ -509,20 +509,24 @@
 
 .budget-textarea,
 .budget-resize-field {
-    height: auto;
-    min-height: 42px;
-    overflow: visible;
-    resize: vertical;
-    line-height: 1.6;
+    height: 32px;
+    min-height: 32px;
+    max-height: 32px;
+    overflow: hidden;
+    resize: none;
+    line-height: 1.25;
     box-sizing: border-box;
+    white-space: nowrap;
 }
 
 .budget-resize-field:disabled,
 .budget-textarea:disabled {
     resize: none;
-    height: auto;
-    min-height: 42px;
-    overflow: visible;
+    height: 32px;
+    min-height: 32px;
+    max-height: 32px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .edit-resize-field {
@@ -531,6 +535,46 @@
     overflow: hidden;
     resize: vertical;
     line-height: 1.45;
+}
+
+@media screen and (orientation: landscape) and (max-width: 950px) {
+    .budget-table .table-header-cell,
+    .budget-table .table-cell {
+        padding: 0.35rem 0.35rem;
+        font-size: 0.72rem;
+    }
+
+    .budget-input {
+        height: 30px;
+        min-height: 30px;
+        max-height: 30px;
+        padding: 5px 6px;
+        font-size: 0.72rem;
+        line-height: 1.25;
+        border-radius: 6px;
+    }
+
+    .budget-textarea,
+    .budget-resize-field {
+        height: 30px;
+        min-height: 30px;
+        max-height: 30px;
+        line-height: 1.25;
+    }
+
+    .budget-type-option {
+        font-size: 10px;
+        gap: 4px;
+    }
+
+    .budget-type-option input[type="checkbox"] {
+        width: 13px;
+        height: 13px;
+    }
+
+    .budget-type-wrap {
+        gap: 2px;
+    }
 }
 
 .edit-resize-field {
@@ -2437,8 +2481,15 @@ function calculateNextDate(lastDateStr, cycleStr) {
 
 function autoResizeBudgetTextarea(el) {
     if (!el) return;
+
+    // 預算表採用固定細列預覽，不再自動撐高
+    if (el.classList.contains('budget-textarea') || el.classList.contains('budget-resize-field')) {
+        el.style.height = '';
+        return;
+    }
+
     el.style.height = 'auto';
-    el.style.height = `${Math.max(42, el.scrollHeight)}px`;
+    el.style.height = `${Math.max(38, el.scrollHeight)}px`;
 }
 
     function autoResizeEditableField(el) {
@@ -2447,8 +2498,14 @@ function autoResizeBudgetTextarea(el) {
 
 function resetEditableFieldHeight(el) {
     if (!el) return;
-    el.style.height = 'auto';
-    el.style.height = `${Math.max(42, el.scrollHeight)}px`;
+
+    // 預算表採用固定細列預覽，不再自動撐高
+    if (el.classList.contains('budget-textarea') || el.classList.contains('budget-resize-field')) {
+        el.style.height = '';
+        return;
+    }
+
+    el.style.height = '38px';
 }
 
     function focusBudgetCell(rowIndex, colIndex) {
@@ -3751,7 +3808,7 @@ async function exportJSON() {
         const link = document.createElement('a');
 
         link.href = url;
-        link.download = `職業安全證照管理系統_完整備份_${new Date().toISOString().split('T')[0]}.json`;
+        link.download = `職業安全證照管理系統_CMS_${new Date().toISOString().split('T')[0]}.json`;
         link.click();
 
         URL.revokeObjectURL(url);
