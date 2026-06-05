@@ -507,26 +507,30 @@
 }
 
 
-.budget-textarea {
-    height: 38px;
-    min-height: 38px;
-    overflow: hidden;
+.budget-textarea,
+.budget-resize-field {
+    height: auto;
+    min-height: 42px;
+    overflow: visible;
     resize: vertical;
-    line-height: 1.45;
+    line-height: 1.6;
+    box-sizing: border-box;
 }
 
-.budget-resize-field,
+.budget-resize-field:disabled,
+.budget-textarea:disabled {
+    resize: none;
+    height: auto;
+    min-height: 42px;
+    overflow: visible;
+}
+
 .edit-resize-field {
     height: 38px;
     min-height: 38px;
     overflow: hidden;
     resize: vertical;
     line-height: 1.45;
-}
-
-.budget-resize-field:disabled,
-.budget-textarea:disabled {
-    resize: none;
 }
 
 .edit-resize-field {
@@ -2431,20 +2435,21 @@ function calculateNextDate(lastDateStr, cycleStr) {
         return String(value ?? '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '');
     }
 
-    function autoResizeBudgetTextarea(el) {
-        if (!el) return;
-        el.style.height = 'auto';
-        el.style.height = `${Math.max(38, el.scrollHeight)}px`;
-    }
+function autoResizeBudgetTextarea(el) {
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${Math.max(42, el.scrollHeight)}px`;
+}
 
     function autoResizeEditableField(el) {
         autoResizeBudgetTextarea(el);
     }
 
-    function resetEditableFieldHeight(el) {
-        if (!el) return;
-        el.style.height = '38px';
-    }
+function resetEditableFieldHeight(el) {
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${Math.max(42, el.scrollHeight)}px`;
+}
 
     function focusBudgetCell(rowIndex, colIndex) {
         const next = document.querySelector(`[data-budget-row="${rowIndex}"][data-budget-col="${colIndex}"]`);
@@ -3706,33 +3711,158 @@ if (idVal === "") {
 
     // --- 備份與同步 ---
 
-    function exportJSON() {
-        const blob = new Blob([JSON.stringify(records, null, 2)], { type: 'application/json' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `職業安全證照管理系統_CMS_${new Date().toISOString().split('T')[0]}.json`;
-        link.click();
-    }
+function triggerImportJSON() {
+    document.getElementById('json-file-input').click();
+}
 
-    function triggerImportJSON() { document.getElementById('json-file-input').click(); }
+async function exportJSON() {
+    try {
+        // 先把目前畫面中的資料確實寫入 IndexedDB
+        await persistAllRecords(records);
+        await persistBudgetData();
 
-    async function importJSON(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            try {
-                const data = JSON.parse(e.target.result);
-                if (Array.isArray(data)) { 
-                    records = data; 
-                    await persistAllRecords(records);
-                    renderReport(); 
-                    alert("數據備份導入成功！"); 
-                }
-            } catch (err) { alert("導入失敗：檔案格式不正確"); }
+        const backupData = {
+            version: 2,
+            systemName: 'OSH_Management_System',
+            exportedAt: new Date().toISOString(),
+
+            // 證照清單明細報表
+            records: Array.isArray(records) ? records : [],
+
+            // 其他設定與新年度外訓預算統計表
+            config: {
+                admin_password: systemPassword,
+                compliance_settings: complianceSettings,
+                compliance_basis_files: Array.isArray(complianceBasisFiles) ? complianceBasisFiles : [],
+
+                // 新年度外訓預算統計表資料
+                budget_records: budgetRecords && typeof budgetRecords === 'object' ? budgetRecords : {},
+                budget_fee_defaults: budgetFeeDefaults && typeof budgetFeeDefaults === 'object' ? budgetFeeDefaults : {},
+                manual_budget_rows: Array.isArray(manualBudgetRows) ? manualBudgetRows : []
+            }
         };
-        reader.readAsText(file);
+
+        const blob = new Blob(
+            [JSON.stringify(backupData, null, 2)],
+            { type: 'application/json' }
+        );
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = url;
+        link.download = `職業安全證照管理系統_完整備份_${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+
+        URL.revokeObjectURL(url);
+
+    } catch (error) {
+        console.error('導出數據失敗', error);
+        alert('導出數據失敗，請重新整理後再試一次。');
     }
+}
+
+async function importJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = async (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+
+            // =========================
+            // 舊版格式：只有 records 陣列
+            // =========================
+            if (Array.isArray(data)) {
+                records = data;
+                await persistAllRecords(records);
+
+                updateItemFilter();
+                updateYearFilter();
+                updateBudgetFilters();
+                renderReport();
+                renderBudgetReport();
+                renderComplianceDashboard();
+
+                alert('舊版數據備份導入成功！提醒：舊版 JSON 不包含新年度外訓預算統計表資料。');
+                return;
+            }
+
+            // =========================
+            // 新版完整備份格式
+            // =========================
+            if (!data || !Array.isArray(data.records)) {
+                alert('導入失敗：這不是有效的系統備份 JSON。');
+                return;
+            }
+
+            const config = data.config || {};
+
+            // 1. 還原證照清單明細報表
+            records = data.records;
+            await persistAllRecords(records);
+
+            // 2. 還原管理密碼
+            if (config.admin_password) {
+                systemPassword = config.admin_password;
+                await setConfig('admin_password', systemPassword);
+            }
+
+            // 3. 還原法規配置基準
+            if (config.compliance_settings) {
+                applyComplianceSettings(config.compliance_settings);
+                await setConfig('compliance_settings', complianceSettings);
+            }
+
+            // 4. 還原法定人員設置基準依據附件
+            complianceBasisFiles = Array.isArray(config.compliance_basis_files)
+                ? config.compliance_basis_files
+                : [];
+            await setConfig('compliance_basis_files', complianceBasisFiles);
+
+            // 5. 還原新年度外訓預算統計表：一般同步資料
+            budgetRecords = config.budget_records && typeof config.budget_records === 'object'
+                ? config.budget_records
+                : {};
+            await setConfig('budget_records', budgetRecords);
+
+            // 6. 還原新年度外訓預算統計表：費用預設資料
+            budgetFeeDefaults = config.budget_fee_defaults && typeof config.budget_fee_defaults === 'object'
+                ? config.budget_fee_defaults
+                : {};
+            await setConfig('budget_fee_defaults', budgetFeeDefaults);
+
+            // 7. 還原新年度外訓預算統計表：手動新增人員
+            manualBudgetRows = Array.isArray(config.manual_budget_rows)
+                ? config.manual_budget_rows
+                : [];
+            normalizeBudgetManualRows();
+            await setConfig('manual_budget_rows', manualBudgetRows);
+
+            // 8. 重新整理畫面
+            updateItemFilter();
+            updateYearFilter();
+            updateBudgetFilters();
+            renderReport();
+            renderBudgetReport();
+            renderComplianceDashboard();
+            updateComplianceBasisButton();
+            initIcons();
+
+            alert('完整數據備份導入成功！證照清單與新年度外訓預算統計表已完成還原。');
+
+        } catch (err) {
+            console.error('導入失敗', err);
+            alert('導入失敗：檔案格式不正確或內容已損毀。');
+        } finally {
+            event.target.value = '';
+        }
+    };
+
+    reader.readAsText(file);
+}
 
     async function startAutoUpdate() {
         const animModal = document.getElementById('update-animation-modal');
@@ -3746,11 +3876,39 @@ if (idVal === "") {
         void progressBar.offsetWidth;
         progressBar.classList.add('animate-progress');
         
-        setTimeout(async () => { 
-            records = await fetchAllRecords();
-            animModal.classList.add('hidden'); 
-            renderReport(); 
-        }, 3000);
+setTimeout(async () => { 
+    records = await fetchAllRecords();
+
+    const savedBudgetRecords = await getConfig('budget_records');
+    budgetRecords = savedBudgetRecords && typeof savedBudgetRecords === 'object'
+        ? savedBudgetRecords
+        : {};
+
+    const savedBudgetFeeDefaults = await getConfig('budget_fee_defaults');
+    budgetFeeDefaults = savedBudgetFeeDefaults && typeof savedBudgetFeeDefaults === 'object'
+        ? savedBudgetFeeDefaults
+        : {};
+
+    const savedManualBudgetRows = await getConfig('manual_budget_rows');
+    manualBudgetRows = Array.isArray(savedManualBudgetRows)
+        ? savedManualBudgetRows
+        : [];
+
+    normalizeBudgetManualRows();
+
+    updateItemFilter();
+    updateYearFilter();
+    updateBudgetFilters();
+
+    animModal.classList.add('hidden'); 
+
+    renderReport();
+    renderBudgetReport();
+    renderComplianceDashboard();
+    updateComplianceBasisButton();
+    initIcons();
+
+}, 3000);
     }
 
     // --- 應用程式啟動 ---
@@ -3800,17 +3958,42 @@ document.addEventListener('click', function(event) {
             if (Array.isArray(savedComplianceBasisFiles)) complianceBasisFiles = savedComplianceBasisFiles;
             
             // 讀取年度預算統計資料
-            const savedBudgetRecords = await getConfig('budget_records');
-            if (savedBudgetRecords && typeof savedBudgetRecords === 'object') budgetRecords = savedBudgetRecords;
-            budgetFeeDefaults = {};
-            const savedManualBudgetRows = await getConfig('manual_budget_rows');
-            if (Array.isArray(savedManualBudgetRows)) manualBudgetRows = savedManualBudgetRows;
-            normalizeBudgetManualRows();
-            document.body.classList.toggle('budget-admin-enabled', isAdmin);
+const savedBudgetRecords = await getConfig('budget_records');
+if (savedBudgetRecords && typeof savedBudgetRecords === 'object') {
+    budgetRecords = savedBudgetRecords;
+} else {
+    budgetRecords = {};
+}
+
+const savedBudgetFeeDefaults = await getConfig('budget_fee_defaults');
+if (savedBudgetFeeDefaults && typeof savedBudgetFeeDefaults === 'object') {
+    budgetFeeDefaults = savedBudgetFeeDefaults;
+} else {
+    budgetFeeDefaults = {};
+}
+
+const savedManualBudgetRows = await getConfig('manual_budget_rows');
+if (Array.isArray(savedManualBudgetRows)) {
+    manualBudgetRows = savedManualBudgetRows;
+} else {
+    manualBudgetRows = [];
+}
+
+normalizeBudgetManualRows();
+document.body.classList.toggle('budget-admin-enabled', isAdmin);
 
             // 讀取證照數據
-            records = await fetchAllRecords();
-            renderReport(); 
+records = await fetchAllRecords();
+
+updateItemFilter();
+updateYearFilter();
+updateBudgetFilters();
+
+renderReport();
+renderBudgetReport();
+renderComplianceDashboard();
+updateComplianceBasisButton();
+initIcons();
         } catch(e) { 
             console.error('應用程式啟動失敗', e); 
             alert('無法載入本地數據庫，請檢查瀏覽器隱私設定或嘗試清除快取。');
