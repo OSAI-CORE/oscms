@@ -577,6 +577,161 @@
     }
 }
 
+/* 手機橫向：證照清單明細報表細列預覽 */
+@media screen and (orientation: landscape) and (max-width: 950px) {
+    #certificate-panel .report-table-container {
+        border-radius: 10px;
+    }
+
+    #certificate-panel table {
+        min-width: 900px;
+        table-layout: fixed;
+    }
+
+    #certificate-panel .table-header-cell,
+    #certificate-panel .table-cell {
+        padding: 0.35rem 0.4rem;
+        font-size: 0.72rem;
+        line-height: 1.25;
+        vertical-align: middle;
+    }
+
+    #certificate-panel .badge-status {
+        padding: 2px 6px;
+        font-size: 0.65rem;
+        white-space: nowrap;
+    }
+
+    #certificate-panel .link-icon-btn {
+        transform: scale(0.85);
+    }
+}
+
+/* 手機直向：滿版排版修正，不影響資料、規則、邏輯 */
+@media screen and (orientation: portrait) and (max-width: 767px) {
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .hero-section {
+        width: 100%;
+        max-width: 100%;
+        padding: 1.5rem 1rem 1.75rem 1rem;
+    }
+
+    .hero-section > .max-w-7xl,
+    main.max-w-7xl {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .hero-section .flex.items-center.gap-5 {
+        align-items: flex-start;
+        gap: 0.9rem;
+    }
+
+    .hero-section .bg-indigo-500.p-4 {
+        padding: 0.85rem;
+        border-radius: 1rem;
+        flex: 0 0 auto;
+    }
+
+    .hero-section .bg-indigo-500.p-4 [data-lucide] {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .hero-section h1 {
+        font-size: 1.75rem;
+        line-height: 1.15;
+        word-break: keep-all;
+    }
+
+    .hero-section p {
+        font-size: 0.78rem;
+        line-height: 1.35;
+    }
+
+    .hero-section .btn-pill {
+        padding: 5px 12px;
+        font-size: 13px;
+    }
+
+    .hero-section .flex.flex-col.gap-3 {
+        width: 100%;
+    }
+
+    .hero-section .justify-end {
+        justify-content: flex-start;
+    }
+
+    .hero-section button {
+        min-width: 0;
+    }
+
+    .hero-section #export-btn,
+    .hero-section #print-btn {
+        min-width: 0;
+        flex: 1 1 calc(50% - 0.5rem);
+    }
+
+    .hero-section .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+    }
+
+    .hero-section .grid > div {
+        padding: 0.85rem;
+        min-width: 0;
+    }
+
+    main.max-w-7xl {
+        padding: 1rem !important;
+    }
+
+    #compliance-dashboard {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1rem;
+    }
+
+    #compliance-dashboard > div,
+    #compliance-status-card,
+    #certificate-report-print-area {
+        width: 100%;
+        min-width: 0;
+    }
+
+    #certificate-report-print-area {
+        padding: 1rem;
+        border-radius: 1rem;
+    }
+
+    .certificate-report-filters {
+        justify-content: flex-start;
+    }
+
+    .search-container,
+    .certificate-report-filters select {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .report-table-container .overflow-x-auto {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
 .edit-resize-field {
     width: 100%;
     border: 1px solid #e2e8f0;
