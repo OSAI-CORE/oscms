@@ -759,10 +759,16 @@
 }
 
 @media print {
-    @page {
-        size: A4 landscape;
-        margin: 1cm;
+@page {
+    size: A4 landscape;
+    margin: 1cm 1cm 1.4cm 1cm;
+
+    @bottom-center {
+        content: "第 " counter(page) " 頁 / 共 " counter(pages) " 頁";
+        font-size: 10px;
+        color: #64748b;
     }
+}
 
     body.print-certificate-report {
         background: white !important;
