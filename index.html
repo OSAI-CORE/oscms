@@ -93,6 +93,12 @@
             vertical-align: middle;
         }
 
+        .certificate-name-cell {
+    white-space: nowrap;
+    word-break: keep-all;
+    min-width: 72px;
+}
+
         .badge-status {
             padding: 4px 10px;
             border-radius: 999px;
@@ -826,6 +832,13 @@
     .report-table-container .overflow-x-auto {
         -webkit-overflow-scrolling: touch;
     }
+
+#certificate-panel .certificate-name-cell {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    min-width: 72px;
+}
+
 }
 
 .edit-resize-field {
@@ -3137,7 +3150,7 @@ function resetEditableFieldHeight(el) {
                     row.innerHTML = `
                         <td class="table-cell font-mono text-slate-400 text-sm">${visibleCount}</td>
                         <td class="table-cell font-medium text-slate-500">${record.dept}</td>
-                        <td class="table-cell font-bold text-slate-800">${record.name}</td>
+                        <td class="table-cell font-bold text-slate-800 certificate-name-cell">${record.name}</td>
                         <td class="table-cell font-semibold text-indigo-600">${record.item}</td>
                         <td class="table-cell">
                             <div class="flex items-center justify-between group max-w-[180px]">
