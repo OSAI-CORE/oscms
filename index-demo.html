@@ -275,6 +275,10 @@
         line-height: 1.35;
     }
 
+    .hero-section .flex.flex-col.gap-3 {
+    width: 100%;
+}
+
     .header-status-row {
         flex-wrap: nowrap !important;
         gap: 6px !important;
@@ -324,6 +328,11 @@
         min-height: 40px;
     }
 
+    .hero-section #export-btn,
+.hero-section #print-btn {
+    min-width: 0;
+}
+
     .hero-section #auto-update-btn i,
     .hero-section #auto-update-btn svg,
     .hero-section #export-btn i,
@@ -334,12 +343,12 @@
         height: 14px !important;
     }
 
-    .hero-section .flex.justify-end.gap-2 {
-        justify-content: center;
-        width: 100%;
-        margin-top: 0.2rem;
-        flex-wrap: wrap;
-    }
+.hero-section .flex.justify-end.gap-2 {
+    justify-content: center;
+    width: 100%;
+    margin-top: 0.2rem;
+    flex-wrap: nowrap;
+}
 
     .hero-section .db-action-btn {
         flex: 1;
@@ -436,8 +445,8 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col gap-3">
-                    <div class="flex flex-wrap gap-3 items-center justify-end">
+                <div class="hero-actions flex flex-col gap-3">
+                    <div class="hero-main-actions flex flex-wrap gap-3 items-center justify-end">
                         <button id="auto-update-btn" onclick="startAutoUpdate()" class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-500/40 transition flex items-center gap-2">
                             <i data-lucide="refresh-cw" class="w-4 h-4"></i> <span>同步數據</span>
                         </button>
@@ -455,7 +464,7 @@
 </button>
                     </div>
                     
-                    <div class="flex justify-end gap-2">
+                    <div class="hero-db-actions flex justify-end gap-2">
                         <button onclick="resetSystem()" class="db-action-btn btn-reset">
                             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> 重製系統
                         </button>
