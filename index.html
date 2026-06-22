@@ -93,10 +93,35 @@
             vertical-align: middle;
         }
 
-        .certificate-name-cell {
+.certificate-nowrap-cell {
+    white-space: nowrap;
+    word-break: keep-all;
+}
+
+.certificate-name-cell {
     white-space: nowrap;
     word-break: keep-all;
     min-width: 72px;
+}
+
+.certificate-date-cell {
+    white-space: nowrap;
+    word-break: keep-all;
+    min-width: 100px;
+}
+
+.certificate-status-cell {
+    white-space: nowrap;
+    word-break: keep-all;
+    min-width: 72px;
+    text-align: center;
+}
+
+.certificate-status-cell .badge-status {
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
         .badge-status {
@@ -833,10 +858,28 @@
         -webkit-overflow-scrolling: touch;
     }
 
-#certificate-panel .certificate-name-cell {
+#certificate-panel .certificate-name-cell,
+#certificate-panel .certificate-date-cell,
+#certificate-panel .certificate-status-cell {
     white-space: nowrap !important;
     word-break: keep-all !important;
+}
+
+#certificate-panel .certificate-name-cell {
     min-width: 72px;
+}
+
+#certificate-panel .certificate-date-cell {
+    min-width: 100px;
+}
+
+#certificate-panel .certificate-status-cell {
+    min-width: 72px;
+    text-align: center;
+}
+
+#certificate-panel .certificate-status-cell .badge-status {
+    white-space: nowrap !important;
 }
 
 }
@@ -1214,14 +1257,14 @@
                     <thead>
                         <tr>
                             <th class="table-header-cell w-16">項次</th>
-                            <th class="table-header-cell">作業單位</th>
-                            <th class="table-header-cell">姓名</th>
-                            <th class="table-header-cell">訓練項目</th>
-                            <th class="table-header-cell">證書號碼</th>
-                            <th class="table-header-cell">複訓週期</th>
-                            <th class="table-header-cell">上次受訓日期</th>
-                            <th class="table-header-cell">下次複訓日期</th>
-                            <th class="table-header-cell text-center">狀態</th>
+<th class="table-header-cell">作業單位</th>
+<th class="table-header-cell certificate-name-cell">姓名</th>
+<th class="table-header-cell">訓練項目</th>
+<th class="table-header-cell">證書號碼</th>
+<th class="table-header-cell">複訓週期</th>
+<th class="table-header-cell certificate-date-cell">上次受訓日期</th>
+<th class="table-header-cell certificate-date-cell">下次複訓日期</th>
+<th class="table-header-cell text-center certificate-status-cell">狀態</th>
                             <th class="table-header-cell text-center">操作</th>
                         </tr>
                     </thead>
@@ -2911,11 +2954,17 @@ function resetEditableFieldHeight(el) {
                     <td class="table-cell budget-type-cell">
                         ${renderBudgetTypeSelector(row, index, 3, disabledAttr)}
                     </td>
-                    <td class="table-cell text-slate-500">
-                        <input type="date" class="budget-input" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單受訓日期同步'}" value="${escapeHTML(row.retrainingDate)}" ${baseDisabled}
-                               data-budget-row="${index}" data-budget-col="4" onkeydown="handleBudgetCellKeydown(event)"
-                               onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'retrainingDate', this.value, '${safeItem}', '${safeSource}')">
-                    </td>
+<td class="table-cell text-slate-500 budget-date-cell">
+    ${isAdmin ? `
+        <input type="date" class="budget-input" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單受訓日期同步'}" value="${escapeHTML(row.retrainingDate)}" ${baseDisabled}
+               data-budget-row="${index}" data-budget-col="4" onkeydown="handleBudgetCellKeydown(event)"
+               onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'retrainingDate', this.value, '${safeItem}', '${safeSource}')">
+    ` : `
+        <div class="budget-date-display">
+            ${escapeHTML(row.retrainingDate || '未設定')}
+        </div>
+    `}
+</td>
                     <td class="table-cell">
                         <textarea class="budget-input budget-resize-field" title="${inputTitle}" ${disabledAttr}
                                   data-budget-row="${index}" data-budget-col="5" onkeydown="handleBudgetCellKeydown(event)" oninput="autoResizeBudgetTextarea(this)"
@@ -3162,9 +3211,9 @@ function resetEditableFieldHeight(el) {
                             </div>
                         </td>
                         <td class="table-cell text-slate-500">${record.cycle}</td>
-                        <td class="table-cell text-slate-500">${record.lastDate || '<span class="text-red-300">未填寫</span>'}</td>
-                        <td class="table-cell font-bold ${status.text}">${displayNextDate}</td>
-                        <td class="table-cell text-center">
+<td class="table-cell text-slate-500 certificate-date-cell">${record.lastDate || '<span class="text-red-300">未填寫</span>'}</td>
+<td class="table-cell font-bold ${status.text} certificate-date-cell">${displayNextDate}</td>
+<td class="table-cell text-center certificate-status-cell">
                             <span class="badge-status ${status.bg} ${status.text}">
                                 ${status.label}
                             </span>
