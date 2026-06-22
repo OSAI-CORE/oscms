@@ -216,6 +216,43 @@
             cursor: not-allowed;
         }
 
+        /* 手機直向：上方功能鈕整齊排列 */
+@media screen and (orientation: portrait) and (max-width: 767px) {
+    .hero-section .flex.flex-wrap.gap-3.items-center.justify-end {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65rem;
+        width: 100%;
+    }
+
+    .hero-section #auto-update-btn,
+    .hero-section #login-toggle-btn,
+    .hero-section #export-btn,
+    .hero-section #print-btn {
+        width: 100%;
+        min-width: 0;
+        justify-content: center;
+        padding: 0.7rem 0.6rem;
+        font-size: 0.78rem;
+        border-radius: 0.85rem;
+    }
+
+    .hero-section .flex.justify-end.gap-2 {
+        justify-content: center;
+        width: 100%;
+        margin-top: 0.2rem;
+        flex-wrap: wrap;
+    }
+
+    .hero-section .db-action-btn {
+        flex: 1;
+        justify-content: center;
+        font-size: 0.72rem;
+        padding: 0.45rem 0.5rem;
+        min-width: 0;
+    }
+}
+        
         @media print {
             @page {
                 size: A4 landscape;
@@ -298,14 +335,13 @@
                             管理者登入
                         </button>
                         
-                        <div class="flex gap-2">
-                            <button id="export-btn" onclick="exportToExcel()" class="bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-700 transition flex items-center gap-2 min-w-[120px] justify-center">
-                                <i data-lucide="file-up" class="w-4 h-4"></i> <span>匯出報表</span>
-                            </button>
-                            <button id="print-btn" onclick="window.print()" class="bg-slate-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-700 transition flex items-center gap-2 min-w-[120px] justify-center shadow-lg">
-                                <i data-lucide="printer" class="w-4 h-4"></i> <span>列印報告</span>
-                            </button>
-                        </div>
+<button id="export-btn" onclick="exportToExcel()" class="bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-700 transition flex items-center gap-2 min-w-[120px] justify-center">
+    <i data-lucide="file-up" class="w-4 h-4"></i> <span>匯出報表</span>
+</button>
+
+<button id="print-btn" onclick="printCertificateReport()" class="bg-slate-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-700 transition flex items-center gap-2 min-w-[120px] justify-center shadow-lg">
+    <i data-lucide="printer" class="w-4 h-4"></i> <span>列印報告</span>
+</button>
                     </div>
                     
                     <div class="flex justify-end gap-2">
