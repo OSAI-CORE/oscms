@@ -620,6 +620,43 @@
         box-sizing: border-box;
     }
 
+    .hero-section .flex.flex-wrap.gap-3.items-center.justify-end {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+    width: 100%;
+}
+
+.hero-section #auto-update-btn,
+.hero-section #login-toggle-btn,
+.hero-section #export-btn,
+.hero-section #print-btn {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+    padding: 0.7rem 0.6rem;
+    font-size: 0.78rem;
+    border-radius: 0.85rem;
+}
+
+.hero-section #export-btn,
+.hero-section #print-btn {
+    min-width: 0;
+}
+
+.hero-section .flex.justify-end.gap-2 {
+    justify-content: center;
+    width: 100%;
+    margin-top: 0.2rem;
+}
+
+.hero-section .db-action-btn {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.72rem;
+    padding: 0.45rem 0.5rem;
+}
+
     .hero-section {
         width: 100%;
         max-width: 100%;
