@@ -92,6 +92,33 @@
             vertical-align: middle;
         }
 
+        .certificate-name-cell,
+.certificate-date-cell,
+.certificate-status-cell {
+    white-space: nowrap;
+    word-break: keep-all;
+}
+
+.certificate-name-cell {
+    min-width: 72px;
+}
+
+.certificate-date-cell {
+    min-width: 100px;
+}
+
+.certificate-status-cell {
+    min-width: 72px;
+    text-align: center;
+}
+
+.certificate-status-cell .badge-status {
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
         .badge-status {
             padding: 4px 10px;
             border-radius: 999px;
@@ -216,8 +243,66 @@
             cursor: not-allowed;
         }
 
-        /* 手機直向：上方功能鈕整齊排列 */
+/* 手機直向：上方功能鈕與狀態列整齊排列 */
 @media screen and (orientation: portrait) and (max-width: 767px) {
+    .hero-section {
+        width: 100%;
+        max-width: 100%;
+        padding: 1.5rem 1rem 1.75rem 1rem;
+    }
+
+    .hero-section > .max-w-7xl,
+    main.max-w-7xl {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .hero-section .flex.items-center.gap-5 {
+        align-items: flex-start;
+        gap: 0.9rem;
+    }
+
+    .hero-section h1 {
+        font-size: 1.75rem;
+        line-height: 1.15;
+        word-break: keep-all;
+    }
+
+    .hero-section p {
+        font-size: 0.78rem;
+        line-height: 1.35;
+    }
+
+    .header-status-row {
+        flex-wrap: nowrap !important;
+        gap: 6px !important;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .header-status-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .header-status-row .btn-pill {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        padding: 7px 12px !important;
+        font-size: 12px !important;
+        font-weight: 700;
+        gap: 6px !important;
+        border-radius: 9999px;
+    }
+
+    .header-status-row .btn-pill i,
+    .header-status-row .btn-pill svg {
+        width: 15px !important;
+        height: 15px !important;
+    }
+
     .hero-section .flex.flex-wrap.gap-3.items-center.justify-end {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -232,9 +317,21 @@
         width: 100%;
         min-width: 0;
         justify-content: center;
-        padding: 0.7rem 0.6rem;
-        font-size: 0.78rem;
-        border-radius: 0.85rem;
+        padding: 0.6rem 0.45rem;
+        font-size: 0.75rem;
+        border-radius: 0.8rem;
+        gap: 0.35rem;
+        min-height: 40px;
+    }
+
+    .hero-section #auto-update-btn i,
+    .hero-section #auto-update-btn svg,
+    .hero-section #export-btn i,
+    .hero-section #export-btn svg,
+    .hero-section #print-btn i,
+    .hero-section #print-btn svg {
+        width: 14px !important;
+        height: 14px !important;
     }
 
     .hero-section .flex.justify-end.gap-2 {
@@ -250,6 +347,20 @@
         font-size: 0.72rem;
         padding: 0.45rem 0.5rem;
         min-width: 0;
+    }
+
+    .report-table-container .overflow-x-auto {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #certificate-panel .certificate-name-cell,
+    #certificate-panel .certificate-date-cell,
+    #certificate-panel .certificate-status-cell,
+    .certificate-name-cell,
+    .certificate-date-cell,
+    .certificate-status-cell {
+        white-space: nowrap !important;
+        word-break: keep-all !important;
     }
 }
         
@@ -317,7 +428,7 @@
                     <div>
                         <h1 class="text-3xl font-black tracking-tight mb-0">職業安全證照管理系統</h1>
                         <p class="text-slate-400 text-sm font-medium tracking-wide uppercase opacity-80 mb-1">Occupational Safety Certificate Management System - Demo Mode</p>
-                        <div class="flex flex-wrap gap-3 mt-2">
+                        <div class="header-status-row flex flex-nowrap gap-2 mt-2 overflow-x-auto">
                             <span class="btn-pill"><i data-lucide="calendar" class="w-4 h-4"></i> <span id="current-date-display">---- -- --</span></span>
                             <span class="btn-pill"><i data-lucide="users" class="w-4 h-4"></i> 全體員工</span>
                             <span id="admin-badge" class="btn-pill bg-blue-600/30 border-blue-400/50"><i data-lucide="eye" class="w-4 h-4"></i> 檢視模式</span>
@@ -414,13 +525,13 @@
                         <tr>
                             <th class="table-header-cell w-16">項次</th>
                             <th class="table-header-cell">作業單位</th>
-                            <th class="table-header-cell">姓名</th>
+                            <th class="table-header-cell certificate-name-cell">姓名</th>
                             <th class="table-header-cell">訓練項目</th>
                             <th class="table-header-cell">證書號碼</th>
                             <th class="table-header-cell">複訓週期</th>
-                            <th class="table-header-cell">上次受訓日期</th>
-                            <th class="table-header-cell">下次複訓日期</th>
-                            <th class="table-header-cell text-center">狀態</th>
+                            <th class="table-header-cell certificate-date-cell">上次受訓日期</th>
+                            <th class="table-header-cell certificate-date-cell">下次複訓日期</th>
+                            <th class="table-header-cell text-center certificate-status-cell">狀態</th>
                             <th class="table-header-cell text-center">操作</th>
                         </tr>
                     </thead>
@@ -823,7 +934,7 @@ let db;
                         </div>
                     </td>
                     <td class="table-cell font-medium text-slate-500">${record.dept}</td>
-                    <td class="table-cell font-bold text-slate-800">${record.name}</td>
+                    <td class="table-cell font-bold text-slate-800 certificate-name-cell">${record.name}</td>
                     <td class="table-cell font-semibold text-indigo-600">${record.item}</td>
                     <td class="table-cell">
                         <div class="flex items-center justify-between group max-w-[180px]">
@@ -835,9 +946,9 @@ let db;
                         </div>
                     </td>
                     <td class="table-cell text-slate-500">${record.cycle}</td>
-                    <td class="table-cell text-slate-500">${record.lastDate || '<span class="text-red-300">待補</span>'}</td>
-                    <td class="table-cell font-bold ${status.text}">${displayNextDate}</td>
-                    <td class="table-cell text-center">
+<td class="table-cell text-slate-500 certificate-date-cell">${record.lastDate || '<span class="text-red-300">待補</span>'}</td>
+<td class="table-cell font-bold ${status.text} certificate-date-cell">${displayNextDate}</td>
+<td class="table-cell text-center certificate-status-cell">
                         <span class="badge-status ${status.bg} ${status.text}">
                             ${status.label}
                         </span>
