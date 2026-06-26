@@ -99,6 +99,18 @@
     word-break: keep-all;
 }
 
+.certificate-index-header,
+.certificate-index-cell {
+    width: 72px;
+    min-width: 72px;
+    max-width: 72px;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    text-align: center !important;
+    letter-spacing: 0 !important;
+    vertical-align: middle !important;
+}
+
 .certificate-dept-cell,
 .certificate-item-cell {
     word-break: keep-all;
@@ -116,11 +128,55 @@
     min-width: 100px;
 }
 
+.certificate-stopped-next-date {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    min-width: 18px;
+    font-weight: 900;
+    color: #64748b;
+}
+
 .certificate-status-cell {
     white-space: nowrap;
     word-break: keep-all;
     min-width: 72px;
     text-align: center;
+}
+
+.certificate-action-cell {
+    width: 88px;
+    min-width: 88px;
+    max-width: 88px;
+    white-space: nowrap;
+    padding-left: 0.35rem !important;
+    padding-right: 0.35rem !important;
+}
+
+.certificate-action-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.certificate-action-btn {
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s ease;
+}
+
+.certificate-action-btn:hover {
+    background: #f1f5f9;
+    color: #4f46e5;
 }
 
 .certificate-status-cell .badge-status {
@@ -816,14 +872,25 @@ body.file-preview-open {
     word-break: break-word;
 }
 
+.budget-index-header,
 .budget-index-cell {
-    text-align: center;
-    vertical-align: top;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.budget-index-inner {
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    white-space: nowrap;
 }
 
 .budget-index-actions {
-    margin-top: 6px;
-    display: flex;
+    margin-top: 0;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
 }
 
@@ -831,6 +898,40 @@ body.file-preview-open {
     text-align: center;
     font-size: 0.875rem;
     line-height: 1.25rem;
+}
+
+.budget-date-header,
+.budget-date-cell {
+    text-align: left !important;
+    vertical-align: middle !important;
+}
+
+.budget-date-header {
+    padding-left: 0.75rem !important;
+}
+
+.budget-date-field,
+.budget-date-display {
+    width: 100%;
+    text-align: left;
+}
+
+.budget-date-field {
+    padding-left: 10px !important;
+    padding-right: 6px !important;
+}
+
+.budget-date-field:disabled {
+    padding-left: 10px !important;
+    padding-right: 6px !important;
+}
+
+.budget-date-display {
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    white-space: nowrap;
 }
 
 .budget-type-header {
@@ -905,6 +1006,11 @@ body.file-preview-open {
     padding: 16px;
 }
 
+.budget-summary-card p[id^="budget-summary-"] {
+    font-size: 1.05rem;
+    line-height: 1.35;
+    word-break: break-word;
+}
 
 .report-tab-controls {
     display: flex;
@@ -968,34 +1074,31 @@ body.file-preview-open {
 }
 
 .budget-training-unit-field,
-.budget-training-unit-field:disabled {
+.budget-training-unit-field:disabled,
+.budget-note-field,
+.budget-note-field:disabled,
+.budget-fee-cell .budget-resize-field,
+.budget-fee-cell .budget-resize-field:disabled {
     height: 32px;
     min-height: 32px;
     max-height: 32px;
     overflow: hidden;
     white-space: nowrap;
-    text-overflow: ellipsis;
+    word-break: keep-all;
     line-height: 1.25;
     resize: none;
 }
 
-.budget-note-field,
-.budget-note-field:disabled {
-    height: auto;
-    min-height: 32px;
-    max-height: none;
-    overflow: visible;
-    white-space: normal;
-    line-height: 1.3;
-    resize: none;
-}
-
 .edit-resize-field {
-    height: 38px;
-    min-height: 38px;
-    overflow: hidden;
-    resize: vertical;
+    height: auto;
+    min-height: 42px;
+    max-height: 110px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    resize: none;
     line-height: 1.45;
+    white-space: normal;
+    word-break: break-word;
 }
 
 /* 手機模式：管理員編輯視窗指定欄位改為橫列 */
@@ -1046,24 +1149,19 @@ body.file-preview-open {
     }
 
 .budget-training-unit-field,
-.budget-training-unit-field:disabled {
+.budget-training-unit-field:disabled,
+.budget-note-field,
+.budget-note-field:disabled,
+.budget-fee-cell .budget-resize-field,
+.budget-fee-cell .budget-resize-field:disabled {
     height: 30px !important;
-    min-height: 30px;
+    min-height: 30px !important;
     max-height: 30px !important;
     overflow: hidden !important;
     white-space: nowrap !important;
-    text-overflow: ellipsis;
+    word-break: keep-all !important;
     line-height: 1.25;
-}
-
-.budget-note-field,
-.budget-note-field:disabled {
-    height: auto !important;
-    min-height: 30px;
-    max-height: none !important;
-    overflow: visible !important;
-    white-space: normal !important;
-    line-height: 1.3;
+    resize: none;
 }
 
     .budget-type-option {
@@ -1413,10 +1511,19 @@ body.file-preview-open {
 
 .edit-resize-field {
     width: 100%;
+    height: 36px;
+    min-height: 36px;
+    max-height: 36px;
+    overflow: hidden;
+    resize: none;
+    line-height: 1.2;
+    white-space: nowrap;
+    word-break: keep-all;
     border: 1px solid #e2e8f0;
-    border-radius: 0.75rem;
-    padding: 0.75rem;
+    border-radius: 0.65rem;
+    padding: 0.45rem 0.65rem;
     outline: none;
+    box-sizing: border-box;
 }
 
 .edit-resize-field:focus {
@@ -1430,6 +1537,14 @@ body.file-preview-open {
 
 .budget-admin-enabled .budget-admin-only {
     display: inline-flex;
+}
+
+.budget-login-shortcut {
+    display: inline-flex;
+}
+
+.budget-admin-enabled .budget-login-shortcut {
+    display: none;
 }
 
 .admin-floating-bar {
@@ -1843,6 +1958,7 @@ body.file-preview-open {
                     <option value="效期內">有效</option>
                     <option value="待受訓">需注意 (待受訓)</option>
                     <option value="已過期">已過期</option>
+                    <option value="停訓">停訓</option>
                 </select>
                 <select id="yearFilter" onchange="renderReport()" class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer shadow-sm min-w-[150px]">
                     <option value="">所有年度</option>
@@ -1858,7 +1974,7 @@ body.file-preview-open {
 <table class="w-full border-collapse min-w-[1000px] certificate-table">
     <thead>
                         <tr>
-                            <th class="table-header-cell w-16">項次</th>
+                            <th class="table-header-cell certificate-index-header">項次</th>
 <th class="table-header-cell certificate-dept-cell">作業單位</th>
 <th class="table-header-cell certificate-name-cell">姓名</th>
 <th class="table-header-cell certificate-item-cell">訓練項目</th>
@@ -1887,11 +2003,16 @@ body.file-preview-open {
                     </h2>
                 </div>
             </div>
+     
+<div class="flex flex-wrap gap-3 justify-end">
+    <button type="button" onclick="openLoginModal()" class="budget-login-shortcut bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl font-bold text-sm hover:bg-slate-50 transition inline-flex items-center gap-2 shadow-sm">
+        <i data-lucide="lock-keyhole" class="w-4 h-4"></i>
+        管理者登入
+    </button>
 
-            <div class="flex flex-wrap gap-3 justify-end">
-                <button type="button" onclick="openBudgetAddModal()" class="budget-admin-only bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-emerald-700 transition items-center gap-2 shadow-sm min-w-[120px] justify-center">
-                    <i data-lucide="user-plus" class="w-4 h-4"></i> 新增人員
-                </button>
+    <button type="button" onclick="openBudgetAddModal()" class="budget-admin-only bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-emerald-700 transition items-center gap-2 shadow-sm min-w-[120px] justify-center">
+        <i data-lucide="user-plus" class="w-4 h-4"></i> 新增人員
+    </button>
                 <button type="button" onclick="saveBudgetRecordsNow()" class="budget-admin-only bg-amber-500 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-amber-600 transition items-center gap-2 shadow-sm min-w-[120px] justify-center">
                     <i data-lucide="save" class="w-4 h-4"></i> 儲存記錄
                 </button>
@@ -1942,12 +2063,12 @@ body.file-preview-open {
                     </colgroup>
                     <thead>
                         <tr>
-                            <th class="table-header-cell">項次</th>
+                            <th class="table-header-cell budget-index-header">項次</th>
                             <th class="table-header-cell">作業單位</th>
                             <th class="table-header-cell">姓名</th>
                             <th class="table-header-cell">訓練項目</th>
                             <th class="table-header-cell budget-type-header">初訓 / 複訓</th>
-                            <th class="table-header-cell">受訓日期</th>
+                            <th class="table-header-cell budget-date-header">受訓日期</th>
                             <th class="table-header-cell budget-training-unit-cell">受訓單位</th>
                             <th class="table-header-cell budget-fee-header">預算費用 (NTD)</th>
                             <th class="table-header-cell budget-note-cell">備註</th>
@@ -2280,18 +2401,23 @@ body.file-preview-open {
                     <textarea id="edit-certNo" class="edit-resize-field" oninput="autoResizeEditableField(this)"></textarea>
                 </div>
                 <div>
-<label class="block text-xs font-bold text-slate-500 mb-1 certificate-nowrap-cell">
-    複訓週期
+<label class="flex items-center gap-2 text-xs font-bold text-slate-500 mb-1 certificate-nowrap-cell">
+    <span>複訓週期</span>
+    <span class="text-[10px] text-slate-400 font-bold">例如：3H/3Y</span>
 </label>
-<p class="text-[10px] text-slate-400 font-bold mb-1">
-    例如：3H/3Y
-</p>
 <input type="text" id="edit-cycle" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-500 mb-1">上次受訓日期</label>
                     <input type="date" id="edit-lastDate" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
+                <div>
+    <label class="block text-xs font-bold text-slate-500 mb-1">訓練狀態</label>
+    <select id="edit-trainingStatus" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+        <option value="active">正常</option>
+        <option value="stopped">停訓</option>
+    </select>
+</div>
                 <div class="md:col-span-2 flex gap-3 mt-4">
                     <button type="button" onclick="saveEdit()" id="save-btn" class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition">更新資料</button>
                     <button type="button" id="remove-btn" onclick="confirmRemove()" class="bg-red-50 text-red-500 px-6 py-3 rounded-xl font-bold hover:bg-red-100 transition flex items-center gap-2">
@@ -2745,9 +2871,25 @@ let db;
         return { nextDate, status, hasValidDate, isCurrentlyValid };
     }
 
+function isTrainingStopped(record) {
+    return record && (record.trainingStatus === 'stopped' || record.isStopped === true);
+}
+
+function getDisplayStatusInfo(record, nextDate) {
+    if (isTrainingStopped(record)) {
+        return {
+            label: '停訓',
+            bg: 'bg-slate-200',
+            text: 'text-slate-600'
+        };
+    }
+
+    return getStatusInfo(nextDate, record.lastDate);
+}    
+
     function analyzeCompliance() {
         const analyzeRoleGroup = (roleList) => (roleList || []).map(role => {
-            const matchingRecords = records.filter(record => matchesComplianceRole(record, role));
+            const matchingRecords = records.filter(record => !isTrainingStopped(record) && matchesComplianceRole(record, role));
             const validMap = new Map();
             let warningCount = 0;
             let expiredCount = 0;
@@ -2823,7 +2965,7 @@ function getReportItemPeopleStats() {
 
     function getTrainingItemStats() {
         const statsMap = new Map();
-        records.forEach(record => {
+        records.filter(record => !isTrainingStopped(record)).forEach(record => {
             const itemName = record.item || '未設定項目';
             if (!statsMap.has(itemName)) {
                 statsMap.set(itemName, { item: itemName, total: 0, valid: 0, warning: 0, expired: 0, incomplete: 0 });
@@ -3270,8 +3412,9 @@ function calculateNextDate(lastDateStr, cycleStr) {
 
     function getBudgetSourceRows() {
         normalizeBudgetManualRows();
-        const syncedRows = records
-            .map(record => {
+const syncedRows = records
+    .filter(record => !isTrainingStopped(record))
+    .map(record => {
                 const nextDate = calculateNextDate(record.lastDate, record.cycle);
                 if (!nextDate) return null;
                 const year = nextDate.getFullYear();
@@ -3461,30 +3604,43 @@ function calculateNextDate(lastDateStr, cycleStr) {
 function autoResizeBudgetTextarea(el) {
     if (!el) return;
 
-    // 預算表採用固定細列預覽，不再自動撐高
-    if (el.classList.contains('budget-textarea') || el.classList.contains('budget-resize-field')) {
+    if (
+        el.classList.contains('budget-training-unit-field') ||
+        el.classList.contains('budget-note-field') ||
+        el.closest('.budget-fee-cell') ||
+        el.classList.contains('budget-textarea') ||
+        el.classList.contains('budget-resize-field')
+    ) {
         el.style.height = '';
         return;
     }
 
-    el.style.height = 'auto';
-    el.style.height = `${Math.max(38, el.scrollHeight)}px`;
+    el.style.height = '';
 }
 
-    function autoResizeEditableField(el) {
-        autoResizeBudgetTextarea(el);
-    }
+function autoResizeEditableField(el) {
+    if (!el) return;
+    el.style.height = '36px';
+}
 
 function resetEditableFieldHeight(el) {
     if (!el) return;
 
-    // 預算表採用固定細列預覽，不再自動撐高
-    if (el.classList.contains('budget-textarea') || el.classList.contains('budget-resize-field')) {
-        el.style.height = '';
-        return;
-    }
+if (
+    el.classList.contains('budget-training-unit-field') ||
+    el.classList.contains('budget-note-field') ||
+    el.closest('.budget-fee-cell')
+) {
+    el.style.height = '';
+    return;
+}
 
-    el.style.height = '38px';
+if (el.classList.contains('edit-resize-field')) {
+    el.style.height = '36px';
+    return;
+}
+
+    el.style.height = '';
 }
 
     function focusBudgetCell(rowIndex, colIndex) {
@@ -3597,12 +3753,15 @@ function resetEditableFieldHeight(el) {
             const safeSource = escapeJSString(row.sourceType);
             const canEditBase = isAdmin && row.sourceType === 'manual';
             const baseDisabled = canEditBase ? '' : 'disabled';
-            return `
-                <tr class="table-row">
-                    <td class="table-cell font-mono text-slate-400 text-sm text-center budget-index-cell">
-                        <div class="budget-index-number">${index + 1}</div>
-                        ${row.sourceType === 'manual' && isAdmin ? `<div class="budget-index-actions"><button type="button" onclick="removeBudgetManualRow('${escapeJSString(row.recordId)}')" class="p-1.5 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-lg transition" title="移除"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>` : ''}
-                    </td>
+
+return `
+    <tr class="table-row">
+<td class="table-cell font-mono text-slate-400 text-sm text-center budget-index-cell">
+    <div class="budget-index-inner">
+        <span class="budget-index-number">${index + 1}</span>
+        ${row.sourceType === 'manual' && isAdmin ? `<span class="budget-index-actions"><button type="button" onclick="removeBudgetManualRow('${escapeJSString(row.recordId)}')" class="p-1.5 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-lg transition" title="移除"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></span>` : ''}
+    </div>
+</td>
                     <td class="table-cell font-medium text-slate-500">
                         <textarea class="budget-input budget-resize-field" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單同步'}" ${baseDisabled}
                                   data-budget-row="${index}" data-budget-col="0" onkeydown="handleBudgetCellKeydown(event)" oninput="autoResizeBudgetTextarea(this)"
@@ -3623,7 +3782,7 @@ function resetEditableFieldHeight(el) {
                     </td>
 <td class="table-cell text-slate-500 budget-date-cell">
     ${isAdmin ? `
-        <input type="date" class="budget-input" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單受訓日期同步'}" value="${escapeHTML(row.retrainingDate)}" ${baseDisabled}
+        <input type="date" class="budget-input budget-date-field" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單受訓日期同步'}" value="${escapeHTML(row.retrainingDate)}" ${baseDisabled}
                data-budget-row="${index}" data-budget-col="4" onkeydown="handleBudgetCellKeydown(event)"
                onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'retrainingDate', this.value, '${safeItem}', '${safeSource}')">
     ` : `
@@ -3643,7 +3802,7 @@ function resetEditableFieldHeight(el) {
                                   onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'fee', this.value, '${safeItem}', '${safeSource}')">${escapeHTML(formatMoneyInput(row.fee))}</textarea>
                     </td>
 <td class="table-cell budget-note-cell">
-    <textarea class="budget-input budget-textarea budget-note-field" title="${inputTitle}" ${disabledAttr}
+    <textarea wrap="off" class="budget-input budget-textarea budget-note-field" title="${inputTitle}" ${disabledAttr}
                                   data-budget-row="${index}" data-budget-col="7" onkeydown="handleBudgetCellKeydown(event)" oninput="autoResizeBudgetTextarea(this)"
                                   onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'note', this.value, '${safeItem}', '${safeSource}')">${escapeHTML(row.note)}</textarea>
                     </td>
@@ -3838,13 +3997,13 @@ function resetEditableFieldHeight(el) {
         } else {
             records.forEach(record => {
                 const nextDate = calculateNextDate(record.lastDate, record.cycle);
-                const status = getStatusInfo(nextDate, record.lastDate);
+                const status = getDisplayStatusInfo(record, nextDate);
                 const hasAttachments = record.attachments && record.attachments.length > 0;
                 
                 stats.total++;
-                if (status.label === '已過期') stats.expired++;
-                else if (status.label === '待受訓') stats.warning++;
-                else stats.valid++;
+if (status.label === '已過期') stats.expired++;
+else if (status.label === '待受訓') stats.warning++;
+else if (status.label === '效期內') stats.valid++;
 
                 const matchesSearch = (record.name || "").toLowerCase().includes(searchTerm) || 
                                     (record.item || "").toLowerCase().includes(searchTerm) || 
@@ -3854,17 +4013,24 @@ function resetEditableFieldHeight(el) {
                 const retrainingYear = nextDate ? String(nextDate.getFullYear()) : '';
                 const matchesYear = yearFilter === "" || retrainingYear === yearFilter;
                 const matchesAllActiveFilters = matchesSearch && matchesStatus && matchesItem && matchesYear;
-                if (yearFilter && retrainingYear === yearFilter && matchesSearch && matchesStatus && matchesItem) {
-                    yearRetrainingPeople.add(getPersonIdentityKey(record));
-                }
+if (
+    yearFilter &&
+    !isTrainingStopped(record) &&
+    retrainingYear === yearFilter &&
+    matchesSearch &&
+    matchesStatus &&
+    matchesItem
+) {
+    yearRetrainingPeople.add(getPersonIdentityKey(record));
+}
 
                 if (matchesAllActiveFilters) {
                     visibleCount++;
-                    const displayNextDate = nextDate ? formatLocalDate(nextDate) : "待補件";
-                    const row = document.createElement('tr');
-                    row.className = "table-row";
+                    const displayNextDate = isTrainingStopped(record) ? "-" : (nextDate ? formatLocalDate(nextDate) : "待補件");
+const row = document.createElement('tr');
+row.className = "table-row";
                     row.innerHTML = `
-                        <td class="table-cell font-mono text-slate-400 text-sm">${visibleCount}</td>
+                        <td class="table-cell font-mono text-slate-400 text-sm text-center certificate-index-cell">${visibleCount}</td>
                         <td class="table-cell font-medium text-slate-500 certificate-dept-cell">${record.dept}</td>
                         <td class="table-cell font-bold text-slate-800 certificate-name-cell">${record.name}</td>
                         <td class="table-cell font-semibold text-indigo-600 certificate-item-cell">${record.item}</td>
@@ -3879,25 +4045,29 @@ function resetEditableFieldHeight(el) {
 </td>
                         <td class="table-cell text-slate-500">${record.cycle}</td>
 <td class="table-cell text-slate-500 certificate-date-cell">${record.lastDate || '<span class="text-red-300">未填寫</span>'}</td>
-<td class="table-cell font-bold ${status.text} certificate-date-cell">${displayNextDate}</td>
+<td class="table-cell font-bold ${status.text} certificate-date-cell ${isTrainingStopped(record) ? 'text-center' : ''}">
+    <span class="${isTrainingStopped(record) ? 'certificate-stopped-next-date' : ''}">
+        ${displayNextDate}
+    </span>
+</td>
 <td class="table-cell text-center certificate-status-cell">
                             <span class="badge-status ${status.bg} ${status.text}">
                                 ${status.label}
                             </span>
                         </td>
-<td class="table-cell text-center">
-    <div class="flex items-center justify-center gap-1">
+<td class="table-cell text-center certificate-action-cell">
+    <div class="certificate-action-wrap">
         ${isAdmin ? `
-            <button onclick="moveRecordUp(${record.id})" class="p-2 hover:bg-slate-100 text-slate-400 hover:text-indigo-600 rounded-lg transition" title="上移">
-                <i data-lucide="arrow-up" class="w-4 h-4"></i>
-            </button>
-            <button onclick="moveRecordDown(${record.id})" class="p-2 hover:bg-slate-100 text-slate-400 hover:text-indigo-600 rounded-lg transition" title="下移">
-                <i data-lucide="arrow-down" class="w-4 h-4"></i>
-            </button>
+<button onclick="moveRecordUp(${record.id})" class="certificate-action-btn text-slate-400" title="上移">
+    <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
+</button>
+<button onclick="moveRecordDown(${record.id})" class="certificate-action-btn text-slate-400" title="下移">
+    <i data-lucide="arrow-down" class="w-3.5 h-3.5"></i>
+</button>
         ` : ''}
-        <button onclick="openEditModal(${record.id})" class="p-2 hover:bg-slate-100 text-slate-400 hover:text-indigo-600 rounded-lg transition">
-            <i data-lucide="${isAdmin ? 'edit-3' : 'settings'}" class="w-4 h-4"></i>
-        </button>
+<button onclick="openEditModal(${record.id})" class="certificate-action-btn text-slate-400" title="${isAdmin ? '編輯' : '管理者登入'}">
+    <i data-lucide="${isAdmin ? 'edit-3' : 'settings'}" class="w-3.5 h-3.5"></i>
+</button>
     </div>
 </td>
                     `;
@@ -4844,6 +5014,10 @@ function getExcelStatusStyle(statusLabel) {
         return 'background:#fee2e2;color:#991b1b;font-weight:700;';
     }
 
+    if (statusLabel === '停訓') {
+    return 'background:#e2e8f0;color:#475569;font-weight:700;';
+}
+
     if (statusLabel === '待受訓') {
         return 'background:#fef3c7;color:#92400e;font-weight:700;';
     }
@@ -4878,8 +5052,8 @@ function exportToExcel() {
 
     const dataRows = records.map((r, index) => {
         const nextDate = calculateNextDate(r.lastDate, r.cycle);
-        const status = getStatusInfo(nextDate, r.lastDate).label;
-        const displayNextDate = nextDate ? formatLocalDate(nextDate) : '待補件';
+        const status = getDisplayStatusInfo(r, nextDate).label;
+        const displayNextDate = isTrainingStopped(r) ? '—' : (nextDate ? formatLocalDate(nextDate) : '待補件');
 
         return [
             index + 1,
@@ -5174,15 +5348,23 @@ summaryWs['!merges'] = [
                     bold: true,
                     color: { rgb: '991B1B' }
                 };
-            } else if (statusValue === '待受訓') {
-                ws[statusCell].s.fill = { fgColor: { rgb: 'FEF3C7' } };
-                ws[statusCell].s.font = {
-                    name: 'Microsoft JhengHei',
-                    sz: 11,
-                    bold: true,
-                    color: { rgb: '92400E' }
-                };
-            } else {
+} else if (statusValue === '待受訓') {
+    ws[statusCell].s.fill = { fgColor: { rgb: 'FEF3C7' } };
+    ws[statusCell].s.font = {
+        name: 'Microsoft JhengHei',
+        sz: 11,
+        bold: true,
+        color: { rgb: '92400E' }
+    };
+} else if (statusValue === '停訓') {
+    ws[statusCell].s.fill = { fgColor: { rgb: 'E2E8F0' } };
+    ws[statusCell].s.font = {
+        name: 'Microsoft JhengHei',
+        sz: 11,
+        bold: true,
+        color: { rgb: '475569' }
+    };
+} else {
                 ws[statusCell].s.fill = { fgColor: { rgb: 'DCFCE7' } };
                 ws[statusCell].s.font = {
                     name: 'Microsoft JhengHei',
@@ -5377,6 +5559,7 @@ function insertRecordUnderSameDept(record) {
         document.getElementById('edit-certNo').value = record.certNo;
         document.getElementById('edit-cycle').value = record.cycle;
         document.getElementById('edit-lastDate').value = record.lastDate;
+        document.getElementById('edit-trainingStatus').value = record.trainingStatus || (record.isStopped ? 'stopped' : 'active');
         
         document.getElementById('save-btn').innerText = "更新資料";
         document.getElementById('remove-btn').classList.remove('hidden');
@@ -5391,6 +5574,7 @@ function insertRecordUnderSameDept(record) {
         document.getElementById('modal-title').innerText = "新增人員紀錄";
         document.getElementById('edit-id').value = "";
         document.getElementById('edit-form').reset();
+        document.getElementById('edit-trainingStatus').value = 'active';
         document.getElementById('save-btn').innerText = "新增紀錄";
         document.getElementById('remove-btn').classList.add('hidden');
         document.getElementById('edit-modal').classList.remove('hidden');
@@ -5410,7 +5594,8 @@ function insertRecordUnderSameDept(record) {
             item: document.getElementById('edit-item').value || "未設定項目",
             certNo: document.getElementById('edit-certNo').value || "無",
             cycle: document.getElementById('edit-cycle').value || "1Y",
-            lastDate: document.getElementById('edit-lastDate').value || ""
+            lastDate: document.getElementById('edit-lastDate').value || "",
+trainingStatus: document.getElementById('edit-trainingStatus').value || "active"
         };
 
 if (idVal === "") {
