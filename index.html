@@ -130,6 +130,24 @@
     justify-content: center;
 }
 
+.certificate-certno-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    max-width: 180px;
+}
+
+.certificate-certno-text {
+    min-width: 0;
+    font-size: 0.75rem;
+    font-family: monospace;
+    color: #94a3b8;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
         .badge-status {
             padding: 4px 10px;
             border-radius: 999px;
@@ -949,6 +967,28 @@ body.file-preview-open {
     white-space: nowrap;
 }
 
+.budget-training-unit-field,
+.budget-training-unit-field:disabled {
+    height: auto;
+    min-height: 32px;
+    max-height: none;
+    overflow: visible;
+    white-space: normal;
+    line-height: 1.3;
+    resize: none;
+}
+
+.budget-note-field,
+.budget-note-field:disabled {
+    height: auto;
+    min-height: 32px;
+    max-height: none;
+    overflow: visible;
+    white-space: normal;
+    line-height: 1.3;
+    resize: none;
+}
+
 .edit-resize-field {
     height: 38px;
     min-height: 38px;
@@ -1003,6 +1043,26 @@ body.file-preview-open {
         max-height: 30px;
         line-height: 1.25;
     }
+
+    .budget-training-unit-field,
+.budget-training-unit-field:disabled {
+    height: auto !important;
+    min-height: 30px;
+    max-height: none !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    line-height: 1.3;
+}
+
+.budget-note-field,
+.budget-note-field:disabled {
+    height: auto !important;
+    min-height: 30px;
+    max-height: none !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    line-height: 1.3;
+}
 
     .budget-type-option {
         font-size: 10px;
@@ -1078,13 +1138,31 @@ body.file-preview-open {
         box-sizing: border-box;
     }
 
+#certificate-panel .certificate-certno-cell {
+    white-space: normal !important;
+    word-break: break-all !important;
+}
+
+#certificate-panel .certificate-certno-wrap {
+    max-width: none;
+    align-items: flex-start;
+}
+
+#certificate-panel .certificate-certno-text {
+    white-space: normal !important;
+    word-break: break-all !important;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.3;
+}
+
 #budget-panel .budget-table-wrap {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
 
 #budget-panel .budget-table {
-    min-width: 1000px;
+    min-width: 1080px;
 }
 
 #certificate-panel .certificate-table {
@@ -1352,6 +1430,80 @@ body.file-preview-open {
     display: inline-flex;
 }
 
+.admin-floating-bar {
+    position: fixed;
+    right: 20px;
+    bottom: 22px;
+    z-index: 420;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.92);
+    color: #ffffff;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.28);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(148, 163, 184, 0.28);
+}
+
+.budget-admin-enabled .admin-floating-bar {
+    display: flex;
+}
+
+.admin-floating-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 900;
+    color: #bfdbfe;
+    padding: 0 4px;
+    white-space: nowrap;
+}
+
+.admin-floating-save-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 38px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: #dc2626;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 900;
+    box-shadow: 0 10px 24px rgba(220, 38, 38, 0.28);
+    transition: all 0.18s ease;
+}
+
+.admin-floating-save-btn:hover {
+    background: #b91c1c;
+    transform: translateY(-1px);
+}
+
+@media screen and (max-width: 767px) {
+    .admin-floating-bar {
+        left: 12px;
+        right: 12px;
+        bottom: calc(12px + env(safe-area-inset-bottom));
+        justify-content: space-between;
+        border-radius: 18px;
+        padding: 10px;
+    }
+
+    .admin-floating-save-btn {
+        flex: 1;
+        min-height: 44px;
+        font-size: 14px;
+    }
+
+    .admin-floating-status {
+        flex: 0 0 auto;
+        font-size: 11px;
+    }
+}
 
 .print-item-people-summary {
     display: none;
@@ -1549,9 +1701,10 @@ body.file-preview-open {
                             <i data-lucide="refresh-cw" class="w-4 h-4"></i> <span>同步數據</span>
                         </button>
 
-                        <button id="login-toggle-btn" onclick="openLoginModal()" class="bg-white text-slate-800 px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-slate-100 transition">
-                            管理者登入
-                        </button>
+<button id="login-toggle-btn" onclick="openLoginModal()" class="bg-white text-slate-800 px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-slate-100 transition inline-flex items-center gap-2">
+    <i data-lucide="lock-keyhole" class="w-4 h-4"></i>
+    <span>管理者登入</span>
+</button>
                         
 <button id="export-btn" onclick="exportToExcel()" class="bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-700 transition flex items-center gap-2 min-w-[120px] justify-center">
     <i data-lucide="file-up" class="w-4 h-4"></i> <span>匯出報表</span>
@@ -1707,7 +1860,7 @@ body.file-preview-open {
 <th class="table-header-cell certificate-dept-cell">作業單位</th>
 <th class="table-header-cell certificate-name-cell">姓名</th>
 <th class="table-header-cell certificate-item-cell">訓練項目</th>
-<th class="table-header-cell">證書號碼</th>
+<th class="table-header-cell certificate-certno-cell">證書號碼</th>
 <th class="table-header-cell certificate-nowrap-cell">複訓週期</th>
 <th class="table-header-cell certificate-date-cell">上次受訓日期</th>
 <th class="table-header-cell certificate-date-cell">下次複訓日期</th>
@@ -1793,9 +1946,9 @@ body.file-preview-open {
                             <th class="table-header-cell">訓練項目</th>
                             <th class="table-header-cell budget-type-header">初訓 / 複訓</th>
                             <th class="table-header-cell">受訓日期</th>
-                            <th class="table-header-cell">受訓單位</th>
+                            <th class="table-header-cell budget-training-unit-cell">受訓單位</th>
                             <th class="table-header-cell budget-fee-header">預算費用 (NTD)</th>
-                            <th class="table-header-cell">備註</th>
+                            <th class="table-header-cell budget-note-cell">備註</th>
                         </tr>
                     </thead>
                     <tbody id="budget-report-body"></tbody>
@@ -1819,6 +1972,18 @@ body.file-preview-open {
         Developed by Sam Sun
     </p>
 </footer>
+
+<div id="admin-floating-bar" class="admin-floating-bar">
+    <div class="admin-floating-status">
+        <i data-lucide="unlock" class="w-4 h-4"></i>
+        <span>管理模式中</span>
+    </div>
+
+    <button type="button" onclick="saveAndLogoutSystem()" class="admin-floating-save-btn">
+        <i data-lucide="save" class="w-4 h-4"></i>
+        <span>儲存並登出</span>
+    </button>
+</div>
     
 <!-- 檔案預覽 Modal：-->
 <div id="file-preview-modal"
@@ -3465,18 +3630,18 @@ function resetEditableFieldHeight(el) {
         </div>
     `}
 </td>
-                    <td class="table-cell">
-                        <textarea class="budget-input budget-resize-field" title="${inputTitle}" ${disabledAttr}
-                                  data-budget-row="${index}" data-budget-col="5" onkeydown="handleBudgetCellKeydown(event)" oninput="autoResizeBudgetTextarea(this)"
-                                  onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'trainingUnit', this.value, '${safeItem}', '${safeSource}')">${escapeHTML(row.trainingUnit)}</textarea>
-                    </td>
+<td class="table-cell budget-training-unit-cell">
+    <textarea class="budget-input budget-resize-field budget-training-unit-field" title="${inputTitle}" ${disabledAttr}
+              data-budget-row="${index}" data-budget-col="5" onkeydown="handleBudgetCellKeydown(event)" oninput="autoResizeBudgetTextarea(this)"
+              onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'trainingUnit', this.value, '${safeItem}', '${safeSource}')">${escapeHTML(row.trainingUnit)}</textarea>
+</td>
                     <td class="table-cell budget-fee-cell">
                         <textarea inputmode="numeric" class="budget-input budget-resize-field budget-money-cell" title="${inputTitle}" ${disabledAttr}
                                   data-budget-row="${index}" data-budget-col="6" onkeydown="handleBudgetCellKeydown(event)" oninput="autoResizeBudgetTextarea(this)" onblur="this.value = formatMoneyInput(this.value); autoResizeBudgetTextarea(this)"
                                   onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'fee', this.value, '${safeItem}', '${safeSource}')">${escapeHTML(formatMoneyInput(row.fee))}</textarea>
                     </td>
-                    <td class="table-cell">
-                        <textarea class="budget-input budget-textarea" title="${inputTitle}" ${disabledAttr}
+<td class="table-cell budget-note-cell">
+    <textarea class="budget-input budget-textarea budget-note-field" title="${inputTitle}" ${disabledAttr}
                                   data-budget-row="${index}" data-budget-col="7" onkeydown="handleBudgetCellKeydown(event)" oninput="autoResizeBudgetTextarea(this)"
                                   onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'note', this.value, '${safeItem}', '${safeSource}')">${escapeHTML(row.note)}</textarea>
                     </td>
@@ -3701,15 +3866,15 @@ function resetEditableFieldHeight(el) {
                         <td class="table-cell font-medium text-slate-500 certificate-dept-cell">${record.dept}</td>
                         <td class="table-cell font-bold text-slate-800 certificate-name-cell">${record.name}</td>
                         <td class="table-cell font-semibold text-indigo-600 certificate-item-cell">${record.item}</td>
-                        <td class="table-cell">
-                            <div class="flex items-center justify-between group max-w-[180px]">
-                                <span class="text-xs font-mono text-slate-400 truncate mr-2">${record.certNo}</span>
-                                <button onclick="handleLinkClick(${record.id})" 
-                                        class="link-icon-btn p-1.5 rounded-lg transition-colors ${hasAttachments ? 'text-blue-500 hover:bg-blue-50' : 'text-slate-300'}">
-                                    <i data-lucide="paperclip" class="w-3.5 h-3.5"></i>
-                                </button>
-                            </div>
-                        </td>
+<td class="table-cell certificate-certno-cell">
+    <div class="certificate-certno-wrap group">
+        <span class="certificate-certno-text">${record.certNo}</span>
+        <button onclick="handleLinkClick(${record.id})" 
+                class="link-icon-btn p-1.5 rounded-lg transition-colors ${hasAttachments ? 'text-blue-500 hover:bg-blue-50' : 'text-slate-300'}">
+            <i data-lucide="paperclip" class="w-3.5 h-3.5"></i>
+        </button>
+    </div>
+</td>
                         <td class="table-cell text-slate-500">${record.cycle}</td>
 <td class="table-cell text-slate-500 certificate-date-cell">${record.lastDate || '<span class="text-red-300">未填寫</span>'}</td>
 <td class="table-cell font-bold ${status.text} certificate-date-cell">${displayNextDate}</td>
@@ -5097,16 +5262,18 @@ async function checkPassword() {
         closeChangePasswordModal();
     }
 
+async function saveAndLogoutSystem() {
+    await persistAllRecords(records);
+    await persistBudgetData();
+    showSyncSuccess();
+}
+
     function updateUIForAdmin() {
         document.getElementById('admin-badge').innerHTML = '<i data-lucide="unlock" class="w-4 h-4 text-blue-400"></i> 管理模式';
         const loginBtn = document.getElementById('login-toggle-btn');
-        loginBtn.innerText = "完成並登出系統";
-        loginBtn.className = "bg-red-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-red-700 transition";
-        loginBtn.onclick = async () => {
-            await persistAllRecords(records);
-            await persistBudgetData();
-            showSyncSuccess();
-        };
+loginBtn.innerHTML = '<i data-lucide="log-out" class="w-4 h-4"></i><span>完成並登出系統</span>';
+loginBtn.className = "bg-red-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-red-700 transition inline-flex items-center gap-2";
+loginBtn.onclick = saveAndLogoutSystem;
         document.getElementById('add-person-btn').classList.remove('hidden');
         document.body.classList.add('budget-admin-enabled');
         renderComplianceDashboard();
@@ -5128,9 +5295,10 @@ async function checkPassword() {
         isAdmin = false;
         document.getElementById('admin-badge').innerHTML = '<i data-lucide="eye" class="w-4 h-4"></i> 檢視模式';
         const loginBtn = document.getElementById('login-toggle-btn');
-        loginBtn.innerText = "管理者登入";
-        loginBtn.className = "bg-white text-slate-800 px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-slate-100 transition";
-        loginBtn.onclick = openLoginModal;
+loginBtn.innerHTML = '<i data-lucide="lock-keyhole" class="w-4 h-4"></i><span>管理者登入</span>';
+loginBtn.className = "bg-white text-slate-800 px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-slate-100 transition inline-flex items-center gap-2";
+loginBtn.onclick = openLoginModal;
+initIcons();
         document.getElementById('add-person-btn').classList.add('hidden');
         document.body.classList.remove('budget-admin-enabled');
         renderReport();
