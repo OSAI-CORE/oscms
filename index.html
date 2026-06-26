@@ -1786,19 +1786,78 @@ body.file-preview-open {
         word-break: break-word !important;
     }
 
-    body.print-certificate-report .table-header-cell {
-        background: #e5e7eb !important;
-        font-weight: 900 !important;
-        text-align: center !important;
-    }
+body.print-certificate-report .table-header-cell {
+    background: #e5e7eb !important;
+    color: #0f172a !important;
+    font-weight: 900 !important;
+    text-align: center !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
 
-    body.print-certificate-report .badge-status {
-        border: 1px solid #999 !important;
-        color: black !important;
-        background: none !important;
-        padding: 0 !important;
-        font-size: 11px !important;
-    }
+body.print-certificate-report .badge-status {
+    border: 1px solid transparent !important;
+    padding: 3px 8px !important;
+    border-radius: 999px !important;
+    font-size: 10px !important;
+    font-weight: 900 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+/* 列印版：保留證照狀態色彩 */
+body.print-certificate-report .badge-status.bg-green-100,
+body.print-certificate-report .badge-status.bg-emerald-100 {
+    background: #dcfce7 !important;
+    color: #166534 !important;
+    border-color: #bbf7d0 !important;
+}
+
+body.print-certificate-report .badge-status.bg-yellow-100,
+body.print-certificate-report .badge-status.bg-amber-100 {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+    border-color: #fde68a !important;
+}
+
+body.print-certificate-report .badge-status.bg-red-100,
+body.print-certificate-report .badge-status.bg-rose-100 {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+    border-color: #fecaca !important;
+}
+
+body.print-certificate-report .badge-status.bg-slate-100,
+body.print-certificate-report .badge-status.bg-slate-200,
+body.print-certificate-report .badge-status.bg-gray-100 {
+    background: #e2e8f0 !important;
+    color: #475569 !important;
+    border-color: #cbd5e1 !important;
+}
+
+/* 列印版：保留常見 Tailwind 文字色 */
+body.print-certificate-report .text-green-600,
+body.print-certificate-report .text-emerald-600,
+body.print-certificate-report .text-emerald-700 {
+    color: #166534 !important;
+}
+
+body.print-certificate-report .text-yellow-600,
+body.print-certificate-report .text-amber-600,
+body.print-certificate-report .text-amber-700 {
+    color: #92400e !important;
+}
+
+body.print-certificate-report .text-red-600,
+body.print-certificate-report .text-rose-600,
+body.print-certificate-report .text-rose-700 {
+    color: #991b1b !important;
+}
+
+body.print-certificate-report .text-slate-500,
+body.print-certificate-report .text-slate-600 {
+    color: #475569 !important;
+}
 
     body.print-certificate-report .certificate-report-title-row {
         display: flex !important;
@@ -2209,26 +2268,31 @@ body.file-preview-open {
             </button>
         </div>
 
-        <div id="file-preview-toolbar" class="file-preview-toolbar">
-            <button type="button" class="file-preview-tool-btn" onclick="zoomFilePreviewBy(-0.15)">
-                <i data-lucide="zoom-out" class="w-4 h-4"></i>
-                <span>縮小</span>
-            </button>
+<div id="file-preview-toolbar" class="file-preview-toolbar">
+    <button type="button" class="file-preview-tool-btn" onclick="zoomFilePreviewBy(-0.15)">
+        <i data-lucide="zoom-out" class="w-4 h-4"></i>
+        <span>縮小</span>
+    </button>
 
-            <button type="button" class="file-preview-tool-btn file-preview-zoom-pill" onclick="fitFilePreviewToScreen()">
-                <span id="file-preview-zoom-label">100%</span>
-            </button>
+    <button type="button" class="file-preview-tool-btn file-preview-zoom-pill" onclick="fitFilePreviewToScreen()">
+        <span id="file-preview-zoom-label">100%</span>
+    </button>
 
-            <button type="button" class="file-preview-tool-btn" onclick="zoomFilePreviewBy(0.15)">
-                <i data-lucide="zoom-in" class="w-4 h-4"></i>
-                <span>放大</span>
-            </button>
+    <button type="button" class="file-preview-tool-btn" onclick="zoomFilePreviewBy(0.15)">
+        <i data-lucide="zoom-in" class="w-4 h-4"></i>
+        <span>放大</span>
+    </button>
 
-            <button type="button" class="file-preview-tool-btn" onclick="fitFilePreviewToScreen()">
-                <i data-lucide="maximize" class="w-4 h-4"></i>
-                <span>適合畫面</span>
-            </button>
-        </div>
+    <button type="button" class="file-preview-tool-btn" onclick="rotateFilePreviewBy(90)">
+        <i data-lucide="rotate-cw" class="w-4 h-4"></i>
+        <span>旋轉</span>
+    </button>
+
+    <button type="button" class="file-preview-tool-btn" onclick="fitFilePreviewToScreen()">
+        <i data-lucide="maximize" class="w-4 h-4"></i>
+        <span>適合畫面</span>
+    </button>
+</div>
 
         <div id="file-preview-body" class="file-preview-body">
             <div id="file-preview-loading" class="file-preview-loading hidden">
@@ -2243,9 +2307,9 @@ body.file-preview-open {
             </div>
         </div>
 
-        <div class="file-preview-hint">
-            可使用滑鼠滾輪、觸控滑動或上方按鈕檢視附件內容
-        </div>
+<div class="file-preview-hint">
+    可使用滑鼠滾輪、觸控滑動、放大縮小或旋轉功能檢視附件內容
+</div>
     </div>
 </div>
 
@@ -4418,6 +4482,7 @@ function closeFilePreviewOutside(event) {
 let filePreviewMode = '';
 let filePreviewScale = 1;
 let filePreviewDefaultScale = 1;
+let filePreviewRotation = 0;
 let imagePreviewScale = 1;
 let imagePreviewDefaultScale = 1;
 let filePreviewObjectUrl = '';
@@ -4538,41 +4603,48 @@ function resetFilePreviewContent() {
         try { filePreviewPdfDocument.destroy(); } catch (err) { console.warn('PDF preview cleanup skipped', err); }
     }
 
-    filePreviewMode = '';
-    filePreviewPdfDocument = null;
-    filePreviewScale = 1;
-    filePreviewDefaultScale = 1;
-    imagePreviewScale = 1;
-    imagePreviewDefaultScale = 1;
-    filePreviewTouchDistance = null;
-    filePreviewTouchScale = 1;
-    filePreviewPdfAppliedRelativeScale = 1;
+filePreviewMode = '';
+filePreviewPdfDocument = null;
+filePreviewScale = 1;
+filePreviewDefaultScale = 1;
+filePreviewRotation = 0;
+imagePreviewScale = 1;
+imagePreviewDefaultScale = 1;
+filePreviewTouchDistance = null;
+filePreviewTouchScale = 1;
+filePreviewPdfAppliedRelativeScale = 1;
 
     revokeCurrentPreviewObjectUrl();
 
-    if (frame) {
-        frame.removeAttribute('src');
-        frame.classList.add('hidden');
-        frame.style.width = '';
-        frame.style.height = '';
-        frame.style.minWidth = '';
-        frame.style.minHeight = '';
-    }
+if (frame) {
+    frame.removeAttribute('src');
+    frame.classList.add('hidden');
+    frame.style.width = '';
+    frame.style.height = '';
+    frame.style.minWidth = '';
+    frame.style.minHeight = '';
+    frame.style.transform = '';
+    frame.style.transformOrigin = '';
+}
 
-    if (image) {
-        image.onload = null;
-        image.onerror = null;
-        image.removeAttribute('src');
-        image.classList.add('hidden');
-        image.style.width = '';
-        image.style.height = '';
-    }
+if (image) {
+    image.onload = null;
+    image.onerror = null;
+    image.removeAttribute('src');
+    image.classList.add('hidden');
+    image.style.width = '';
+    image.style.height = '';
+    image.style.transform = '';
+    image.style.transformOrigin = '';
+    image.style.margin = '';
+}
 
-    if (pdfPages) {
-        pdfPages.innerHTML = '';
-        pdfPages.classList.add('hidden');
-        pdfPages.style.gap = '';
-    }
+if (pdfPages) {
+    pdfPages.innerHTML = '';
+    pdfPages.classList.add('hidden');
+    pdfPages.style.gap = '';
+    pdfPages.style.transform = '';
+}
 
     if (toolbar) toolbar.classList.add('hidden');
     setFilePreviewLoading(false);
@@ -4594,8 +4666,23 @@ function applyPreviewImageScale() {
     const { image } = getFilePreviewElements();
     if (!image || !image.naturalWidth || !image.naturalHeight) return;
 
-    image.style.width = `${Math.max(1, Math.round(image.naturalWidth * filePreviewScale))}px`;
-    image.style.height = `${Math.max(1, Math.round(image.naturalHeight * filePreviewScale))}px`;
+    const displayWidth = Math.max(1, Math.round(image.naturalWidth * filePreviewScale));
+    const displayHeight = Math.max(1, Math.round(image.naturalHeight * filePreviewScale));
+    const isSideways = Math.abs(filePreviewRotation % 180) === 90;
+
+    image.style.width = `${displayWidth}px`;
+    image.style.height = `${displayHeight}px`;
+    image.style.transform = `rotate(${filePreviewRotation}deg)`;
+    image.style.transformOrigin = 'center center';
+
+    if (isSideways) {
+        const horizontalMargin = Math.max(0, (displayHeight - displayWidth) / 2);
+        const verticalMargin = Math.max(0, (displayWidth - displayHeight) / 2);
+        image.style.margin = `${verticalMargin}px ${horizontalMargin}px`;
+    } else {
+        image.style.margin = '';
+    }
+
     imagePreviewScale = filePreviewScale;
     imagePreviewDefaultScale = filePreviewDefaultScale;
     updateFilePreviewZoomLabel();
@@ -4610,6 +4697,9 @@ function applyPreviewFrameScale() {
     frame.style.height = `${Math.max(100, Math.round(100 * relativeScale))}%`;
     frame.style.minWidth = `${Math.max(100, Math.round(100 * relativeScale))}%`;
     frame.style.minHeight = `${Math.max(620, Math.round(620 * relativeScale))}px`;
+    frame.style.transform = `rotate(${filePreviewRotation}deg)`;
+    frame.style.transformOrigin = 'center center';
+
     updateFilePreviewZoomLabel();
 }
 
@@ -4692,6 +4782,20 @@ function setFilePreviewScale(nextScale) {
 function zoomFilePreviewBy(delta) {
     const stepBase = filePreviewDefaultScale || 1;
     setFilePreviewScale(filePreviewScale + (stepBase * delta));
+}
+
+function rotateFilePreviewBy(degrees = 90) {
+    filePreviewRotation = (filePreviewRotation + degrees) % 360;
+
+    if (filePreviewMode === 'image') {
+        applyPreviewImageScale();
+    } else if (filePreviewMode === 'pdf') {
+        renderPdfPreviewPages();
+    } else if (filePreviewMode === 'pdf-frame') {
+        applyPreviewFrameScale();
+    }
+
+    updateFilePreviewZoomLabel();
 }
 
 function fitFilePreviewToScreen() {
@@ -4811,7 +4915,7 @@ async function renderPdfPreviewPages() {
             const page = await pdf.getPage(pageNumber);
             if (renderSerial !== filePreviewPdfRenderSerial) return;
 
-            const viewport = page.getViewport({ scale });
+            const viewport = page.getViewport({ scale, rotation: filePreviewRotation });
             const pageWidth = Math.floor(viewport.width);
             const pageHeight = Math.floor(viewport.height);
             const pageShell = document.createElement('div');
@@ -5928,7 +6032,7 @@ document.addEventListener('keydown', function(event) {
         closeEditModal();
         closeBudgetAddModal();
         closeAttachmentModal();
-        closeFilePreview();
+        closeFilePreviewModal();
     }
 });
 
