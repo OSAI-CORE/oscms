@@ -969,12 +969,13 @@ body.file-preview-open {
 
 .budget-training-unit-field,
 .budget-training-unit-field:disabled {
-    height: auto;
+    height: 32px;
     min-height: 32px;
-    max-height: none;
-    overflow: visible;
-    white-space: normal;
-    line-height: 1.3;
+    max-height: 32px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 1.25;
     resize: none;
 }
 
@@ -1044,14 +1045,15 @@ body.file-preview-open {
         line-height: 1.25;
     }
 
-    .budget-training-unit-field,
+.budget-training-unit-field,
 .budget-training-unit-field:disabled {
-    height: auto !important;
+    height: 30px !important;
     min-height: 30px;
-    max-height: none !important;
-    overflow: visible !important;
-    white-space: normal !important;
-    line-height: 1.3;
+    max-height: 30px !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis;
+    line-height: 1.25;
 }
 
 .budget-note-field,
@@ -1139,20 +1141,20 @@ body.file-preview-open {
     }
 
 #certificate-panel .certificate-certno-cell {
-    white-space: normal !important;
-    word-break: break-all !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
 }
 
 #certificate-panel .certificate-certno-wrap {
-    max-width: none;
-    align-items: flex-start;
+    max-width: 180px;
+    align-items: center;
 }
 
 #certificate-panel .certificate-certno-text {
-    white-space: normal !important;
-    word-break: break-all !important;
-    overflow: visible;
-    text-overflow: clip;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
     line-height: 1.3;
 }
 
