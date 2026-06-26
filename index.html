@@ -1690,34 +1690,6 @@ body.file-preview-open {
     max-height: 280px;
 }
 
-/* 訓練項目人員統計小圖卡精簡 */
-#training-stats-list > div {
-    padding: 0.85rem !important;
-    border-radius: 0.85rem !important;
-}
-
-#training-stats-list > div > div:first-child {
-    margin-bottom: 0.55rem !important;
-}
-
-#training-stats-list p {
-    line-height: 1.2 !important;
-}
-
-#training-stats-list .grid > div {
-    padding-top: 0.4rem !important;
-    padding-bottom: 0.4rem !important;
-    border-radius: 0.7rem !important;
-}
-
-#training-stats-list .grid p:first-child {
-    font-size: 9px !important;
-}
-
-#training-stats-list .grid p:last-child {
-    font-size: 0.78rem !important;
-}
-
 @media print {
 @page {
     size: A4 landscape;
@@ -3195,7 +3167,7 @@ function closeAuxiliaryTooltip(element) {
     function renderAuxiliaryComplianceCard(role) {
         const statusClass = role.complete ? 'bg-sky-100 text-sky-700 border-sky-200' : 'bg-amber-100 text-amber-700 border-amber-200';
         const statusText = role.complete ? '達標' : `缺少 ${role.missing}`;
-        const statusIconHTML = renderStatusIconHTML(role.complete, 'badge-check');
+        const statusIconHTML = renderStatusIconHTML(role.complete, 'circle-check');
         return `
             <div class="md:col-span-2 rounded-2xl border border-sky-100 bg-gradient-to-r from-sky-50 to-white p-4">
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
