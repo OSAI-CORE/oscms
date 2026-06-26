@@ -99,6 +99,11 @@
     word-break: keep-all;
 }
 
+.certificate-dept-cell,
+.certificate-item-cell {
+    word-break: keep-all;
+}
+
 .certificate-name-cell {
     white-space: nowrap;
     word-break: keep-all;
@@ -1020,10 +1025,18 @@ body.file-preview-open {
         border-radius: 10px;
     }
 
-    #certificate-panel table {
-        min-width: 900px;
-        table-layout: fixed;
-    }
+#certificate-panel .certificate-table {
+    min-width: 1000px;
+    table-layout: fixed;
+}
+
+#certificate-panel .certificate-dept-cell,
+#certificate-panel .certificate-item-cell {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
     #certificate-panel .table-header-cell,
     #certificate-panel .table-cell {
@@ -1064,6 +1077,19 @@ body.file-preview-open {
 
 #budget-panel .budget-table {
     min-width: 1000px;
+}
+
+#certificate-panel .certificate-table {
+    min-width: 1000px;
+    table-layout: fixed;
+}
+
+#certificate-panel .certificate-dept-cell,
+#certificate-panel .certificate-item-cell {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #budget-panel .table-header-cell,
@@ -1658,13 +1684,13 @@ body.file-preview-open {
 
         <div class="report-table-container">
             <div class="overflow-x-auto">
-                <table class="w-full border-collapse min-w-[1000px]">
-                    <thead>
+<table class="w-full border-collapse min-w-[1000px] certificate-table">
+    <thead>
                         <tr>
                             <th class="table-header-cell w-16">項次</th>
-<th class="table-header-cell">作業單位</th>
+<th class="table-header-cell certificate-dept-cell">作業單位</th>
 <th class="table-header-cell certificate-name-cell">姓名</th>
-<th class="table-header-cell">訓練項目</th>
+<th class="table-header-cell certificate-item-cell">訓練項目</th>
 <th class="table-header-cell">證書號碼</th>
 <th class="table-header-cell certificate-nowrap-cell">複訓週期</th>
 <th class="table-header-cell certificate-date-cell">上次受訓日期</th>
@@ -3656,9 +3682,9 @@ function resetEditableFieldHeight(el) {
                     row.className = "table-row";
                     row.innerHTML = `
                         <td class="table-cell font-mono text-slate-400 text-sm">${visibleCount}</td>
-                        <td class="table-cell font-medium text-slate-500">${record.dept}</td>
+                        <td class="table-cell font-medium text-slate-500 certificate-dept-cell">${record.dept}</td>
                         <td class="table-cell font-bold text-slate-800 certificate-name-cell">${record.name}</td>
-                        <td class="table-cell font-semibold text-indigo-600">${record.item}</td>
+                        <td class="table-cell font-semibold text-indigo-600 certificate-item-cell">${record.item}</td>
                         <td class="table-cell">
                             <div class="flex items-center justify-between group max-w-[180px]">
                                 <span class="text-xs font-mono text-slate-400 truncate mr-2">${record.certNo}</span>
