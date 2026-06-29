@@ -2051,7 +2051,7 @@ body.print-certificate-report .text-slate-600 {
                         <p class="text-xs font-black text-slate-400 tracking-[0.18em] uppercase">Training Statistics</p>
                         <h3 class="text-lg font-black text-slate-800 mt-1">訓練項目人員統計</h3>
                     </div>
-                    <div class="text-xs text-slate-400 font-bold">有效、待受訓、已過期依目前證照效期自動統計</div>
+                    <div class="text-xs text-slate-400 font-bold">有效、停訓、待受訓、已過期依證照清單明細報表自動統計</div>
                 </div>
                 <div id="training-stats-list" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 max-h-[320px] overflow-y-auto pr-1"></div>
             </div>
@@ -3106,30 +3106,66 @@ function getReportItemPeopleStats() {
         .sort((a, b) => a.item.localeCompare(b.item, 'zh-Hant'));
 }
 
-    function getTrainingItemStats() {
-        const statsMap = new Map();
-        records.filter(record => !isTrainingStopped(record)).forEach(record => {
-            const itemName = record.item || '未設定項目';
-            if (!statsMap.has(itemName)) {
-                statsMap.set(itemName, { item: itemName, total: 0, valid: 0, warning: 0, expired: 0, incomplete: 0 });
-            }
-            const stat = statsMap.get(itemName);
-            const validity = getRecordValidity(record);
-            stat.total++;
-            if (validity.status.label === '已過期') stat.expired++;
-            else if (validity.status.label === '待受訓') stat.warning++;
-            else stat.valid++;
-            if (!validity.hasValidDate) stat.incomplete++;
-        });
+function getTrainingItemStats() {
+    const statsMap = new Map();
 
-        return Array.from(statsMap.values()).sort((a, b) => {
-            const trackedRoles = [...(complianceProfile.requiredRoles || []), ...(complianceProfile.auxiliaryRoles || [])];
-            const aRequired = trackedRoles.some(role => role.keywords.some(keyword => normalizeForMatch(a.item).includes(normalizeForMatch(keyword))));
-            const bRequired = trackedRoles.some(role => role.keywords.some(keyword => normalizeForMatch(b.item).includes(normalizeForMatch(keyword))));
-            if (aRequired !== bRequired) return aRequired ? -1 : 1;
-            return a.item.localeCompare(b.item, 'zh-Hant');
-        });
-    }
+    records.forEach(record => {
+        const itemName = record.item || '未設定項目';
+
+        if (!statsMap.has(itemName)) {
+            statsMap.set(itemName, {
+                item: itemName,
+                total: 0,
+                valid: 0,
+                stopped: 0,
+                warning: 0,
+                expired: 0,
+                incomplete: 0
+            });
+        }
+
+        const stat = statsMap.get(itemName);
+        const validity = getRecordValidity(record);
+
+        stat.total++;
+
+        if (isTrainingStopped(record)) {
+            stat.stopped++;
+            return;
+        }
+
+        if (validity.status.label === '已過期') {
+            stat.expired++;
+        } else if (validity.status.label === '待受訓') {
+            stat.warning++;
+        } else {
+            stat.valid++;
+        }
+
+        if (!validity.hasValidDate) {
+            stat.incomplete++;
+        }
+    });
+
+    return Array.from(statsMap.values()).sort((a, b) => {
+        const trackedRoles = [...(complianceProfile.requiredRoles || []), ...(complianceProfile.auxiliaryRoles || [])];
+
+        const aRequired = trackedRoles.some(role =>
+            role.keywords.some(keyword =>
+                normalizeForMatch(a.item).includes(normalizeForMatch(keyword))
+            )
+        );
+
+        const bRequired = trackedRoles.some(role =>
+            role.keywords.some(keyword =>
+                normalizeForMatch(b.item).includes(normalizeForMatch(keyword))
+            )
+        );
+
+        if (aRequired !== bRequired) return aRequired ? -1 : 1;
+        return a.item.localeCompare(b.item, 'zh-Hant');
+    });
+}
 
     function shouldShowFullTimeTooltip(role) {
         return ['professional', 'manager'].includes(role.type);
@@ -3299,11 +3335,27 @@ function closeAuxiliaryTooltip(element) {
                         <p class="font-black text-slate-800 text-sm truncate" title="${escapeHTML(stat.item)}">${escapeHTML(stat.item)}</p>
                         <span class="text-xs font-black text-indigo-600 bg-indigo-50 rounded-full px-2.5 py-1">${stat.total} 人</span>
                     </div>
-                    <div class="grid grid-cols-3 gap-2 text-center">
-                        <div class="bg-white rounded-xl border border-slate-100 px-2 py-2"><p class="text-[10px] text-slate-400 font-bold">有效</p><p class="text-sm font-black text-emerald-600">${stat.valid}</p></div>
-                        <div class="bg-white rounded-xl border border-slate-100 px-2 py-2"><p class="text-[10px] text-slate-400 font-bold">待受訓</p><p class="text-sm font-black text-amber-600">${stat.warning}</p></div>
-                        <div class="bg-white rounded-xl border border-slate-100 px-2 py-2"><p class="text-[10px] text-slate-400 font-bold">已過期</p><p class="text-sm font-black text-rose-600">${stat.expired}</p></div>
-                    </div>
+<div class="grid grid-cols-4 gap-2 text-center">
+    <div class="bg-white rounded-xl border border-slate-100 px-2 py-2">
+        <p class="text-[10px] text-slate-400 font-bold">有效</p>
+        <p class="text-sm font-black text-emerald-600">${stat.valid}</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-100 px-2 py-2">
+        <p class="text-[10px] text-slate-400 font-bold">停訓</p>
+        <p class="text-sm font-black text-slate-600">${stat.stopped}</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-100 px-2 py-2">
+        <p class="text-[10px] text-slate-400 font-bold">待受訓</p>
+        <p class="text-sm font-black text-amber-600">${stat.warning}</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-100 px-2 py-2">
+        <p class="text-[10px] text-slate-400 font-bold">已過期</p>
+        <p class="text-sm font-black text-rose-600">${stat.expired}</p>
+    </div>
+</div>
                 </div>`).join('');
         }
     }
