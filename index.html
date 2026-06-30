@@ -2390,27 +2390,30 @@ body.print-certificate-report .text-slate-600 {
     </div>
 
 <!-- 權限與密碼設定 Modal -->
-<div id="change-pwd-modal" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[500] p-4">
-    <div class="bg-white p-8 rounded-3xl w-full max-w-md shadow-2xl scale-in-center">
+<div id="change-pwd-modal"
+     onclick="closeChangePasswordModalOutside(event)"
+     class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[500] p-4">
+    <div onclick="event.stopPropagation()"
+         class="bg-white p-8 rounded-3xl w-full max-w-md shadow-2xl scale-in-center">
         <div class="text-center mb-6">
             <h2 class="text-xl font-black text-slate-800">權限與密碼設定</h2>
-            <p class="text-slate-400 text-sm"></p>
+            <p class="text-slate-400 text-sm">僅管理者可修改密碼與使用者權限</p>
         </div>
 
         <div class="space-y-4">
             <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">目前管理者密碼</label>
-                <input type="password" id="old-pwd" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="">
+                <input type="password" id="old-pwd" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="••••••">
             </div>
 
             <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">新管理者密碼</label>
-                <input type="password" id="new-admin-pwd" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="">
+                <input type="password" id="new-admin-pwd" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="••••••">
             </div>
 
             <div>
                 <label class="block text-xs font-bold text-slate-500 mb-1">新使用者密碼</label>
-                <input type="password" id="new-editor-pwd" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="">
+                <input type="password" id="new-editor-pwd" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="••••••">
             </div>
 
             <label class="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl p-3 cursor-pointer">
@@ -5805,6 +5808,12 @@ function openChangePasswordModal() {
 
 function closeChangePasswordModal() {
     document.getElementById('change-pwd-modal').classList.add('hidden');
+}
+
+function closeChangePasswordModalOutside(event) {
+    if (event.target === event.currentTarget) {
+        closeChangePasswordModal();
+    }
 }
 
 async function savePasswordSettings() {
