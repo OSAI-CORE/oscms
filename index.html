@@ -5827,12 +5827,21 @@ async function savePasswordSettings() {
     const newEditorP = document.getElementById('new-editor-pwd').value.trim();
     const editorEnabledNext = document.getElementById('editor-enabled-checkbox').checked;
 
-    if (oldP !== systemPassword) {
-        alert("目前管理者密碼不正確");
-        return;
-    }
-
+    /*
+      只有在修改「管理者密碼」時，才需要再次輸入目前管理者密碼。
+      若只是修改使用者密碼，或勾選 / 取消使用者共用權限，不需要輸入目前管理者密碼。
+    */
     if (newAdminP) {
+        if (!oldP) {
+            alert("修改管理者密碼時，請先輸入目前管理者密碼。");
+            return;
+        }
+
+        if (oldP !== systemPassword) {
+            alert("目前管理者密碼不正確");
+            return;
+        }
+
         systemPassword = newAdminP;
         await setConfig('admin_password', systemPassword);
     }
