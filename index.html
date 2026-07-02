@@ -3136,6 +3136,44 @@ function isTrainingStopped(record) {
     return record && (record.trainingStatus === 'stopped' || record.isStopped === true);
 }
 
+function normalizeSortText(value) {
+    return String(value || '').trim();
+}
+
+function normalizeSortDate(value) {
+    const text = String(value || '').trim();
+
+    /*
+     * 空白日期排在最後，不影響既有資料內容。
+     * 若未來資料都是 YYYY-MM-DD，字串排序即可符合日期順序。
+     */
+    return text || '9999-12-31';
+}
+
+function compareTrainingItemDateDeptName(a, b, dateField = 'lastDate') {
+    const itemCompare = normalizeSortText(a.item).localeCompare(
+        normalizeSortText(b.item),
+        'zh-Hant'
+    );
+    if (itemCompare !== 0) return itemCompare;
+
+    const dateCompare = normalizeSortDate(a[dateField]).localeCompare(
+        normalizeSortDate(b[dateField])
+    );
+    if (dateCompare !== 0) return dateCompare;
+
+    const deptCompare = normalizeSortText(a.dept).localeCompare(
+        normalizeSortText(b.dept),
+        'zh-Hant'
+    );
+    if (deptCompare !== 0) return deptCompare;
+
+    return normalizeSortText(a.name).localeCompare(
+        normalizeSortText(b.name),
+        'zh-Hant'
+    );
+}
+
 function getDisplayStatusInfo(record, nextDate) {
     if (isTrainingStopped(record)) {
         return {
@@ -3771,17 +3809,9 @@ const syncedRows = records
             };
         });
 
-        return [...syncedRows, ...manualRows].sort((a, b) => {
-            const itemCompare = (a.item || '').localeCompare(b.item || '', 'zh-Hant');
-            if (itemCompare !== 0) return itemCompare;
-            const yearCompare = (Number(a.year) || 0) - (Number(b.year) || 0);
-            if (yearCompare !== 0) return yearCompare;
-            const dateCompare = (a.retrainingDate || '').localeCompare(b.retrainingDate || '');
-            if (dateCompare !== 0) return dateCompare;
-            const deptCompare = (a.dept || '').localeCompare(b.dept || '', 'zh-Hant');
-            if (deptCompare !== 0) return deptCompare;
-            return (a.name || '').localeCompare(b.name || '', 'zh-Hant');
-        });
+return [...syncedRows, ...manualRows].sort((a, b) =>
+    compareTrainingItemDateDeptName(a, b, 'retrainingDate')
+);
     }
 
     function updateBudgetFilters() {
@@ -4308,7 +4338,9 @@ async function saveBudgetManualRow() {
         if (records.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="10" class="p-20 text-center text-slate-400">目前尚無資料，請登入管理帳號新增或匯入資料。</td></tr>';
         } else {
-            records.forEach(record => {
+            [...records]
+    .sort((a, b) => compareTrainingItemDateDeptName(a, b, 'lastDate'))
+    .forEach(record => {
                 const nextDate = calculateNextDate(record.lastDate, record.cycle);
                 const status = getDisplayStatusInfo(record, nextDate);
                 const hasAttachments = record.attachments && record.attachments.length > 0;
@@ -5412,7 +5444,11 @@ function exportToExcel() {
         '狀態'
     ];
 
-    const dataRows = records.map((r, index) => {
+    const sortedExportRecords = [...records].sort((a, b) =>
+    compareTrainingItemDateDeptName(a, b, 'lastDate')
+);
+
+const dataRows = sortedExportRecords.map((r, index) => {
         const nextDate = calculateNextDate(r.lastDate, r.cycle);
         const status = getDisplayStatusInfo(r, nextDate).label;
         const displayNextDate = isTrainingStopped(r) ? '—' : (nextDate ? formatLocalDate(nextDate) : '待補件');
