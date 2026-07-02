@@ -2441,7 +2441,7 @@ body.print-certificate-report .text-slate-600 {
                 </label>
 
                 <p class="text-[11px] text-slate-400 leading-snug">
-                    使用者權限可編輯、上傳附件、儲存與匯出資料；刪除、匯入及權限設定仍限管理者。
+                    使用者權限可編輯、上傳附件、儲存、載入與匯出資料；刪除與權限設定仍限管理者。
                 </p>
 
                 <div class="flex gap-2 pt-1">
@@ -6412,11 +6412,13 @@ async function loadPreviewJSON(event) {
 }
 
 async function importJSON(event) {
-if (!canImportData()) {
-    alert('請先登入使用者或管理者權限後再載入資料。');
-    event.target.value = '';
-    return;
-}    
+    if (!canImportData()) {
+        alert('請先登入使用者或管理者權限後再載入資料。');
+        event.target.value = '';
+        openLoginModal();
+        return;
+    }
+
     const file = event.target.files[0];
     if (!file) return;
 
@@ -6426,34 +6428,40 @@ if (!canImportData()) {
         try {
             const data = JSON.parse(e.target.result);
 
+            const importLabel = isAdmin ? '匯入資料' : '載入資料';
+
+            if (!confirm(`${importLabel}將覆蓋目前所有紀錄，確定要繼續嗎？`)) {
+                return;
+            }
+
             // =========================
             // 舊版格式：只有 records 陣列
             // =========================
-if (Array.isArray(data)) {
-    records = data;
-    await persistAllRecords(records);
+            if (Array.isArray(data)) {
+                records = data;
+                await persistAllRecords(records);
 
-    isPreviewDataMode = false;
+                isPreviewDataMode = false;
 
-    updateItemFilter();
-    updateYearFilter();
-    updateBudgetFilters();
-    renderReport();
-    renderBudgetReport();
-    renderComplianceDashboard();
-    updateComplianceBasisButton();
-    updateUIForRole();
-    initIcons();
+                updateItemFilter();
+                updateYearFilter();
+                updateBudgetFilters();
+                renderReport();
+                renderBudgetReport();
+                renderComplianceDashboard();
+                updateComplianceBasisButton();
+                updateUIForRole();
+                initIcons();
 
-    alert('舊版 JSON 資料載入成功！。');
-    return;
-}
+                alert(`${importLabel}成功！密碼與權限設定未變更。`);
+                return;
+            }
 
             // =========================
-            // 新版完整備份格式
+            // 新版統一資料格式
             // =========================
             if (!data || !Array.isArray(data.records)) {
-                alert('匯入失敗：這不是有效的系統備份 JSON。');
+                alert('載入失敗：這不是有效的系統 JSON 資料檔。');
                 return;
             }
 
@@ -6463,42 +6471,42 @@ if (Array.isArray(data)) {
             records = data.records;
             await persistAllRecords(records);
 
-            // 3. 還原法規配置基準
+            // 2. 還原法規配置基準
             if (config.compliance_settings) {
                 applyComplianceSettings(config.compliance_settings);
                 await setConfig('compliance_settings', complianceSettings);
             }
 
-// 4. 還原法定人員設置基準依據附件
-// 統一版 JSON 會同步法定依據附件；密碼與權限設定不會由 JSON 還原。
-if (Array.isArray(config.compliance_basis_files)) {
-    complianceBasisFiles = config.compliance_basis_files;
-    await setConfig('compliance_basis_files', complianceBasisFiles);
-}
+            // 3. 還原法定人員設置基準依據附件
+            // 統一版 JSON 會同步法定依據附件；密碼與權限設定不會由 JSON 還原。
+            if (Array.isArray(config.compliance_basis_files)) {
+                complianceBasisFiles = config.compliance_basis_files;
+                await setConfig('compliance_basis_files', complianceBasisFiles);
+            }
 
-// 5. 還原新年度外訓預算統計表：一般同步資料
-if ('budget_records' in config && config.budget_records && typeof config.budget_records === 'object') {
-    budgetRecords = config.budget_records;
-    await setConfig('budget_records', budgetRecords);
-}
+            // 4. 還原新年度外訓預算統計表：一般同步資料
+            if ('budget_records' in config && config.budget_records && typeof config.budget_records === 'object') {
+                budgetRecords = config.budget_records;
+                await setConfig('budget_records', budgetRecords);
+            }
 
-// 6. 還原新年度外訓預算統計表：費用預設資料
-if ('budget_fee_defaults' in config && config.budget_fee_defaults && typeof config.budget_fee_defaults === 'object') {
-    budgetFeeDefaults = config.budget_fee_defaults;
-    await setConfig('budget_fee_defaults', budgetFeeDefaults);
-}
+            // 5. 還原新年度外訓預算統計表：費用預設資料
+            if ('budget_fee_defaults' in config && config.budget_fee_defaults && typeof config.budget_fee_defaults === 'object') {
+                budgetFeeDefaults = config.budget_fee_defaults;
+                await setConfig('budget_fee_defaults', budgetFeeDefaults);
+            }
 
-// 7. 還原新年度外訓預算統計表：手動新增人員
-if ('manual_budget_rows' in config && Array.isArray(config.manual_budget_rows)) {
-    manualBudgetRows = config.manual_budget_rows;
-    normalizeBudgetManualRows();
-    await setConfig('manual_budget_rows', manualBudgetRows);
-}
+            // 6. 還原新年度外訓預算統計表：手動新增人員
+            if ('manual_budget_rows' in config && Array.isArray(config.manual_budget_rows)) {
+                manualBudgetRows = config.manual_budget_rows;
+                normalizeBudgetManualRows();
+                await setConfig('manual_budget_rows', manualBudgetRows);
+            }
 
-            // 8. 正式匯入完成，取消預覽模式
+            // 7. 正式載入 / 匯入完成，取消預覽模式
             isPreviewDataMode = false;
 
-            // 9. 重新整理畫面
+            // 8. 重新整理畫面
             updateItemFilter();
             updateYearFilter();
             updateBudgetFilters();
@@ -6509,11 +6517,11 @@ if ('manual_budget_rows' in config && Array.isArray(config.manual_budget_rows)) 
             updateUIForRole();
             initIcons();
 
-            alert('JSON 資料載入成功！');
+            alert(`${importLabel}成功！`);
 
         } catch (err) {
-            console.error('匯入失敗', err);
-            alert('匯入失敗：檔案格式不正確或內容已損毀。');
+            console.error('載入失敗', err);
+            alert('載入失敗：檔案格式不正確或內容已損毀。');
         } finally {
             event.target.value = '';
         }
