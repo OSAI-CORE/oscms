@@ -1983,7 +1983,7 @@ body.print-certificate-report .text-slate-600 {
                     
 <div class="flex justify-end gap-2">
     <button id="export-json-btn" onclick="exportJSON()" class="db-action-btn hidden">
-        <i data-lucide="file-output" class="w-3.5 h-3.5"></i> 匯出備份
+        <i data-lucide="file-output" class="w-3.5 h-3.5"></i> 匯出資料
     </button>
 
     <button id="import-json-btn" onclick="handleJsonLoadButton()" class="db-action-btn">
@@ -2441,7 +2441,7 @@ body.print-certificate-report .text-slate-600 {
                 </label>
 
                 <p class="text-[11px] text-slate-400 leading-snug">
-                    使用者權限可編輯、上傳附件、儲存與匯出備份；刪除、匯入及權限設定仍限管理者。
+                    使用者權限可編輯、上傳附件、儲存與匯出資料；刪除、匯入及權限設定仍限管理者。
                 </p>
 
                 <div class="flex gap-2 pt-1">
@@ -2654,7 +2654,7 @@ const STORE_RECORDS = 'records';
 const STORE_CONFIG = 'config';
 
 const DEFAULT_ADMIN_PASSWORD = "SamCore@1068";
-const DEFAULT_EDITOR_PASSWORD = "TeamEdit116";
+const DEFAULT_EDITOR_PASSWORD = "TeamUser001";
 const MASTER_RECOVERY_CODE = "SAM-SUN-CORE-RECOVERY";
 
 let db;
@@ -4306,7 +4306,7 @@ async function saveBudgetManualRow() {
         let visibleCount = 0;
 
         if (records.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="10" class="p-20 text-center text-slate-400">目前尚無資料，請登入管理帳號新增或匯入備份。</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="10" class="p-20 text-center text-slate-400">目前尚無資料，請登入管理帳號新增或匯入資料。</td></tr>';
         } else {
             records.forEach(record => {
                 const nextDate = calculateNextDate(record.lastDate, record.cycle);
@@ -5389,7 +5389,7 @@ function getExcelStatusStyle(statusLabel) {
 
 function exportToExcel() {
     if (records.length === 0) {
-        alert('目前沒有數據可匯出');
+        alert('目前沒有資料可匯出');
         return;
     }
 
@@ -5952,15 +5952,15 @@ function updateJsonActionButtons() {
     if (exportJsonBtn) {
         exportJsonBtn.classList.toggle('hidden', !canExportReviewData());
         exportJsonBtn.innerHTML = isAdmin
-            ? '<i data-lucide="file-output" class="w-3.5 h-3.5"></i> 匯出備份'
-            : '<i data-lucide="file-output" class="w-3.5 h-3.5"></i> 匯出備份';
+            ? '<i data-lucide="file-output" class="w-3.5 h-3.5"></i> 匯出資料'
+            : '<i data-lucide="file-output" class="w-3.5 h-3.5"></i> 匯出資料';
     }
 
 if (importJsonBtn) {
     importJsonBtn.classList.remove('hidden');
 
     if (isAdmin) {
-        importJsonBtn.innerHTML = '<i data-lucide="file-input" class="w-3.5 h-3.5"></i> 匯入備份';
+        importJsonBtn.innerHTML = '<i data-lucide="file-input" class="w-3.5 h-3.5"></i> 匯入資料';
         importJsonBtn.title = '管理者正式匯入 JSON 資料';
     } else if (isEditor) {
         importJsonBtn.innerHTML = '<i data-lucide="file-input" class="w-3.5 h-3.5"></i> 載入資料';
