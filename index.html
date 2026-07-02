@@ -2751,11 +2751,14 @@ let editorPassword = DEFAULT_EDITOR_PASSWORD; // 使用者共用密碼
 let editorEnabled = true; // 是否啟用使用者共用權限
 
 let records = [];
-    let currentAttachRecordId = null;
-    let complianceBasisFiles = [];
-    let budgetRecords = {};
-    let budgetFeeDefaults = {};
-    let manualBudgetRows = [];
+let currentAttachRecordId = null;
+let complianceBasisFiles = [];
+let budgetRecords = {};
+let budgetFeeDefaults = {};
+let manualBudgetRows = [];
+
+/* 預覽載入模式：只暫存在目前頁面，不寫入瀏覽器 IndexedDB */
+let isPreviewDataMode = false;
 
 function getCurrentRole() {
     if (isAdmin) return 'admin';
@@ -2776,7 +2779,7 @@ function canChangePassword() {
 }
 
 function canImportData() {
-    return isAdmin;
+    return isAdmin || isEditor;
 }
 
 function canExportReviewData() {
@@ -3074,6 +3077,11 @@ async function handleComplianceBasisUpload(event) {
 
 async function processComplianceBasisFiles(files) {
     if (!canManageComplianceBasis()) return;
+
+    if (isPreviewDataMode) {
+        alert('目前為預覽資料模式，不能上傳或保存法定基準附件。請先以使用者或管理者身分正式載入資料後再操作。');
+        return;
+    }
         const validFiles = Array.from(files || []).filter(validateComplianceBasisFile);
         if (!validFiles.length) return;
 
@@ -3907,8 +3915,14 @@ return [...syncedRows, ...manualRows].sort((a, b) =>
         return ['dept', 'name', 'item', 'retrainingDate'].includes(field);
     }
 
-    async function saveBudgetField(rowId, year, field, value, itemName = '', sourceType = 'synced') {
-        if (!canEditData()) return;
+async function saveBudgetField(rowId, year, field, value, itemName = '', sourceType = 'synced') {
+    if (!canEditData()) return;
+
+    if (isPreviewDataMode) {
+        alert('目前為預覽資料模式，不能保存預算欄位。請先以使用者或管理者身分正式載入資料後再操作。');
+        renderBudgetReport();
+        return;
+    }
 
         if (sourceType === 'manual') {
             updateManualBudgetRow(rowId, field, value);
@@ -4579,6 +4593,11 @@ const removeButton = (!isAdmin || previewOnly) ? '' : `
 }
 
     function handleFileUpload(event) {
+    if (isPreviewDataMode) {
+        alert('目前為預覽資料模式，不能上傳或保存附件。請先以使用者或管理者身分正式載入資料後再操作。');
+        event.target.value = '';
+        return;
+    }        
 if (!canEditData()) {
     alert('此帳號沒有上傳附件權限');
     event.target.value = '';
@@ -6161,6 +6180,10 @@ if (!canEditData()) { openLoginModal(); return; }
     function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
 
     async function saveEdit() {
+    if (isPreviewDataMode) {
+        alert('目前為預覽資料模式，不能新增或編輯保存資料。請先以使用者或管理者身分正式載入資料後再操作。');
+        return;
+    }        
 if (!canEditData()) {
     alert('此帳號沒有新增或編輯權限');
     return;
@@ -6200,6 +6223,11 @@ if (idVal === "") {
     }
 
 async function confirmRemove() {
+    if (isPreviewDataMode) {
+        alert('目前為預覽資料模式，不能刪除或保存資料。請先以管理者身分正式載入資料後再操作。');
+        return;
+    }
+
     if (!canDeleteData()) {
         alert('只有管理者可以刪除資料');
         return;
@@ -6217,7 +6245,7 @@ async function confirmRemove() {
     // --- 備份與同步 ---
 
 function handleJsonLoadButton() {
-    if (isAdmin) {
+    if (canImportData()) {
         triggerImportJSON();
     } else {
         triggerLoadPreviewJSON();
@@ -6225,29 +6253,13 @@ function handleJsonLoadButton() {
 }
 
 function triggerLoadPreviewJSON() {
-    const confirmPreview = confirm(
-        '載入預覽會將 JSON 內容載入目前瀏覽器，用於預覽或接續編輯。是否繼續？'
-    );
-
-    if (!confirmPreview) {
-        return;
-    }
-
     document.getElementById('preview-json-file-input').click();
 }
 
 function triggerImportJSON() {
     if (!canImportData()) {
-        alert('只有管理者可以匯入資料，避免覆蓋現有資料。');
+        alert('請先登入使用者或管理者權限後再載入資料。');
         openLoginModal();
-        return;
-    }
-
-    const confirmImport = confirm(
-        '匯入 JSON 會覆蓋目前系統資料。建議先匯出目前備份後再繼續。是否確定選擇檔案匯入？'
-    );
-
-    if (!confirmImport) {
         return;
     }
 
@@ -6261,42 +6273,28 @@ async function exportJSON() {
         return;
     }
 
-try {
-    await persistAllRecords(records);
-    await persistBudgetData();
+    try {
+        await persistAllRecords(records);
+        await persistBudgetData();
 
-    const isFullBackup = isAdmin;
         const exportDate = new Date().toISOString().split('T')[0];
         const exportTime = new Date().toISOString();
 
-const exportData = {
-    version: "certificate-system-json-v1",
-    exportType: isFullBackup ? "full-backup" : "editor-review",
-    exportedBy: isFullBackup ? "admin" : "editor",
-    exportedAt: exportTime,
+        const exportData = {
+            version: "certificate-system-json-v2",
+            exportType: "unified-data",
+            exportedAt: exportTime,
 
-    records: records
-};
+            records: records,
 
-if (isFullBackup) {
-    exportData.config = {
-        admin_password: systemPassword,
-        editor_password: editorPassword,
-        editor_enabled: editorEnabled,
-        compliance_settings: complianceSettings,
-        compliance_basis_files: complianceBasisFiles,
-        budget_records: budgetRecords,
-        budget_fee_defaults: budgetFeeDefaults,
-        manual_budget_rows: manualBudgetRows
-    };
-} else {
-    exportData.config = {
-        compliance_settings: complianceSettings,
-        budget_records: budgetRecords,
-        budget_fee_defaults: budgetFeeDefaults,
-        manual_budget_rows: manualBudgetRows
-    };
-}
+            config: {
+                compliance_settings: complianceSettings,
+                compliance_basis_files: complianceBasisFiles,
+                budget_records: budgetRecords,
+                budget_fee_defaults: budgetFeeDefaults,
+                manual_budget_rows: manualBudgetRows
+            }
+        };
 
         const blob = new Blob([JSON.stringify(exportData, null, 2)], {
             type: 'application/json'
@@ -6306,9 +6304,7 @@ if (isFullBackup) {
         const a = document.createElement('a');
 
         a.href = url;
-        a.download = isFullBackup
-            ? `職安證照管理系統CMS_ADMIN_${exportDate}.json`
-            : `職安證照管理系統CMS_USER_${exportDate}.json`;
+        a.download = `職安證照管理系統_CMS_${exportDate}.json`;
 
         document.body.appendChild(a);
         a.click();
@@ -6345,38 +6341,51 @@ async function loadPreviewJSON(event) {
                 return;
             }
 
-            // 1. 載入證照資料
+            /*
+             * 預覽模式：
+             * 只更新目前頁面變數，不寫入 IndexedDB。
+             * 因此重新整理或關閉頁面後，資料不會保留。
+             */
             records = importedRecords;
-            await persistAllRecords(records);
 
-            // 2. 載入法規配置基準，但不載入基準附件
             if (config.compliance_settings) {
                 applyComplianceSettings(config.compliance_settings);
-                await setConfig('compliance_settings', complianceSettings);
+            } else {
+                applyComplianceSettings(DEFAULT_COMPLIANCE_SETTINGS);
             }
 
-            // 3. 載入預算資料
-            if ('budget_records' in config && config.budget_records && typeof config.budget_records === 'object') {
+            if (Array.isArray(config.compliance_basis_files)) {
+                complianceBasisFiles = config.compliance_basis_files;
+            } else {
+                complianceBasisFiles = [];
+            }
+
+            if (config.budget_records && typeof config.budget_records === 'object') {
                 budgetRecords = config.budget_records;
-                await setConfig('budget_records', budgetRecords);
+            } else {
+                budgetRecords = {};
             }
 
-            if ('budget_fee_defaults' in config && config.budget_fee_defaults && typeof config.budget_fee_defaults === 'object') {
+            if (config.budget_fee_defaults && typeof config.budget_fee_defaults === 'object') {
                 budgetFeeDefaults = config.budget_fee_defaults;
-                await setConfig('budget_fee_defaults', budgetFeeDefaults);
+            } else {
+                budgetFeeDefaults = {};
             }
 
-            if ('manual_budget_rows' in config && Array.isArray(config.manual_budget_rows)) {
+            if (Array.isArray(config.manual_budget_rows)) {
                 manualBudgetRows = config.manual_budget_rows;
                 normalizeBudgetManualRows();
-                await setConfig('manual_budget_rows', manualBudgetRows);
+            } else {
+                manualBudgetRows = [];
             }
 
-            // 預覽載入不處理：
-            // admin_password
-            // editor_password
-            // editor_enabled
-            // compliance_basis_files
+            /*
+             * 預覽載入永遠不處理：
+             * admin_password
+             * editor_password
+             * editor_enabled
+             */
+            isPreviewDataMode = true;
 
             updateItemFilter();
             updateYearFilter();
@@ -6389,7 +6398,7 @@ async function loadPreviewJSON(event) {
             updateUIForRole();
             initIcons();
 
-            alert('預覽檔已載入完成。此資料僅載入目前瀏覽器，不會影響其他人的系統資料。');
+            alert('JSON 預覽資料載入完成。');
 
         } catch (err) {
             console.error('載入預覽失敗', err);
@@ -6404,7 +6413,7 @@ async function loadPreviewJSON(event) {
 
 async function importJSON(event) {
 if (!canImportData()) {
-    alert('只有管理者可以匯入資料。');
+    alert('請先登入使用者或管理者權限後再載入資料。');
     event.target.value = '';
     return;
 }    
@@ -6420,20 +6429,25 @@ if (!canImportData()) {
             // =========================
             // 舊版格式：只有 records 陣列
             // =========================
-            if (Array.isArray(data)) {
-                records = data;
-                await persistAllRecords(records);
+if (Array.isArray(data)) {
+    records = data;
+    await persistAllRecords(records);
 
-                updateItemFilter();
-                updateYearFilter();
-                updateBudgetFilters();
-                renderReport();
-                renderBudgetReport();
-                renderComplianceDashboard();
+    isPreviewDataMode = false;
 
-                alert('舊版數據備份匯入成功！提醒：舊版 JSON 不包含新年度外訓預算統計表資料。');
-                return;
-            }
+    updateItemFilter();
+    updateYearFilter();
+    updateBudgetFilters();
+    renderReport();
+    renderBudgetReport();
+    renderComplianceDashboard();
+    updateComplianceBasisButton();
+    updateUIForRole();
+    initIcons();
+
+    alert('舊版 JSON 資料載入成功！。');
+    return;
+}
 
             // =========================
             // 新版完整備份格式
@@ -6449,23 +6463,6 @@ if (!canImportData()) {
             records = data.records;
             await persistAllRecords(records);
 
-// 2. 還原管理者密碼
-if (config.admin_password) {
-    systemPassword = config.admin_password;
-    await setConfig('admin_password', systemPassword);
-}
-
-// 2-1. 還原使用者密碼與使用者權限狀態
-if (config.editor_password) {
-    editorPassword = config.editor_password;
-    await setConfig('editor_password', editorPassword);
-}
-
-if (typeof config.editor_enabled === 'boolean') {
-    editorEnabled = config.editor_enabled;
-    await setConfig('editor_enabled', editorEnabled);
-}
-
             // 3. 還原法規配置基準
             if (config.compliance_settings) {
                 applyComplianceSettings(config.compliance_settings);
@@ -6473,7 +6470,7 @@ if (typeof config.editor_enabled === 'boolean') {
             }
 
 // 4. 還原法定人員設置基準依據附件
-// 只有完整備份才還原，避免使用者審核檔清空管理者原本設定的基準依據
+// 統一版 JSON 會同步法定依據附件；密碼與權限設定不會由 JSON 還原。
 if (Array.isArray(config.compliance_basis_files)) {
     complianceBasisFiles = config.compliance_basis_files;
     await setConfig('compliance_basis_files', complianceBasisFiles);
@@ -6498,7 +6495,10 @@ if ('manual_budget_rows' in config && Array.isArray(config.manual_budget_rows)) 
     await setConfig('manual_budget_rows', manualBudgetRows);
 }
 
-            // 8. 重新整理畫面
+            // 8. 正式匯入完成，取消預覽模式
+            isPreviewDataMode = false;
+
+            // 9. 重新整理畫面
             updateItemFilter();
             updateYearFilter();
             updateBudgetFilters();
@@ -6506,9 +6506,10 @@ if ('manual_budget_rows' in config && Array.isArray(config.manual_budget_rows)) 
             renderBudgetReport();
             renderComplianceDashboard();
             updateComplianceBasisButton();
+            updateUIForRole();
             initIcons();
 
-            alert('數據匯入成功！系統資料已完成還原。');
+            alert('JSON 資料載入成功！');
 
         } catch (err) {
             console.error('匯入失敗', err);
@@ -6521,9 +6522,21 @@ if ('manual_budget_rows' in config && Array.isArray(config.manual_budget_rows)) 
     reader.readAsText(file);
 }
 
-    async function startAutoUpdate() {
-        const animModal = document.getElementById('update-animation-modal');
-        const progressBar = document.getElementById('update-progress-bar');
+async function startAutoUpdate() {
+    if (isPreviewDataMode) {
+        renderReport();
+        renderBudgetReport();
+        renderComplianceDashboard();
+        updateComplianceBasisButton();
+        updateStats();
+        initIcons();
+
+        alert('預覽資料已重新整理。');
+        return;
+    }
+
+    const animModal = document.getElementById('update-animation-modal');
+    const progressBar = document.getElementById('update-progress-bar');
         
         progressBar.classList.remove('animate-progress');
         progressBar.style.width = '0%';
