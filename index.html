@@ -2513,7 +2513,7 @@ body.print-certificate-report .text-slate-600 {
                     <div class="bg-white w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-3 border border-slate-100 group-hover:bg-indigo-50">
                         <i data-lucide="upload-cloud" class="w-5 h-5 text-slate-400 group-hover:text-indigo-500"></i>
                     </div>
-                    <p class="text-sm font-bold text-slate-600">管理員可上傳新版基準依據檔案</p>
+                    <p class="text-sm font-bold text-slate-600">管理者或使用者可上傳新版基準依據檔案</p>
                     <p class="text-[10px] text-slate-400 mt-1">支援 PDF, PNG, JPG；可點擊或直接拖移檔案至此上傳</p>
                 </div>
             </div>
@@ -2792,8 +2792,8 @@ function canManageSystemSettings() {
 }
 
 function canManageComplianceBasis() {
-    return isAdmin;
-}    
+    return isAdmin || isEditor;
+}   
 
     const COMPLIANCE_ROLE_TEMPLATES = {
         classA: {
@@ -2974,7 +2974,7 @@ function canManageComplianceBasis() {
         const adminTools = document.getElementById('compliance-basis-admin-tools');
         const profileDisplay = document.getElementById('compliance-basis-profile-display');
         const list = document.getElementById('compliance-basis-list');
-        if (adminTools) adminTools.classList.toggle('hidden', !isAdmin);
+        if (adminTools) adminTools.classList.toggle('hidden', !canManageComplianceBasis());
         if (profileDisplay) profileDisplay.innerText = `${complianceProfile.legalBasis}｜${complianceProfile.businessType}｜${complianceProfile.employeeRange}｜勞工人數 ${complianceProfile.employeeCount} 人`;
         if (!list) return;
 
@@ -2982,55 +2982,71 @@ function canManageComplianceBasis() {
         if (!files.length) {
             list.innerHTML = `
                 <div class="text-center text-slate-400 text-sm font-bold py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                    ${isAdmin ? '尚未上傳法定人員設置基準依據檔案，可由上方區塊點擊或拖移新增。' : '目前尚未上傳法定人員設置基準依據檔案，請洽管理員補充。'}
+                    ${canManageComplianceBasis() ? '尚未上傳法定人員設置基準依據檔案，可由上方區塊點擊或拖移新增。' : '目前尚未上傳法定人員設置基準依據檔案，請洽管理者或使用者補充。'}
                 </div>`;
             updateComplianceBasisButton();
             initIcons();
             return;
         }
 
-        list.innerHTML = '';
-        files.forEach((file, index) => {
-            const item = document.createElement('div');
-            item.className = 'flex items-center justify-between gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100 group';
+list.innerHTML = '';
+files.forEach((file, index) => {
+    const item = document.createElement('div');
+    const fileType = getStoredFileType(file);
+    const isPdf = fileType === 'pdf';
+    const fileTypeText = isPdf ? 'PDF 檔案' : '圖片檔案';
+    const fileSizeText = formatAttachmentFileSize(file.size);
 
-            const info = document.createElement('div');
-            info.className = 'flex items-center gap-3 overflow-hidden min-w-0';
-            info.innerHTML = `
-                <div class="bg-white p-2 rounded-lg border border-slate-200 shrink-0">
-                    <i data-lucide="${getStoredFileType(file) === 'pdf' ? 'file-text' : 'image'}" class="w-4 h-4 text-slate-400"></i>
-                </div>
-                <div class="min-w-0">
-                    <p class="text-xs font-bold text-slate-700 truncate">${escapeHTML(file.name)}</p>
-                    <p class="text-[10px] text-slate-400 font-bold">${getStoredFileType(file) === 'pdf' ? 'PDF 基準依據' : '圖片基準依據'}${file.uploadedAt ? '｜' + escapeHTML(file.uploadedAt) : ''}</p>
-                </div>`;
+    item.className = "min-h-[54px] p-3 bg-white rounded-xl border border-slate-200 hover:border-blue-300 hover:bg-blue-50/40 transition cursor-pointer flex items-center justify-between gap-3";
 
-            const actions = document.createElement('div');
-            actions.className = 'flex items-center gap-2 shrink-0';
+    item.onclick = () => openFilePreview(file, '法定人員設置基準依據');
 
-            const previewBtn = document.createElement('button');
-            previewBtn.type = 'button';
-            previewBtn.className = 'w-9 h-9 bg-white border border-blue-100 rounded-lg text-blue-600 hover:bg-blue-50 hover:border-blue-200 transition flex items-center justify-center shadow-sm';
-            previewBtn.title = '預覽基準依據';
-            previewBtn.setAttribute('aria-label', '預覽基準依據');
-            previewBtn.innerHTML = '<i data-lucide="eye" class="w-4 h-4"></i>';
-            previewBtn.onclick = () => openFilePreview(file, '法定人員設置基準依據');
-            actions.appendChild(previewBtn);
+    const fileIcon = isPdf ? `
+        <span class="attachment-symbol attachment-file-type-symbol attachment-file-type-pdf" aria-hidden="true">
+            <svg viewBox="0 0 48 48" focusable="false">
+                <path fill="currentColor" d="M12 4h16l8 8v28a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4Z"/>
+                <path fill="#ffffff" opacity=".9" d="M28 4v8h8l-8-8Z"/>
+                <path fill="#ffffff" d="M15 31h18v4H15v-4Zm0-8h18v4H15v-4Zm0-8h10v4H15v-4Z"/>
+            </svg>
+        </span>` : `
+        <span class="attachment-symbol attachment-file-type-symbol attachment-file-type-image" aria-hidden="true">
+            <svg viewBox="0 0 48 48" focusable="false">
+                <path fill="currentColor" d="M8 10a4 4 0 0 1 4-4h24a4 4 0 0 1 4 4v28a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4V10Z"/>
+                <path fill="#ffffff" opacity=".9" d="M15 34h20L28 24l-5 6-4-5-4 9Z"/>
+                <circle cx="18" cy="17" r="4" fill="#ffffff"/>
+            </svg>
+        </span>`;
 
-            if (isAdmin) {
-                const removeBtn = document.createElement('button');
-                removeBtn.type = 'button';
-                removeBtn.className = 'p-1.5 text-slate-400 hover:text-red-500 opacity-100 md:opacity-0 group-hover:opacity-100 transition';
-                removeBtn.title = '移除此基準依據檔案';
-                removeBtn.innerHTML = '<i data-lucide="trash-2" class="w-3.5 h-3.5"></i>';
-                removeBtn.onclick = () => removeComplianceBasisFile(index);
-                actions.appendChild(removeBtn);
-            }
+    const removeButton = isAdmin ? `
+        <button type="button"
+                onclick="event.stopPropagation(); removeComplianceBasisFile(${index});"
+                class="w-8 h-8 rounded-lg bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition shrink-0"
+                title="移除此基準依據檔案"
+                aria-label="移除此基準依據檔案">
+            <span class="attachment-symbol attachment-trash-symbol" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                    <path fill="currentColor" d="M9 3.5h6l.8 1.7H20a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2h4.2L9 3.5Z"/>
+                    <path fill="currentColor" d="M6.2 8.7h11.6l-.8 10.1A2.5 2.5 0 0 1 14.5 21h-5a2.5 2.5 0 0 1-2.5-2.2L6.2 8.7Zm3.2 2.2a.8.8 0 0 0-.8.8l.3 5.6a.8.8 0 0 0 1.6-.1l-.3-5.6a.8.8 0 0 0-.8-.7Zm5.2 0a.8.8 0 0 0-.8.7l-.3 5.6a.8.8 0 1 0 1.6.1l.3-5.6a.8.8 0 0 0-.8-.8Z"/>
+                </svg>
+            </span>
+        </button>` : '';
 
-            item.appendChild(info);
-            item.appendChild(actions);
-            list.appendChild(item);
-        });
+    item.innerHTML = `
+        <div class="min-w-0 flex items-center gap-3">
+            ${fileIcon}
+            <div class="min-w-0">
+                <p class="text-xs font-bold text-slate-700 truncate">${escapeHTML(file.name)}</p>
+                <p class="text-[11px] text-slate-400 font-medium mt-0.5">${fileTypeText}｜${fileSizeText}</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+            ${removeButton}
+        </div>
+    `;
+
+    list.appendChild(item);
+});
         updateComplianceBasisButton();
         initIcons();
     }
@@ -3049,15 +3065,15 @@ function canManageComplianceBasis() {
         return true;
     }
 
-    async function handleComplianceBasisUpload(event) {
-        if (!isAdmin) return;
+async function handleComplianceBasisUpload(event) {
+    if (!canManageComplianceBasis()) return;
         const files = Array.from(event.target.files || []);
         await processComplianceBasisFiles(files);
         event.target.value = '';
     }
 
-    async function processComplianceBasisFiles(files) {
-        if (!isAdmin) return;
+async function processComplianceBasisFiles(files) {
+    if (!canManageComplianceBasis()) return;
         const validFiles = Array.from(files || []).filter(validateComplianceBasisFile);
         if (!validFiles.length) return;
 
@@ -3474,8 +3490,8 @@ function closeAuxiliaryTooltip(element) {
         const summaryEl = document.getElementById('compliance-profile-summary');
         if (summaryEl) summaryEl.innerText = `${complianceProfile.businessType}｜${complianceProfile.employeeRange}｜勞工人數 ${complianceProfile.employeeCount} 人`;
         const editComplianceBtn = document.getElementById('edit-compliance-btn');
-        if (editComplianceBtn) editComplianceBtn.classList.toggle('hidden', !isAdmin);
-        updateComplianceBasisButton();
+        if (editComplianceBtn) editComplianceBtn.classList.toggle('hidden', !canManageComplianceBasis());
+updateComplianceBasisButton();
 
         const coreRoleHTML = result.coreRoles.map(role => renderComplianceRoleCard(role)).join('');
         const auxiliaryRoleHTML = result.auxiliaryRoles.map(role => renderAuxiliaryComplianceCard(role)).join('');
@@ -3517,8 +3533,8 @@ function closeAuxiliaryTooltip(element) {
     }
 
 
-    function openComplianceSettingsModal() {
-        if (!isAdmin) { openLoginModal(); return; }
+function openComplianceSettingsModal() {
+    if (!canManageComplianceBasis()) { openLoginModal(); return; }
         const typeSelect = document.getElementById('compliance-business-type');
         if (!typeSelect) return;
         typeSelect.innerHTML = COMPLIANCE_BUSINESS_TYPES.map(type => `<option value="${type.key}">${escapeHTML(type.label)}</option>`).join('');
@@ -3558,8 +3574,14 @@ function closeAuxiliaryTooltip(element) {
         }
     }
 
-    async function saveComplianceSettings() {
-        const typeKey = document.getElementById('compliance-business-type').value;
+async function saveComplianceSettings() {
+    if (!canManageComplianceBasis()) {
+        alert('請先登入使用者或管理者權限後再編輯法規配置基準。');
+        openLoginModal();
+        return;
+    }
+
+    const typeKey = document.getElementById('compliance-business-type').value;
         const employeeCount = Math.max(parseInt(document.getElementById('compliance-employee-count').value, 10) || 0, 0);
         applyComplianceSettings({ businessTypeKey: typeKey, employeeCount });
         await setConfig('compliance_settings', complianceSettings);
@@ -4506,19 +4528,19 @@ function renderAttachmentList(previewOnly = false) {
 
         item.onclick = () => openFilePreview(file, record.name);
 
-        const removeButton = previewOnly ? '' : `
-            <button type="button"
-                    onclick="event.stopPropagation(); removeAttachment(${index});"
-                    class="w-8 h-8 rounded-lg bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition shrink-0"
-                    title="移除附件"
-                    aria-label="移除附件">
-                <span class="attachment-symbol attachment-trash-symbol" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" focusable="false">
-                        <path fill="currentColor" d="M9 3.5h6l.8 1.7H20a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2h4.2L9 3.5Z"/>
-                        <path fill="currentColor" d="M6.2 8.7h11.6l-.8 10.1A2.5 2.5 0 0 1 14.5 21h-5a2.5 2.5 0 0 1-2.5-2.2L6.2 8.7Zm3.2 2.2a.8.8 0 0 0-.8.8l.3 5.6a.8.8 0 0 0 1.6-.1l-.3-5.6a.8.8 0 0 0-.8-.7Zm5.2 0a.8.8 0 0 0-.8.7l-.3 5.6a.8.8 0 1 0 1.6.1l.3-5.6a.8.8 0 0 0-.8-.8Z"/>
-                    </svg>
-                </span>
-            </button>`;
+const removeButton = (!isAdmin || previewOnly) ? '' : `
+    <button type="button"
+            onclick="event.stopPropagation(); removeAttachment(${index});"
+            class="w-8 h-8 rounded-lg bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition shrink-0"
+            title="移除附件"
+            aria-label="移除附件">
+        <span class="attachment-symbol attachment-trash-symbol" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+                <path fill="currentColor" d="M9 3.5h6l.8 1.7H20a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2h4.2L9 3.5Z"/>
+                <path fill="currentColor" d="M6.2 8.7h11.6l-.8 10.1A2.5 2.5 0 0 1 14.5 21h-5a2.5 2.5 0 0 1-2.5-2.2L6.2 8.7Zm3.2 2.2a.8.8 0 0 0-.8.8l.3 5.6a.8.8 0 0 0 1.6-.1l-.3-5.6a.8.8 0 0 0-.8-.7Zm5.2 0a.8.8 0 0 0-.8.7l-.3 5.6a.8.8 0 1 0 1.6.1l.3-5.6a.8.8 0 0 0-.8-.8Z"/>
+            </svg>
+        </span>
+    </button>`;
 
         const fileIcon = isPdf ? `
             <span class="attachment-symbol attachment-file-type-symbol attachment-file-type-pdf" aria-hidden="true">
@@ -4636,13 +4658,18 @@ function formatAttachmentFileSize(size) {
     return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
-    function removeAttachment(index) {
-        if (confirm("確定要移除此附件嗎？")) {
-            const record = records.find(r => r.id === currentAttachRecordId);
-            record.attachments.splice(index, 1);
-            renderAttachmentList();
-        }
+function removeAttachment(index) {
+    if (!isAdmin) {
+        alert('只有管理者可以移除附件。');
+        return;
     }
+
+    if (confirm("確定要移除此附件嗎？")) {
+        const record = records.find(r => r.id === currentAttachRecordId);
+        record.attachments.splice(index, 1);
+        renderAttachmentList();
+    }
+}
 
 // --- 檔案預覽：證照系統相容入口 ---
 
