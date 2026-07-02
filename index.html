@@ -6307,8 +6307,8 @@ if (isFullBackup) {
 
         a.href = url;
         a.download = isFullBackup
-            ? `職安證照管理系統_完整備份_${exportDate}.json`
-            : `職安證照管理系統_使用者審核檔_${exportDate}.json`;
+            ? `職安證照管理系統CMS_ADMIN_${exportDate}.json`
+            : `職安證照管理系統CMS_USER_${exportDate}.json`;
 
         document.body.appendChild(a);
         a.click();
