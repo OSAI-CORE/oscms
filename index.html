@@ -1981,6 +1981,236 @@ body.role-admin .hero-section #import-json-btn {
 
 }
 
+/* =========================================================
+   手機版專用微調：證照搜尋列 + 預算表功能列
+   桌機版不受影響
+========================================================= */
+
+/* 手機直式：搜尋姓名欄位高度與所有項目一致 */
+@media screen and (orientation: portrait) and (max-width: 767px) {
+    #certificate-panel .certificate-report-filters .search-container,
+    #certificate-panel .certificate-report-filters select {
+        height: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
+        box-sizing: border-box !important;
+        border-radius: 0.75rem !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container input {
+        height: 100% !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        line-height: 1.2 !important;
+    }
+
+    #certificate-panel .certificate-report-filters select {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        line-height: 1.2 !important;
+    }
+}
+
+/* 手機橫式：姓名、所有項目、所有狀態、所有年度同一排且高度一致 */
+@media screen and (orientation: landscape) and (max-width: 950px) {
+    #certificate-panel .certificate-report-filters {
+        display: grid !important;
+        grid-template-columns: minmax(170px, 1.3fr) minmax(120px, 1fr) minmax(120px, 1fr) minmax(120px, 1fr);
+        gap: 0.5rem !important;
+        width: 100% !important;
+        align-items: center !important;
+        justify-content: stretch !important;
+        flex-wrap: nowrap !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container,
+    #certificate-panel .certificate-report-filters select {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
+        box-sizing: border-box !important;
+        border-radius: 0.75rem !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container {
+        padding: 0 8px !important;
+        flex: none !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container input {
+        height: 100% !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        font-size: 0.78rem !important;
+        line-height: 1.2 !important;
+    }
+
+    #certificate-panel .certificate-report-filters select {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        font-size: 0.78rem !important;
+        line-height: 1.2 !important;
+    }
+
+    #certificate-panel #yearTrainingCount {
+        grid-column: 1 / -1 !important;
+    }
+}
+
+/* 手機直式：預算表第一排三個功能，第二排兩個篩選 */
+@media screen and (orientation: portrait) and (max-width: 767px) {
+    #budget-panel .budget-toolbar-actions {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) 40px;
+        gap: 0.5rem !important;
+        justify-content: stretch !important;
+        align-items: center !important;
+    }
+
+    #budget-panel .budget-export-btn {
+        grid-column: 1 / 2;
+        grid-row: 1;
+    }
+
+    #budget-panel .budget-add-person-btn {
+        grid-column: 2 / 3;
+        grid-row: 1;
+    }
+
+    #budget-panel .budget-save-btn {
+        grid-column: 3 / 4;
+        grid-row: 1;
+        min-width: 40px !important;
+        width: 40px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    #budget-panel .budget-save-btn .budget-save-text {
+        display: none !important;
+    }
+
+    #budget-panel #budgetItemFilter {
+        grid-column: 1 / 2;
+        grid-row: 2;
+    }
+
+    #budget-panel #budgetYearFilter {
+        grid-column: 2 / 4;
+        grid-row: 2;
+    }
+
+    #budget-panel .budget-export-btn,
+    #budget-panel .budget-add-person-btn,
+    #budget-panel .budget-save-btn,
+    #budget-panel #budgetItemFilter,
+    #budget-panel #budgetYearFilter {
+        height: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        border-radius: 0.75rem !important;
+        font-size: 0.72rem !important;
+        line-height: 1.2 !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: nowrap !important;
+    }
+
+    #budget-panel #budgetItemFilter,
+    #budget-panel #budgetYearFilter {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.35rem !important;
+    }
+}
+
+/* 手機橫式：預算表功能鈕與篩選欄同一排 */
+@media screen and (orientation: landscape) and (max-width: 950px) {
+    #budget-panel .budget-toolbar-actions {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: minmax(150px, 1.3fr) minmax(105px, 1fr) 40px minmax(115px, 1fr) minmax(115px, 1fr);
+        gap: 0.45rem !important;
+        justify-content: stretch !important;
+        align-items: center !important;
+    }
+
+    #budget-panel .budget-export-btn {
+        grid-column: 1 / 2;
+        grid-row: 1;
+    }
+
+    #budget-panel .budget-add-person-btn {
+        grid-column: 2 / 3;
+        grid-row: 1;
+    }
+
+    #budget-panel .budget-save-btn {
+        grid-column: 3 / 4;
+        grid-row: 1;
+        min-width: 40px !important;
+        width: 40px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    #budget-panel .budget-save-btn .budget-save-text {
+        display: none !important;
+    }
+
+    #budget-panel #budgetItemFilter {
+        grid-column: 4 / 5;
+        grid-row: 1;
+    }
+
+    #budget-panel #budgetYearFilter {
+        grid-column: 5 / 6;
+        grid-row: 1;
+    }
+
+    #budget-panel .budget-export-btn,
+    #budget-panel .budget-add-person-btn,
+    #budget-panel .budget-save-btn,
+    #budget-panel #budgetItemFilter,
+    #budget-panel #budgetYearFilter {
+        height: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        border-radius: 0.75rem !important;
+        font-size: 0.72rem !important;
+        line-height: 1.2 !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: nowrap !important;
+    }
+
+    #budget-panel #budgetItemFilter,
+    #budget-panel #budgetYearFilter {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.35rem !important;
+    }
+}
+
 .edit-resize-field {
     width: 100%;
     height: 36px;
@@ -2698,22 +2928,35 @@ body.print-certificate-report .text-slate-600 {
                 </div>
             </div>
      
-<div class="flex flex-wrap gap-3 justify-end">
-    <button type="button" onclick="exportBudgetToExcel()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-indigo-700 transition flex items-center gap-2 shadow-sm">
-        <i data-lucide="file-up" class="w-4 h-4"></i> 匯出預算報表
+<div class="flex flex-wrap gap-3 justify-end budget-toolbar-actions">
+    <button type="button"
+            onclick="exportBudgetToExcel()"
+            class="budget-export-btn bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-indigo-700 transition flex items-center gap-2 shadow-sm">
+        <i data-lucide="file-up" class="w-4 h-4"></i>
+        <span>匯出預算報表</span>
     </button>
 
-    <button type="button" onclick="openBudgetAddModal()" class="budget-admin-only bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-emerald-700 transition items-center gap-2 shadow-sm min-w-[120px] justify-center">
-        <i data-lucide="user-plus" class="w-4 h-4"></i> 新增人員
+    <button type="button"
+            onclick="openBudgetAddModal()"
+            class="budget-add-person-btn budget-admin-only bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-emerald-700 transition items-center gap-2 shadow-sm min-w-[120px] justify-center">
+        <i data-lucide="user-plus" class="w-4 h-4"></i>
+        <span>新增人員</span>
     </button>
 
-    <button type="button" onclick="saveBudgetRecordsNow()" class="budget-admin-only bg-amber-500 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-amber-600 transition items-center gap-2 shadow-sm min-w-[120px] justify-center">
-        <i data-lucide="save" class="w-4 h-4"></i> 儲存記錄
+    <button type="button"
+            onclick="saveBudgetRecordsNow()"
+            title="儲存記錄"
+            aria-label="儲存記錄"
+            class="budget-save-btn budget-admin-only bg-amber-500 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-amber-600 transition items-center gap-2 shadow-sm min-w-[120px] justify-center">
+        <i data-lucide="save" class="w-4 h-4"></i>
+        <span class="budget-save-text">儲存記錄</span>
     </button>
 
-    <button type="button" onclick="openLoginModal()" class="budget-login-shortcut bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl font-bold text-sm hover:bg-slate-50 transition inline-flex items-center gap-2 shadow-sm">
+    <button type="button"
+            onclick="openLoginModal()"
+            class="budget-login-shortcut bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl font-bold text-sm hover:bg-slate-50 transition inline-flex items-center gap-2 shadow-sm">
         <i data-lucide="lock-keyhole" class="w-4 h-4"></i>
-        權限登入
+        <span>權限登入</span>
     </button>
                 <select id="budgetItemFilter" onchange="renderBudgetReport()" class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer shadow-sm min-w-[160px]">
                     <option value="">所有項目</option>
