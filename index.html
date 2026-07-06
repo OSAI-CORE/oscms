@@ -2111,6 +2111,19 @@ body.role-admin .hero-section #import-json-btn {
     }
 }
 
+/* 手機版：證照清單與預算表資料列字體與間距統一 */
+@media screen and (max-width: 950px) {
+    #certificate-panel .table-header-cell,
+    #certificate-panel .table-cell,
+    #budget-panel .table-header-cell,
+    #budget-panel .table-cell {
+        font-size: 0.72rem !important;
+        line-height: 1.3 !important;
+        padding: 0.45rem 0.4rem !important;
+        vertical-align: middle !important;
+    }
+}
+
 /* 手機直式：預算表第一排三個功能，第二排兩個篩選 */
 @media screen and (orientation: portrait) and (max-width: 767px) {
     #budget-panel .budget-toolbar-actions {
