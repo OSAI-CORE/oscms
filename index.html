@@ -1897,6 +1897,81 @@ body.role-admin .hero-section #import-json-btn {
     scrollbar-width: thin;
 }
 
+/* 新增 / 編輯人員與新增預算人員 Modal：統一欄位高度與視覺比例 */
+#edit-modal #edit-form input,
+#edit-modal #edit-form select,
+#edit-modal #edit-form textarea,
+#budget-add-modal #budget-add-form input,
+#budget-add-modal #budget-add-form select {
+    width: 100%;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    padding: 0.45rem 0.65rem !important;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.65rem;
+    font-size: 0.875rem;
+    line-height: 1.25;
+    outline: none;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    color: #1e293b;
+}
+
+/* textarea 欄位維持不可手動拉伸，避免高度不一致 */
+#edit-modal #edit-form textarea {
+    resize: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: normal;
+    word-break: break-word;
+}
+
+/* 聚焦時維持目前系統的 indigo 視覺 */
+#edit-modal #edit-form input:focus,
+#edit-modal #edit-form select:focus,
+#edit-modal #edit-form textarea:focus,
+#budget-add-modal #budget-add-form input:focus,
+#budget-add-modal #budget-add-form select:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.35);
+}
+
+/* 新增 / 編輯人員與新增預算人員 Modal：底部功能鈕比例微調 */
+#edit-modal #edit-form > .md\:col-span-2.flex.gap-3.mt-4 button,
+#budget-add-modal #budget-add-form > .md\:col-span-2.flex.gap-3.mt-4 button {
+    min-height: 38px;
+    height: 38px;
+    padding: 0.5rem 0.85rem !important;
+    border-radius: 0.65rem !important;
+    font-size: 0.82rem;
+    font-weight: 800;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+/* 移除按鈕不要過寬，避免壓縮更新資料按鈕 */
+#edit-modal #remove-btn {
+    flex: 0 0 auto;
+    min-width: 82px;
+    padding-left: 0.85rem !important;
+    padding-right: 0.85rem !important;
+}
+
+/* 主要按鈕維持可讀性 */
+#edit-modal #save-btn,
+#budget-add-modal #budget-add-form button:first-child {
+    flex: 1 1 auto;
+}
+
+/* 新增人員模式：移除按鈕被 hidden 時必須完全隱藏，避免被按鈕 display 樣式覆蓋 */
+#edit-modal #remove-btn.hidden {
+    display: none !important;
+}
+
 .edit-resize-field:focus {
     box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.35);
     border-color: #6366f1;
@@ -2938,8 +3013,11 @@ body.print-certificate-report .text-slate-600 {
     </div>
 
     <!-- 編輯紀錄 Modal -->
-    <div id="edit-modal" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[120] p-4">
-        <div class="bg-white p-8 rounded-3xl w-full max-w-lg shadow-2xl scale-in-center max-h-[90vh] overflow-y-auto">
+    <div id="edit-modal"
+     onclick="closeEditModalOutside(event)"
+     class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[120] p-4">
+        <div onclick="event.stopPropagation()"
+     class="bg-white p-8 rounded-3xl w-full max-w-lg shadow-2xl scale-in-center max-h-[90vh] overflow-y-auto">
 <div class="flex justify-between items-start mb-6 gap-4">
     <div>
         <p id="modal-subtitle" class="text-xs font-black text-slate-400 tracking-[0.18em] uppercase mb-1">
@@ -6654,7 +6732,15 @@ if (modalSubtitle) modalSubtitle.innerText = 'NEW CERTIFICATE RECORD';
         initIcons();
     }
 
-    function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
+    function closeEditModal() {
+    document.getElementById('edit-modal').classList.add('hidden');
+}
+
+function closeEditModalOutside(event) {
+    if (event.target === event.currentTarget) {
+        closeEditModal();
+    }
+}
 
     async function saveEdit() {
     if (isPreviewDataMode) {
