@@ -2018,16 +2018,60 @@ body.role-admin .hero-section #import-json-btn {
     }
 }
 
-/* 手機橫式：姓名、所有項目、所有狀態、所有年度同一排且高度一致 */
+/* 手機橫式：證照清單表頭第一排，搜尋欄第二排，避免擠在同一排 */
 @media screen and (orientation: landscape) and (max-width: 950px) {
+    #certificate-panel .certificate-report-title-row {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.65rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    #certificate-panel .certificate-report-title-left {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 0.75rem !important;
+    }
+
+    #certificate-panel .certificate-report-title-left > div {
+        min-width: 0 !important;
+        transform: none !important;
+    }
+
+    #certificate-panel .certificate-report-title-left h2 {
+        font-size: 1rem !important;
+        line-height: 1.2 !important;
+        white-space: nowrap !important;
+    }
+
+    #certificate-panel .certificate-report-title-left p {
+        font-size: 0.62rem !important;
+    }
+
+    #certificate-panel #add-person-btn {
+        flex: 0 0 auto !important;
+        margin-top: 0 !important;
+        height: 34px !important;
+        min-height: 34px !important;
+        padding: 0 0.75rem !important;
+        font-size: 0.74rem !important;
+        white-space: nowrap !important;
+        border-radius: 0.65rem !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
     #certificate-panel .certificate-report-filters {
+        width: 100% !important;
         display: grid !important;
         grid-template-columns: minmax(170px, 1.3fr) minmax(120px, 1fr) minmax(120px, 1fr) minmax(120px, 1fr);
         gap: 0.5rem !important;
-        width: 100% !important;
         align-items: center !important;
         justify-content: stretch !important;
-        flex-wrap: nowrap !important;
+        padding-top: 0 !important;
     }
 
     #certificate-panel .certificate-report-filters .search-container,
