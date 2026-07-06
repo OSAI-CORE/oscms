@@ -243,6 +243,109 @@
         width: auto !important;
     }
 
+    /* 手機直式 / 橫式：同步縮小證照清單搜尋與篩選欄高度，避免姓名證號搜尋欄過大 */
+@media screen and (max-width: 1023px) {
+    #certificate-panel .certificate-report-filters {
+        align-items: center !important;
+        gap: 0.55rem !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container {
+        height: 38px;
+        min-height: 38px;
+        padding: 0 9px;
+        border-radius: 0.75rem;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container input {
+        height: 100%;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        font-size: 0.82rem;
+    }
+
+    #certificate-panel .certificate-report-filters select {
+        height: 38px;
+        min-height: 38px;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        font-size: 0.82rem;
+        border-radius: 0.75rem;
+    }
+
+    #certificate-panel #yearTrainingCount {
+        min-height: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #certificate-panel #yearTrainingCount.hidden {
+        display: none !important;
+    }
+}
+
+/* 手機橫式：證照清單搜尋列維持同一排，比例接近桌機版 */
+@media screen and (orientation: landscape) and (max-width: 950px) {
+    #certificate-panel .certificate-report-filters {
+        flex-wrap: nowrap !important;
+        justify-content: flex-end !important;
+        width: auto !important;
+        gap: 0.5rem !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container {
+        width: 200px !important;
+        max-width: 200px !important;
+        min-width: 200px !important;
+        flex: 0 0 200px !important;
+    }
+
+    #certificate-panel .certificate-report-filters select {
+        width: auto !important;
+        min-width: 118px !important;
+        flex: 0 0 auto !important;
+    }
+
+    #certificate-panel #itemFilter {
+        min-width: 130px !important;
+    }
+
+    #certificate-panel #statusFilter {
+        min-width: 126px !important;
+    }
+
+    #certificate-panel #yearFilter {
+        min-width: 126px !important;
+    }
+}
+
+/* 手機直式：搜尋欄不再過高，仍維持易點擊的兩欄 / 滿版彈性排版 */
+@media screen and (orientation: portrait) and (max-width: 767px) {
+    #certificate-panel .certificate-report-filters {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.55rem !important;
+        width: 100%;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container {
+        grid-column: span 2;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: 38px;
+    }
+
+    #certificate-panel .certificate-report-filters select,
+    #certificate-panel #yearTrainingCount {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+}
+
     #certificate-panel .certificate-report-filters .search-container {
         width: 220px;
         max-width: 220px;
@@ -1916,6 +2019,39 @@ body.role-admin .hero-section #import-json-btn {
     box-sizing: border-box;
     background-color: #ffffff;
     color: #1e293b;
+}
+
+/* 手機瀏覽器日期欄位原生樣式修正：讓受訓日期與其他欄位高度一致 */
+#edit-modal input[type="date"],
+#budget-add-modal input[type="date"] {
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    padding: 0.45rem 0.65rem !important;
+    line-height: 1.25 !important;
+    font-size: 0.875rem !important;
+    border-radius: 0.65rem !important;
+    box-sizing: border-box !important;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #ffffff;
+}
+
+/* iOS / Android 日期欄位內部文字區域修正 */
+#edit-modal input[type="date"]::-webkit-date-and-time-value,
+#budget-add-modal input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+    min-height: 1.25em;
+    line-height: 1.25;
+}
+
+/* 日期欄位圖示區域縮小，避免撐高 */
+#edit-modal input[type="date"]::-webkit-calendar-picker-indicator,
+#budget-add-modal input[type="date"]::-webkit-calendar-picker-indicator {
+    margin: 0;
+    padding: 0;
+    width: 16px;
+    height: 16px;
 }
 
 /* textarea 欄位維持不可手動拉伸，避免高度不一致 */
