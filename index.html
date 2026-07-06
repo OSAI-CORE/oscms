@@ -233,6 +233,65 @@
             max-width: 400px;
         }
 
+        /* 桌機版：證照清單明細報表搜尋與篩選欄同排化 */
+@media screen and (min-width: 1024px) {
+    #certificate-panel .certificate-report-filters {
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 0.65rem !important;
+        width: auto !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container {
+        width: 220px;
+        max-width: 220px;
+        min-width: 220px;
+        height: 40px;
+        padding: 0 10px;
+        flex: 0 0 220px;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container input {
+        height: 100%;
+        padding-top: 0;
+        padding-bottom: 0;
+        font-size: 0.875rem;
+    }
+
+    #certificate-panel .certificate-report-filters select {
+        height: 40px;
+        min-height: 40px;
+        padding-top: 0;
+        padding-bottom: 0;
+        font-size: 0.875rem;
+        flex: 0 0 auto;
+    }
+
+    #certificate-panel #itemFilter {
+        min-width: 140px;
+    }
+
+    #certificate-panel #statusFilter {
+        min-width: 135px;
+    }
+
+    #certificate-panel #yearFilter {
+        min-width: 135px;
+    }
+
+    #certificate-panel #yearTrainingCount {
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #certificate-panel #yearTrainingCount.hidden {
+        display: none !important;
+    }
+}
+
         .scale-in-center {
             animation: scale-in-center 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
         }
