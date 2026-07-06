@@ -1981,6 +1981,324 @@ body.role-admin .hero-section #import-json-btn {
 
 }
 
+/* =========================================================
+   只改手機版：證照清單明細報表搜尋列與新增人員排列
+   桌機版不受影響
+========================================================= */
+
+/* 手機橫式：表頭 + 新增人員第一排，搜尋欄第二排同排排列 */
+@media screen and (orientation: landscape) and (max-width: 950px) {
+    #certificate-panel .certificate-report-title-row {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.65rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    #certificate-panel .certificate-report-title-left {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 0.75rem !important;
+    }
+
+    #certificate-panel .certificate-report-title-left > div {
+        min-width: 0 !important;
+        transform: none !important;
+    }
+
+    #certificate-panel #add-person-btn {
+        flex: 0 0 auto !important;
+        margin-top: 0 !important;
+        height: 34px !important;
+        min-height: 34px !important;
+        padding: 0 0.75rem !important;
+        font-size: 0.74rem !important;
+        white-space: nowrap !important;
+        border-radius: 0.65rem !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    #certificate-panel .certificate-report-filters {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: minmax(150px, 1.25fr) minmax(108px, 1fr) minmax(108px, 1fr) minmax(108px, 1fr);
+        gap: 0.45rem !important;
+        align-items: center !important;
+        justify-content: stretch !important;
+        padding-top: 0 !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container,
+    #certificate-panel .certificate-report-filters select {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
+        box-sizing: border-box !important;
+        border-radius: 0.65rem !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container {
+        padding: 0 8px !important;
+        flex: none !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container input {
+        height: 100% !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        font-size: 0.78rem !important;
+        line-height: 1.2 !important;
+    }
+
+    #certificate-panel .certificate-report-filters select {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0.55rem !important;
+        padding-right: 0.35rem !important;
+        font-size: 0.76rem !important;
+    }
+
+    #certificate-panel #yearTrainingCount {
+        grid-column: 1 / -1 !important;
+        height: 34px !important;
+        min-height: 34px !important;
+        font-size: 0.72rem !important;
+        justify-content: flex-start !important;
+    }
+}
+
+/* 手機直式：姓名搜尋欄高度與所有項目一致，四個搜尋欄整齊同排 */
+@media screen and (orientation: portrait) and (max-width: 767px) {
+    #certificate-panel .certificate-report-title-row {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.65rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    #certificate-panel .certificate-report-title-left {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 0.75rem !important;
+    }
+
+    #certificate-panel .certificate-report-title-left > div {
+        min-width: 0 !important;
+        transform: none !important;
+    }
+
+    #certificate-panel .certificate-report-title-left h2 {
+        font-size: 1rem !important;
+        line-height: 1.2 !important;
+        white-space: nowrap !important;
+    }
+
+    #certificate-panel .certificate-report-title-left p {
+        font-size: 0.62rem !important;
+    }
+
+    #certificate-panel #add-person-btn {
+        flex: 0 0 auto !important;
+        margin-top: 0 !important;
+        height: 34px !important;
+        min-height: 34px !important;
+        padding: 0 0.7rem !important;
+        font-size: 0.72rem !important;
+        white-space: nowrap !important;
+        border-radius: 0.65rem !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    #certificate-panel .certificate-report-filters {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: minmax(96px, 1.25fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr);
+        gap: 0.42rem !important;
+        align-items: center !important;
+        justify-content: stretch !important;
+        padding-top: 0 !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container,
+    #certificate-panel .certificate-report-filters select {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
+        box-sizing: border-box !important;
+        border-radius: 0.65rem !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container {
+        padding: 0 6px !important;
+        flex: none !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container i,
+    #certificate-panel .certificate-report-filters .search-container svg {
+        width: 13px !important;
+        height: 13px !important;
+        margin-left: 0 !important;
+        flex: 0 0 auto !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container input {
+        height: 100% !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0.25rem !important;
+        font-size: 0.68rem !important;
+        line-height: 1.2 !important;
+    }
+
+    #certificate-panel .certificate-report-filters select {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0.35rem !important;
+        padding-right: 0.25rem !important;
+        font-size: 0.68rem !important;
+    }
+
+    #certificate-panel #yearTrainingCount {
+        grid-column: 1 / -1 !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        font-size: 0.68rem !important;
+        justify-content: flex-start !important;
+    }
+}
+
+/* =========================================================
+   只改手機版：新年度外訓預算統計表表頭與功能列排列
+   桌機版不受影響
+========================================================= */
+
+/* 手機橫式與直式：預算表改成三排 */
+@media screen and (max-width: 950px) {
+    #budget-panel > .flex.flex-col.lg\:flex-row {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.65rem !important;
+        align-items: center !important;
+        margin-bottom: 1rem !important;
+    }
+
+    /* 左側表頭 */
+    #budget-panel > .flex.flex-col.lg\:flex-row > div:first-child {
+        min-width: 0 !important;
+        grid-column: 1 / 2;
+        grid-row: 1;
+    }
+
+    #budget-panel > .flex.flex-col.lg\:flex-row > div:first-child h2 {
+        font-size: 1rem !important;
+        line-height: 1.2 !important;
+        white-space: nowrap !important;
+    }
+
+    #budget-panel > .flex.flex-col.lg\:flex-row > div:first-child p {
+        font-size: 0.62rem !important;
+    }
+
+    /* 右側功能區拆散排列 */
+    #budget-panel > .flex.flex-col.lg\:flex-row > div.flex.flex-wrap.gap-3.justify-end {
+        display: contents !important;
+    }
+
+    /* 第一排右側：權限登入 / 新增人員 */
+    #budget-panel .budget-login-shortcut,
+    #budget-panel .budget-admin-only[onclick="openBudgetAddModal()"] {
+        grid-column: 2 / 3;
+        grid-row: 1;
+        justify-self: end;
+        height: 34px !important;
+        min-height: 34px !important;
+        padding: 0 0.75rem !important;
+        font-size: 0.72rem !important;
+        border-radius: 0.65rem !important;
+        white-space: nowrap !important;
+        min-width: auto !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* 第二排：儲存記錄 + 匯出預算報表 */
+    #budget-panel .budget-admin-only[onclick="saveBudgetRecordsNow()"] {
+        grid-column: 1 / 2;
+        grid-row: 2;
+    }
+
+    #budget-panel button[onclick="exportBudgetToExcel()"] {
+        grid-column: 2 / 3;
+        grid-row: 2;
+    }
+
+    #budget-panel .budget-admin-only[onclick="saveBudgetRecordsNow()"],
+    #budget-panel button[onclick="exportBudgetToExcel()"] {
+        width: 100% !important;
+        min-width: 0 !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        padding: 0 0.5rem !important;
+        font-size: 0.74rem !important;
+        border-radius: 0.65rem !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: nowrap !important;
+    }
+
+    /* 第三排：所有項目 + 所有年度 */
+    #budget-panel #budgetItemFilter {
+        grid-column: 1 / 2;
+        grid-row: 3;
+    }
+
+    #budget-panel #budgetYearFilter {
+        grid-column: 2 / 3;
+        grid-row: 3;
+    }
+
+    #budget-panel #budgetItemFilter,
+    #budget-panel #budgetYearFilter {
+        width: 100% !important;
+        min-width: 0 !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0.55rem !important;
+        padding-right: 0.35rem !important;
+        font-size: 0.74rem !important;
+        border-radius: 0.65rem !important;
+    }
+}
+
+/* 手機很窄時，避免預算表表頭被新增人員擠爆 */
+@media screen and (orientation: portrait) and (max-width: 380px) {
+    #budget-panel > .flex.flex-col.lg\:flex-row > div:first-child h2 {
+        font-size: 0.92rem !important;
+    }
+
+    #budget-panel .budget-login-shortcut,
+    #budget-panel .budget-admin-only[onclick="openBudgetAddModal()"] {
+        padding: 0 0.6rem !important;
+        font-size: 0.68rem !important;
+    }
+}
+
 .edit-resize-field {
     width: 100%;
     height: 36px;
