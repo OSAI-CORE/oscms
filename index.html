@@ -1148,6 +1148,100 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
     }
 }
 
+/* 手機橫式：表頭改成接近桌機版，左側標題、右側功能區 */
+@media screen and (orientation: landscape) and (max-width: 950px) {
+    .hero-section {
+        padding: 1rem 1.25rem;
+    }
+
+    /*
+     * 橫式時強制表頭回到桌機邏輯：
+     * 左側系統名稱，右側功能鈕。
+     */
+    .hero-section > .max-w-7xl > .flex {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 1rem !important;
+    }
+
+    .hero-section .flex.items-center.gap-4 {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .hero-section .flex.flex-col.gap-3 {
+        width: auto;
+        flex: 0 0 auto;
+        align-items: flex-end;
+        display: flex;
+        gap: 0.45rem;
+    }
+
+    .hero-section .flex.flex-wrap.gap-3.items-center.justify-end {
+        display: flex;
+        justify-content: flex-end !important;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 0.5rem;
+        width: auto;
+    }
+
+    .hero-section .flex.justify-end.gap-2 {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end !important;
+        gap: 0.45rem;
+        margin-top: 0;
+    }
+
+    .hero-section #export-btn,
+    .hero-section #print-btn,
+    .hero-section #login-toggle-btn,
+    .hero-section #permission-settings-btn {
+        width: auto;
+        min-width: 96px;
+        min-height: 38px;
+        padding: 0.55rem 0.75rem;
+        font-size: 0.72rem;
+        border-radius: 0.75rem;
+        justify-content: center;
+        white-space: nowrap;
+    }
+
+    .hero-section .db-action-btn {
+        width: auto;
+        min-width: 96px;
+        min-height: 32px;
+        justify-content: center;
+        font-size: 0.68rem;
+        padding: 0.4rem 0.65rem;
+        white-space: nowrap;
+    }
+
+    .hero-section h1 {
+        font-size: 1.35rem;
+        line-height: 1.15;
+        white-space: nowrap;
+    }
+
+    .hero-section p {
+        font-size: 0.68rem;
+        white-space: nowrap;
+    }
+
+    .hero-section .bg-indigo-500.p-3 {
+        padding: 0.65rem;
+        border-radius: 0.9rem;
+        flex: 0 0 auto;
+    }
+
+    .hero-section .bg-indigo-500.p-3 [data-lucide] {
+        width: 1.65rem;
+        height: 1.65rem;
+    }
+}
+
 @media screen and (orientation: landscape) and (max-width: 950px) {
     .budget-table .table-header-cell,
     .budget-table .table-cell {
@@ -1345,53 +1439,156 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
     line-height: 1.3;
 }
 
-    .hero-section .flex.flex-wrap.gap-3.items-center.justify-end {
+/* 手機直式：表頭功能鈕依三方權限重新排列 */
+.hero-section .flex.flex-col.gap-3 {
+    width: 100%;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.65rem;
-    width: 100%;
 }
 
+/*
+ * 將主功能鈕區與資料操作鈕區合併到同一個 grid。
+ * 不改 HTML、不改資料邏輯，只改手機直式顯示順序。
+ */
+.hero-section .flex.flex-wrap.gap-3.items-center.justify-end,
+.hero-section .flex.justify-end.gap-2 {
+    display: contents;
+}
+
+/* 第一排固定：匯出報表 / 列印報告 */
+.hero-section #export-btn {
+    order: 1;
+}
+
+.hero-section #print-btn {
+    order: 2;
+}
+
+/*
+ * 第二排：
+ * 預覽者：權限登入
+ * 使用者：儲存並登出
+ * 管理者：儲存並登出
+ */
+.hero-section #login-toggle-btn {
+    order: 3;
+}
+
+/*
+ * 管理者才顯示。
+ * 管理者模式下排在「儲存並登出」右邊。
+ */
+.hero-section #permission-settings-btn {
+    order: 4;
+}
+
+/*
+ * 使用者 / 管理者顯示。
+ * 使用者第三排：匯出資料 / 載入資料
+ * 管理者第三排：匯出資料 / 匯入資料
+ */
+.hero-section #export-json-btn {
+    order: 5;
+}
+
+/*
+ * 預覽者：載入預覽
+ * 使用者：載入資料
+ * 管理者：匯入資料
+ */
+.hero-section #import-json-btn {
+    order: 6;
+}
+
+/* 手機直式：所有表頭功能鈕尺寸統一 */
 .hero-section #login-toggle-btn,
 .hero-section #permission-settings-btn,
 .hero-section #export-btn,
-.hero-section #print-btn {
+.hero-section #print-btn,
+.hero-section #import-json-btn,
+.hero-section #export-json-btn {
     width: 100%;
     min-width: 0;
+    min-height: 40px;
     justify-content: center;
     padding: 0.6rem 0.45rem;
     font-size: 0.75rem;
     border-radius: 0.8rem;
     gap: 0.35rem;
-    min-height: 40px;
 }
 
+/* 資料操作鈕改成與表頭功能鈕一致的灰色系 */
+.hero-section #import-json-btn,
+.hero-section #export-json-btn {
+    background: #475569;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    font-weight: 800;
+}
+
+/*
+ * 預覽者模式：
+ * 匯出報表 / 列印報告
+ * 權限登入 / 載入預覽
+ */
+body.role-viewer .hero-section #login-toggle-btn {
+    grid-column: auto;
+}
+
+body.role-viewer .hero-section #import-json-btn {
+    grid-column: auto;
+}
+
+/*
+ * 使用者模式：
+ * 匯出報表 / 列印報告
+ * 儲存並登出
+ * 匯出資料 / 載入資料
+ */
+body.role-editor .hero-section #login-toggle-btn {
+    grid-column: span 2;
+}
+
+body.role-editor .hero-section #export-json-btn,
+body.role-editor .hero-section #import-json-btn {
+    grid-column: auto;
+}
+
+/*
+ * 管理者模式:
+ * 匯出報表 / 列印報告
+ * 儲存並登出 / 權限設定
+ * 匯出資料 / 匯入資料
+ */
+body.role-admin .hero-section #login-toggle-btn {
+    grid-column: auto;
+}
+
+body.role-admin .hero-section #permission-settings-btn {
+    grid-column: auto;
+}
+
+body.role-admin .hero-section #export-json-btn,
+body.role-admin .hero-section #import-json-btn {
+    grid-column: auto;
+}
+
+/* 手機直式：圖示尺寸統一 */
+.hero-section #login-toggle-btn i,
+.hero-section #login-toggle-btn svg,
 .hero-section #permission-settings-btn i,
 .hero-section #permission-settings-btn svg,
 .hero-section #export-btn i,
 .hero-section #export-btn svg,
 .hero-section #print-btn i,
-.hero-section #print-btn svg {
+.hero-section #print-btn svg,
+.hero-section #import-json-btn i,
+.hero-section #import-json-btn svg,
+.hero-section #export-json-btn i,
+.hero-section #export-json-btn svg {
     width: 14px !important;
     height: 14px !important;
-}
-
-.hero-section #export-btn,
-.hero-section #print-btn {
-    min-width: 0;
-}
-
-.hero-section .flex.justify-end.gap-2 {
-    justify-content: center;
-    width: 100%;
-    margin-top: 0.2rem;
-}
-
-.hero-section .db-action-btn {
-    flex: 1;
-    justify-content: center;
-    font-size: 0.72rem;
-    padding: 0.45rem 0.5rem;
 }
 
     .hero-section {
@@ -1470,13 +1667,9 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
     height: 15px !important;
 }
 
-    .hero-section .flex.flex-col.gap-3 {
-        width: 100%;
-    }
-
-    .hero-section .justify-end {
-        justify-content: flex-start;
-    }
+.hero-section .justify-end {
+    justify-content: center;
+}
 
     .hero-section button {
         min-width: 0;
@@ -6113,6 +6306,16 @@ async function saveAndLogoutSystem() {
 }
 
 function updateUIForRole() {
+document.body.classList.remove('role-viewer', 'role-editor', 'role-admin');
+
+if (isAdmin) {
+    document.body.classList.add('role-admin');
+} else if (isEditor) {
+    document.body.classList.add('role-editor');
+} else {
+    document.body.classList.add('role-viewer');
+}
+
 const badge = document.getElementById('admin-badge');
 const loginBtn = document.getElementById('login-toggle-btn');
 const addPersonBtn = document.getElementById('add-person-btn');
@@ -6135,7 +6338,7 @@ const permissionSettingsBtn = document.getElementById('permission-settings-btn')
         }
 
         if (loginBtn) {
-            loginBtn.innerHTML = '<i data-lucide="log-out" class="w-4 h-4"></i><span>儲存並登出系統</span>';
+            loginBtn.innerHTML = '<i data-lucide="log-out" class="w-4 h-4"></i><span>儲存並登出</span>';
             loginBtn.className = "bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-emerald-700 transition inline-flex items-center gap-2";
             loginBtn.onclick = saveAndLogoutSystem;
         }
@@ -6146,9 +6349,9 @@ const permissionSettingsBtn = document.getElementById('permission-settings-btn')
         }
 
 if (loginBtn) {
-    loginBtn.innerHTML = '<i data-lucide="lock-keyhole" class="w-4 h-4"></i><span>權限登入</span>';
-    loginBtn.className = "bg-slate-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-700 transition inline-flex items-center gap-2 min-w-[120px] justify-center shadow-lg";
-    loginBtn.onclick = openLoginModal;
+loginBtn.innerHTML = '<i data-lucide="lock-keyhole" class="w-4 h-4"></i><span>權限登入</span>';
+loginBtn.className = "bg-slate-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-700 transition inline-flex items-center gap-2 min-w-[120px] justify-center shadow-lg";
+loginBtn.onclick = openLoginModal;
 }
     }
 
