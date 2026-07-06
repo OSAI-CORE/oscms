@@ -1501,30 +1501,50 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
     order: 6;
 }
 
-/* 手機直式：所有表頭功能鈕尺寸統一 */
+/* 手機直式：主功能按鈕維持較醒目的方塊樣式 */
 .hero-section #login-toggle-btn,
 .hero-section #permission-settings-btn,
 .hero-section #export-btn,
-.hero-section #print-btn,
-.hero-section #import-json-btn,
-.hero-section #export-json-btn {
+.hero-section #print-btn {
     width: 100%;
     min-width: 0;
     min-height: 40px;
     justify-content: center;
     padding: 0.6rem 0.45rem;
     font-size: 0.75rem;
+    font-weight: 800;
     border-radius: 0.8rem;
     gap: 0.35rem;
 }
 
-/* 資料操作鈕改成與表頭功能鈕一致的灰色系 */
+/* 手機直式：資料操作按鈕採用桌機 / 橫式 db-action-btn 較輕量樣式 */
 .hero-section #import-json-btn,
 .hero-section #export-json-btn {
-    background: #475569;
+    width: 100%;
+    min-width: 0;
+    min-height: 36px;
+    justify-content: center;
+    padding: 0.45rem 0.55rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    border-radius: 0.55rem;
+    gap: 0.35rem;
+}
+
+/* 手機直式：資料操作按鈕保留 db-action-btn 的輕量資料操作感 */
+.hero-section #import-json-btn,
+.hero-section #export-json-btn {
+    background: rgba(255, 255, 255, 0.05);
+    color: #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: none;
+}
+
+.hero-section #import-json-btn:hover,
+.hero-section #export-json-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
     color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    font-weight: 800;
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 /*
@@ -1574,7 +1594,7 @@ body.role-admin .hero-section #import-json-btn {
     grid-column: auto;
 }
 
-/* 手機直式：圖示尺寸統一 */
+/* 手機直式：主功能按鈕圖示 */
 .hero-section #login-toggle-btn i,
 .hero-section #login-toggle-btn svg,
 .hero-section #permission-settings-btn i,
@@ -1582,13 +1602,18 @@ body.role-admin .hero-section #import-json-btn {
 .hero-section #export-btn i,
 .hero-section #export-btn svg,
 .hero-section #print-btn i,
-.hero-section #print-btn svg,
+.hero-section #print-btn svg {
+    width: 14px !important;
+    height: 14px !important;
+}
+
+/* 手機直式：資料操作按鈕圖示，略小一點，與主功能按鈕區隔 */
 .hero-section #import-json-btn i,
 .hero-section #import-json-btn svg,
 .hero-section #export-json-btn i,
 .hero-section #export-json-btn svg {
-    width: 14px !important;
-    height: 14px !important;
+    width: 13px !important;
+    height: 13px !important;
 }
 
     .hero-section {
