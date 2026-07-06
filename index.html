@@ -1050,6 +1050,46 @@ body.file-preview-open {
     display: block;
 }
 
+/* 桌機版：證照清單明細報表表頭與右側搜尋欄對齊 */
+@media screen and (min-width: 768px) {
+    #certificate-panel .certificate-report-title-row {
+        align-items: flex-start !important;
+    }
+
+    #certificate-panel .certificate-report-title-left {
+        align-items: flex-start !important;
+        padding-top: 1px;
+    }
+
+    #certificate-panel .certificate-report-title-left > div {
+        transform: translateY(-2px);
+    }
+
+    #certificate-panel #add-person-btn {
+        margin-top: 3px;
+    }
+
+    #certificate-panel .certificate-report-filters {
+        align-items: flex-start;
+        padding-top: 0;
+    }
+}
+
+/* 桌機版：系統主表頭 Logo 與系統名稱往上對齊右側功能鈕 */
+@media screen and (min-width: 1024px) {
+    .hero-section > .max-w-7xl > .flex {
+        align-items: flex-start !important;
+    }
+
+    .hero-section > .max-w-7xl > .flex > .flex.items-center.gap-4 {
+        padding-top: 0;
+        transform: translateY(-2px);
+    }
+
+    .hero-section > .max-w-7xl > .flex > .flex.flex-col.gap-3 {
+        padding-top: 0;
+    }
+}
 
 .budget-textarea,
 .budget-resize-field {
@@ -2818,17 +2858,18 @@ body.print-certificate-report .text-slate-600 {
                     <label class="block text-xs font-bold text-slate-500 mb-1">訓練項目</label>
                     <input type="text" id="budget-add-item" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">受訓日期</label>
-                    <input type="date" id="budget-add-date" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">初訓 / 複訓</label>
-                    <select id="budget-add-type" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
-                        <option value="初訓">初訓</option>
-                        <option value="複訓" selected>複訓</option>
-                    </select>
-                </div>
+<div>
+    <label class="block text-xs font-bold text-slate-500 mb-1">初訓 / 複訓</label>
+    <select id="budget-add-type" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+        <option value="初訓">初訓</option>
+        <option value="複訓" selected>複訓</option>
+    </select>
+</div>
+
+<div>
+    <label class="block text-xs font-bold text-slate-500 mb-1">受訓日期</label>
+    <input type="date" id="budget-add-date" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
+</div>
                 <div class="md:col-span-2 flex gap-3 mt-4">
                     <button type="button" onclick="saveBudgetManualRow()" class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition">新增至預算表</button>
                     <button type="button" onclick="closeBudgetAddModal()" class="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold hover:bg-slate-200 transition">取消</button>
@@ -2840,20 +2881,28 @@ body.print-certificate-report .text-slate-600 {
     <!-- 編輯紀錄 Modal -->
     <div id="edit-modal" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[120] p-4">
         <div class="bg-white p-8 rounded-3xl w-full max-w-lg shadow-2xl scale-in-center max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-black text-slate-800" id="modal-title">編輯紀錄明細</h2>
-                <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-6 h-6"></i></button>
-            </div>
+<div class="flex justify-between items-start mb-6 gap-4">
+    <div>
+        <p id="modal-subtitle" class="text-xs font-black text-slate-400 tracking-[0.18em] uppercase mb-1">
+            CERTIFICATE RECORD
+        </p>
+        <h2 class="text-2xl font-black text-slate-800" id="modal-title">編輯紀錄明細</h2>
+    </div>
+
+    <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600">
+        <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+</div>
             <form id="edit-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input type="hidden" id="edit-id">
 <div class="md:col-span-1 mobile-edit-horizontal">
     <label class="block text-xs font-bold text-slate-500 mb-1">作業單位</label>
     <textarea id="edit-dept" class="edit-resize-field" placeholder="" oninput="autoResizeEditableField(this)"></textarea>
 </div>
-                <div class="md:col-span-1">
-                    <label class="block text-xs font-bold text-slate-500 mb-1">姓名</label>
-                    <textarea id="edit-name" class="edit-resize-field" oninput="autoResizeEditableField(this)"></textarea>
-                </div>
+<div class="md:col-span-1 mobile-edit-horizontal">
+    <label class="block text-xs font-bold text-slate-500 mb-1">姓名</label>
+    <textarea id="edit-name" class="edit-resize-field" oninput="autoResizeEditableField(this)"></textarea>
+</div>
 <div class="md:col-span-2 mobile-edit-horizontal">
     <label class="block text-xs font-bold text-slate-500 mb-1">訓練項目</label>
     <textarea id="edit-item" class="edit-resize-field" oninput="autoResizeEditableField(this)"></textarea>
@@ -4478,15 +4527,20 @@ async function saveBudgetRecordsNow() {
     }
 
 function openBudgetAddModal() {
-    if (!canEditData()) { openLoginModal(); return; }
-        const form = document.getElementById('budget-add-form');
-        if (form) form.reset();
-        const year = document.getElementById('budgetYearFilter')?.value || String(new Date().getFullYear());
-        const dateInput = document.getElementById('budget-add-date');
-        if (dateInput && year) dateInput.value = `${year}-01-01`;
-        document.getElementById('budget-add-modal')?.classList.remove('hidden');
-        initIcons();
+    if (!canEditData()) {
+        openLoginModal();
+        return;
     }
+
+    const form = document.getElementById('budget-add-form');
+    if (form) form.reset();
+
+    const dateInput = document.getElementById('budget-add-date');
+    if (dateInput) dateInput.value = '';
+
+    document.getElementById('budget-add-modal')?.classList.remove('hidden');
+    initIcons();
+}
 
     function closeBudgetAddModal() {
         document.getElementById('budget-add-modal')?.classList.add('hidden');
@@ -6503,6 +6557,8 @@ function insertRecordUnderSameDept(record) {
         if (!record) return;
         
         document.getElementById('modal-title').innerText = "編輯紀錄明細";
+        const modalSubtitle = document.getElementById('modal-subtitle');
+if (modalSubtitle) modalSubtitle.innerText = 'EDIT CERTIFICATE RECORD';
         document.getElementById('edit-id').value = record.id;
         document.getElementById('edit-dept').value = record.dept;
         document.getElementById('edit-name').value = record.name;
@@ -6525,6 +6581,8 @@ function insertRecordUnderSameDept(record) {
 if (!canEditData()) { openLoginModal(); return; }
 
         document.getElementById('modal-title').innerText = "新增人員紀錄";
+        const modalSubtitle = document.getElementById('modal-subtitle');
+if (modalSubtitle) modalSubtitle.innerText = 'NEW CERTIFICATE RECORD';
         document.getElementById('edit-id').value = "";
         document.getElementById('edit-form').reset();
         document.getElementById('edit-trainingStatus').value = 'active';
