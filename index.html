@@ -2699,20 +2699,22 @@ body.print-certificate-report .text-slate-600 {
             </div>
      
 <div class="flex flex-wrap gap-3 justify-end">
-    <button type="button" onclick="openLoginModal()" class="budget-login-shortcut bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl font-bold text-sm hover:bg-slate-50 transition inline-flex items-center gap-2 shadow-sm">
-        <i data-lucide="lock-keyhole" class="w-4 h-4"></i>
-        權限登入
+    <button type="button" onclick="exportBudgetToExcel()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-indigo-700 transition flex items-center gap-2 shadow-sm">
+        <i data-lucide="file-up" class="w-4 h-4"></i> 匯出預算報表
     </button>
 
     <button type="button" onclick="openBudgetAddModal()" class="budget-admin-only bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-emerald-700 transition items-center gap-2 shadow-sm min-w-[120px] justify-center">
         <i data-lucide="user-plus" class="w-4 h-4"></i> 新增人員
     </button>
-                <button type="button" onclick="saveBudgetRecordsNow()" class="budget-admin-only bg-amber-500 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-amber-600 transition items-center gap-2 shadow-sm min-w-[120px] justify-center">
-                    <i data-lucide="save" class="w-4 h-4"></i> 儲存記錄
-                </button>
-                <button type="button" onclick="exportBudgetToExcel()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-indigo-700 transition flex items-center gap-2 shadow-sm">
-                    <i data-lucide="file-up" class="w-4 h-4"></i> 匯出預算報表
-                </button>
+
+    <button type="button" onclick="saveBudgetRecordsNow()" class="budget-admin-only bg-amber-500 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-amber-600 transition items-center gap-2 shadow-sm min-w-[120px] justify-center">
+        <i data-lucide="save" class="w-4 h-4"></i> 儲存記錄
+    </button>
+
+    <button type="button" onclick="openLoginModal()" class="budget-login-shortcut bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl font-bold text-sm hover:bg-slate-50 transition inline-flex items-center gap-2 shadow-sm">
+        <i data-lucide="lock-keyhole" class="w-4 h-4"></i>
+        權限登入
+    </button>
                 <select id="budgetItemFilter" onchange="renderBudgetReport()" class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer shadow-sm min-w-[160px]">
                     <option value="">所有項目</option>
                 </select>
