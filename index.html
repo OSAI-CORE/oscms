@@ -4082,19 +4082,46 @@ function normalizeSortText(value) {
     return String(value || '').trim();
 }
 
+function isUnsetTrainingItem(value) {
+    const text = String(value || '').trim();
+
+    /*
+     * 新增人員時若未填訓練項目，saveEdit() 會存成「未設定項目」。
+     * 這裡明確判斷未設定項目，不再依靠特殊符號字串排序。
+     */
+    return !text || text === '未設定項目';
+}
+
+function normalizeSortItem(value) {
+    return String(value || '').trim();
+}
+
 function normalizeSortDate(value) {
     const text = String(value || '').trim();
 
     /*
      * 空白日期排在最後，不影響既有資料內容。
-     * 若未來資料都是 YYYY-MM-DD，字串排序即可符合日期順序。
+     * 若資料都是 YYYY-MM-DD，字串排序即可符合日期順序。
      */
     return text || '9999-12-31';
 }
 
 function compareTrainingItemDateDeptName(a, b, dateField = 'lastDate') {
-    const itemCompare = normalizeSortText(a.item).localeCompare(
-        normalizeSortText(b.item),
+    /*
+     * 先明確判斷「未設定項目」：
+     * - 正式訓練項目排前面
+     * - 未設定項目固定排最後
+     * 不使用 ~~~~ 這類符號字串，避免 zh-Hant localeCompare 排序不穩。
+     */
+    const aItemUnset = isUnsetTrainingItem(a.item);
+    const bItemUnset = isUnsetTrainingItem(b.item);
+
+    if (aItemUnset !== bItemUnset) {
+        return aItemUnset ? 1 : -1;
+    }
+
+    const itemCompare = normalizeSortItem(a.item).localeCompare(
+        normalizeSortItem(b.item),
         'zh-Hant'
     );
     if (itemCompare !== 0) return itemCompare;
