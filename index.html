@@ -1334,24 +1334,22 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
     word-break: break-word;
 }
 
-/* 手機模式：管理員編輯視窗指定欄位改為橫列 */
+/* 手機模式：編輯視窗欄位改為上下排列，與證書號碼、複訓週期、受訓日期一致 */
 @media screen and (max-width: 950px) {
     .mobile-edit-horizontal {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        display: block;
     }
 
     .mobile-edit-horizontal label {
-        flex: 0 0 64px;
-        margin-bottom: 0 !important;
+        display: block;
+        margin-bottom: 0.35rem !important;
         white-space: nowrap;
     }
 
     .mobile-edit-horizontal textarea,
     .mobile-edit-horizontal input,
     .mobile-edit-horizontal select {
-        flex: 1 1 auto;
+        width: 100%;
         min-width: 0;
     }
 }
