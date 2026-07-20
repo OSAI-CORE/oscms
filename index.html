@@ -243,6 +243,9 @@
         width: auto !important;
     }
 
+    /* 結束桌機版 media */
+}
+
     /* 手機直式 / 橫式：同步縮小證照清單搜尋與篩選欄高度，避免姓名證號搜尋欄過大 */
 @media screen and (max-width: 1023px) {
     #certificate-panel .certificate-report-filters {
@@ -319,6 +322,11 @@
     #certificate-panel #yearFilter {
         min-width: 126px !important;
     }
+
+#training-stats-list > div:only-child {
+    grid-column: 1 / -1 !important;
+}
+
 }
 
 /* 手機直式：搜尋欄不再過高，仍維持易點擊的兩欄 / 滿版彈性排版 */
@@ -345,6 +353,8 @@
         min-width: 0 !important;
     }
 }
+
+@media screen and (min-width: 1024px) {
 
     #certificate-panel .certificate-report-filters .search-container {
         width: 220px;
@@ -407,6 +417,17 @@
             background-color: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(4px);
         }
+
+        /* 手機觸控裝置避免點擊權限密碼欄位時瀏覽器自動放大 */
+@media (hover: none) and (pointer: coarse) {
+    .permission-password-input {
+        font-size: 16px !important;
+    }
+
+    .permission-password-input::placeholder {
+        font-size: 16px !important;
+    }
+}
 
         .scan-line {
             width: 100%;
@@ -2471,12 +2492,13 @@ body.role-admin .hero-section #import-json-btn {
     gap: 6px;
     font-size: 12px;
     font-weight: 900;
-    color: #bfdbfe;
+    color: #ffffff;
     padding: 0 4px;
     white-space: nowrap;
 }
 
-.admin-floating-save-btn {
+/* 右下浮動登出：共用尺寸 */
+.admin-floating-logout-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -2484,16 +2506,39 @@ body.role-admin .hero-section #import-json-btn {
     min-height: 38px;
     padding: 9px 14px;
     border-radius: 999px;
-    background: #dc2626;
     color: #ffffff;
     font-size: 13px;
     font-weight: 900;
-    box-shadow: 0 10px 24px rgba(220, 38, 38, 0.28);
     transition: all 0.18s ease;
 }
 
-.admin-floating-save-btn:hover {
-    background: #b91c1c;
+/* 管理者模式：沉穩琥珀金 */
+body.role-admin .admin-floating-logout-btn {
+    background: #b45309;
+    color: #ffffff;
+    border: 1px solid #d97706;
+    box-shadow: 0 8px 20px rgba(180, 83, 9, 0.26);
+}
+
+body.role-admin .admin-floating-logout-btn:hover {
+    background: #92400e;
+    color: #ffffff;
+    border-color: #b45309;
+    transform: translateY(-1px);
+}
+
+/* 使用者模式：沉穩深青綠 */
+body.role-editor .admin-floating-logout-btn {
+    background: #0f766e;
+    color: #ffffff;
+    border: 1px solid #0d9488;
+    box-shadow: 0 8px 20px rgba(15, 118, 110, 0.24);
+}
+
+body.role-editor .admin-floating-logout-btn:hover {
+    background: #115e59;
+    color: #ffffff;
+    border-color: #0f766e;
     transform: translateY(-1px);
 }
 
@@ -2507,11 +2552,11 @@ body.role-admin .hero-section #import-json-btn {
         padding: 10px;
     }
 
-    .admin-floating-save-btn {
-        flex: 1;
-        min-height: 44px;
-        font-size: 14px;
-    }
+.admin-floating-logout-btn {
+    flex: 1;
+    min-height: 44px;
+    font-size: 14px;
+}
 
     .admin-floating-status {
         flex: 0 0 auto;
@@ -2552,6 +2597,11 @@ body.role-admin .hero-section #import-json-btn {
 }
 
 @media print {
+#admin-floating-bar {
+    display: none !important;
+}
+
+
 @page {
     size: A4 landscape;
     margin: 1cm 1cm 1.4cm 1cm;
@@ -2573,12 +2623,14 @@ body.role-admin .hero-section #import-json-btn {
     body.print-certificate-report header.hero-section,
     body.print-certificate-report footer.system-footer,
     body.print-certificate-report #compliance-dashboard,
+    body.print-certificate-report #admin-floating-bar,
         body.print-certificate-report #login-toggle-btn,
     body.print-certificate-report #export-btn,
     body.print-certificate-report #print-btn,
     body.print-certificate-report #auto-update-btn,
     body.print-certificate-report .db-action-btn,
     body.print-certificate-report #add-person-btn,
+    body.print-certificate-report #save-certificate-btn,
     body.print-certificate-report .search-container,
     body.print-certificate-report select,
     body.print-certificate-report .year-training-pill,
@@ -2774,6 +2826,147 @@ body.print-certificate-report .text-slate-600 {
 }
 
 }
+
+/* 手機橫式：合規看板比照桌機配置 */
+@media screen and (orientation: landscape) and (max-width: 950px) {
+    #compliance-dashboard {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) !important;
+        gap: 1rem !important;
+        align-items: stretch !important;
+    }
+
+    #compliance-status-card {
+        grid-column: 1 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    #compliance-role-card {
+        grid-column: 2 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    #training-stats-card {
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    #training-stats-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+}
+
+/* =========================================================
+   證照清單與預算表：新增／儲存圖示按鈕統一比例
+   不改動既有手機直式與橫式 Grid 排版
+========================================================= */
+
+/* 證照清單標題旁的兩顆功能鈕維持同一排 */
+.certificate-title-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    margin-top: 3px;
+}
+
+/* 證照清單：新增與儲存 */
+#certificate-panel #add-person-btn,
+#certificate-panel #save-certificate-btn {
+    width: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+
+    flex: 0 0 36px !important;
+    padding: 0 !important;
+    margin-top: 0 !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* 預算表：新增與儲存 */
+#budget-panel .budget-add-person-btn,
+#budget-panel .budget-save-btn {
+    width: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+
+    padding: 0 !important;
+    flex: 0 0 36px !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/*
+ * 手機 Grid 原本已經安排：
+ * 新增在第 2 欄、儲存在第 3 欄。
+ * 只調整按鈕在各自欄位裡的對齊，不改 grid-template-columns。
+ */
+#budget-panel .budget-add-person-btn {
+    justify-self: end;
+}
+
+#budget-panel .budget-save-btn {
+    justify-self: start;
+}
+
+/* 統一 Lucide 圖示比例 */
+#certificate-panel #add-person-btn svg,
+#certificate-panel #save-certificate-btn svg,
+#budget-panel .budget-add-person-btn svg,
+#budget-panel .budget-save-btn svg {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+/* 手機模式沿用原本表頭位置，不重新排列 */
+@media screen and (max-width: 950px) {
+    .certificate-title-actions {
+        margin-top: 0;
+    }
+}
+
+/* 表頭登出按鈕：固定背景色，避免角色切換時 hover / focus 顏色閃動 */
+.header-logout-btn {
+    background: #64748b !important;
+    color: #ffffff !important;
+    border: 1px solid #94a3b8 !important;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
+}
+
+/*
+ * 滑入時維持相同背景色，
+ * 僅稍微加深陰影，不再突然變成深灰色。
+ */
+.header-logout-btn:hover,
+.header-logout-btn:focus-visible {
+    background: #64748b !important;
+    color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.24);
+    transform: translateY(-1px);
+}
+
+/* 只有實際按下時才稍微加深 */
+.header-logout-btn:active {
+    background: #475569 !important;
+    border-color: #94a3b8 !important;
+    transform: translateY(0);
+}
+
     </style>
 </head>
 <body>
@@ -2876,7 +3069,7 @@ body.print-certificate-report .text-slate-600 {
 
     <main class="max-w-7xl mx-auto p-6 md:p-8">
 
-        <section id="compliance-dashboard" class="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-6">
+        <section id="compliance-dashboard" class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
             <div id="compliance-status-card" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden relative">
                 <div class="absolute -right-8 -top-8 w-28 h-28 bg-emerald-50 rounded-full"></div>
                 <div class="relative z-10">
@@ -2901,7 +3094,8 @@ body.print-certificate-report .text-slate-600 {
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 xl:col-span-2">
+            <div id="compliance-role-card"
+     class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 lg:col-span-2">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
                     <div>
                         <p class="text-xs font-black text-slate-400 tracking-[0.18em] uppercase">Required Roles</p>
@@ -2916,7 +3110,8 @@ body.print-certificate-report .text-slate-600 {
                 <div id="compliance-role-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
             </div>
 
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 xl:col-span-3">
+            <div id="training-stats-card"
+     class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 lg:col-span-3">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
                     <div>
                         <p class="text-xs font-black text-slate-400 tracking-[0.18em] uppercase">Training Statistics</p>
@@ -2924,7 +3119,8 @@ body.print-certificate-report .text-slate-600 {
                     </div>
                     <div class="text-xs text-slate-400 font-bold">有效、停訓、待受訓、已過期依證照清單明細報表自動統計</div>
                 </div>
-                <div id="training-stats-list" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 max-h-[320px] overflow-y-auto pr-1"></div>
+                <div id="training-stats-list"
+     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[320px] overflow-y-auto pr-1"></div>
             </div>
         </section>
 
@@ -2947,9 +3143,27 @@ body.print-certificate-report .text-slate-600 {
     <i data-lucide="clipboard-check" class="w-5 h-5"></i> 證照清單明細報表
 </h2>
                 </div>
-                <button id="add-person-btn" onclick="openAddModal()" class="hidden bg-emerald-600 text-white px-4 py-1.5 rounded-lg font-bold text-sm hover:bg-emerald-700 transition flex items-center gap-2 shadow-sm">
-                    <i data-lucide="user-plus" class="w-4 h-4"></i> 新增人員
-                </button>
+<span class="certificate-title-actions">
+
+<button id="add-person-btn"
+        type="button"
+        onclick="openAddModal()"
+        title="新增人員"
+        aria-label="新增人員"
+        class="hidden certificate-icon-action-btn bg-amber-300 text-amber-950 border border-amber-400 rounded-lg hover:bg-amber-400 hover:text-amber-950 hover:border-amber-500 transition flex items-center justify-center shadow-sm">
+    <i data-lucide="user-plus" class="w-4 h-4"></i>
+</button>
+
+<button id="save-certificate-btn"
+        type="button"
+        onclick="saveSystemNow()"
+        title="儲存資料"
+        aria-label="儲存資料"
+        class="hidden certificate-icon-action-btn bg-emerald-600 text-white border border-emerald-600 rounded-lg hover:bg-emerald-700 hover:border-emerald-700 transition flex items-center justify-center shadow-sm">
+    <i data-lucide="save" class="w-4 h-4"></i>
+</button>
+
+</span>
             </div>
 
             <div id="print-item-people-summary" class="print-item-people-summary"></div>
@@ -3021,21 +3235,21 @@ body.print-certificate-report .text-slate-600 {
         <span>匯出預算報表</span>
     </button>
 
-    <button type="button"
-            onclick="openBudgetAddModal()"
-            class="budget-add-person-btn budget-admin-only bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-emerald-700 transition items-center gap-2 shadow-sm min-w-[120px] justify-center">
-        <i data-lucide="user-plus" class="w-4 h-4"></i>
-        <span>新增人員</span>
-    </button>
+<button type="button"
+        onclick="openBudgetAddModal()"
+        title="新增人員"
+        aria-label="新增人員"
+        class="budget-add-person-btn budget-admin-only bg-amber-300 text-amber-950 border border-amber-400 rounded-xl hover:bg-amber-400 hover:text-amber-950 hover:border-amber-500 transition items-center justify-center shadow-sm">
+    <i data-lucide="user-plus" class="w-4 h-4"></i>
+</button>
 
-    <button type="button"
-            onclick="saveBudgetRecordsNow()"
-            title="儲存記錄"
-            aria-label="儲存記錄"
-            class="budget-save-btn budget-admin-only bg-amber-500 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-amber-600 transition items-center gap-2 shadow-sm min-w-[120px] justify-center">
-        <i data-lucide="save" class="w-4 h-4"></i>
-        <span class="budget-save-text">儲存記錄</span>
-    </button>
+<button type="button"
+        onclick="saveBudgetRecordsNow()"
+        title="儲存資料"
+        aria-label="儲存資料"
+        class="budget-save-btn budget-admin-only bg-emerald-600 text-white border border-emerald-600 rounded-xl hover:bg-emerald-700 hover:border-emerald-700 transition items-center justify-center shadow-sm">
+    <i data-lucide="save" class="w-4 h-4"></i>
+</button>
 
     <button type="button"
             onclick="openLoginModal()"
@@ -3126,9 +3340,11 @@ body.print-certificate-report .text-slate-600 {
         <span>編輯模式中</span>
     </div>
 
-    <button type="button" onclick="saveAndLogoutSystem()" class="admin-floating-save-btn">
-        <i data-lucide="save" class="w-4 h-4"></i>
-        <span>儲存並登出</span>
+    <button type="button"
+            onclick="logoutSystem()"
+            class="admin-floating-logout-btn">
+        <i data-lucide="door-open" class="w-4 h-4"></i>
+        <span>登出</span>
     </button>
 </div>
     
@@ -3296,9 +3512,9 @@ body.print-certificate-report .text-slate-600 {
                     <label class="block text-xs font-bold text-slate-600 mb-1">
                         目前管理者密碼
                     </label>
-                    <input type="password" id="old-pwd"
-                           class="w-full px-4 py-2 bg-slate-100 border-none rounded-lg focus:ring-2 focus:ring-indigo-500 transition outline-none text-sm"
-                           placeholder="••••••">
+<input type="password" id="old-pwd"
+       class="permission-password-input w-full px-4 py-2 bg-slate-100 border-none rounded-lg focus:ring-2 focus:ring-indigo-500 transition outline-none text-sm"
+       placeholder="••••••">
                 </div>
 
                 <div>
@@ -3306,7 +3522,7 @@ body.print-certificate-report .text-slate-600 {
                         新管理者密碼
                     </label>
                     <input type="password" id="new-admin-pwd"
-                           class="w-full px-4 py-2 bg-slate-100 border-none rounded-lg focus:ring-2 focus:ring-indigo-500 transition outline-none text-sm"
+                           class="permission-password-input w-full px-4 py-2 bg-slate-100 border-none rounded-lg focus:ring-2 focus:ring-indigo-500 transition outline-none text-sm"
                            placeholder="••••••">
                 </div>
 
@@ -3315,7 +3531,7 @@ body.print-certificate-report .text-slate-600 {
                         新使用者密碼
                     </label>
                     <input type="password" id="new-editor-pwd"
-                           class="w-full px-4 py-2 bg-slate-100 border-none rounded-lg focus:ring-2 focus:ring-indigo-500 transition outline-none text-sm"
+                           class="permission-password-input w-full px-4 py-2 bg-slate-100 border-none rounded-lg focus:ring-2 focus:ring-indigo-500 transition outline-none text-sm"
                            placeholder="••••••">
                 </div>
 
@@ -3852,6 +4068,168 @@ function canManageComplianceBasis() {
         complianceProfile = buildComplianceProfile(complianceSettings.businessTypeKey, complianceSettings.employeeCount);
     }
 
+/*
+ * 正式資料只在管理者 / 使用者登入成功後載入。
+ * 預覽者開啟系統時不讀取 IndexedDB 的正式業務資料。
+ */
+async function loadFormalDataFromDB() {
+    const formalRecords = await fetchAllRecords();
+    const savedComplianceSettings = await getConfig('compliance_settings');
+    const savedComplianceBasisFiles = await getConfig('compliance_basis_files');
+    const savedBudgetRecords = await getConfig('budget_records');
+    const savedBudgetFeeDefaults = await getConfig('budget_fee_defaults');
+    const savedManualBudgetRows = await getConfig('manual_budget_rows');
+
+    records = Array.isArray(formalRecords) ? formalRecords : [];
+
+    applyComplianceSettings(
+        savedComplianceSettings || DEFAULT_COMPLIANCE_SETTINGS
+    );
+
+    complianceBasisFiles = Array.isArray(savedComplianceBasisFiles)
+        ? savedComplianceBasisFiles
+        : [];
+
+    budgetRecords =
+        savedBudgetRecords &&
+        typeof savedBudgetRecords === 'object'
+            ? savedBudgetRecords
+            : {};
+
+    budgetFeeDefaults =
+        savedBudgetFeeDefaults &&
+        typeof savedBudgetFeeDefaults === 'object'
+            ? savedBudgetFeeDefaults
+            : {};
+
+    manualBudgetRows = Array.isArray(savedManualBudgetRows)
+        ? savedManualBudgetRows
+        : [];
+
+    normalizeBudgetManualRows();
+}
+
+
+/*
+ * 清除目前頁面中的正式 / 預覽工作資料。
+ * 只清除記憶體畫面，不刪除 IndexedDB 內的正式資料。
+ */
+function clearViewerWorkingData() {
+    records = [];
+    currentAttachRecordId = null;
+    complianceBasisFiles = [];
+    budgetRecords = {};
+    budgetFeeDefaults = {};
+    manualBudgetRows = [];
+    isPreviewDataMode = false;
+
+    applyComplianceSettings(DEFAULT_COMPLIANCE_SETTINGS);
+    normalizeBudgetManualRows();
+
+    const resetIds = [
+        'searchInput',
+        'statusFilter',
+        'itemFilter',
+        'yearFilter',
+        'budgetItemFilter',
+        'budgetYearFilter'
+    ];
+
+    resetIds.forEach(id => {
+        const element = document.getElementById(id);
+
+        if (element) {
+            element.value = '';
+        }
+    });
+
+    const budgetYearFilter =
+        document.getElementById('budgetYearFilter');
+
+    if (budgetYearFilter) {
+        delete budgetYearFilter.dataset.initialized;
+    }
+}
+
+
+/*
+ * 統一重新整理整個系統畫面。
+ */
+function refreshSystemView() {
+    updateItemFilter();
+    updateYearFilter();
+    updateBudgetFilters();
+    updateUIForRole();
+    renderReport();
+    updateComplianceBasisButton();
+}
+
+
+/*
+ * 管理者或使用者密碼正確後，
+ * 重新從 IndexedDB 載入正式資料。
+ */
+async function completeFormalLogin(role) {
+    try {
+        /*
+         * 先確認正式資料可完整讀取，再切換權限。
+         * 若載入失敗，原本的預覽資料仍會保留。
+         */
+        await loadFormalDataFromDB();
+
+[
+    'searchInput',
+    'statusFilter',
+    'itemFilter',
+    'yearFilter',
+    'budgetItemFilter',
+    'budgetYearFilter'
+].forEach(id => {
+    const element = document.getElementById(id);
+    if (element) element.value = '';
+});
+
+const budgetYearFilter =
+    document.getElementById('budgetYearFilter');
+
+if (budgetYearFilter) {
+    delete budgetYearFilter.dataset.initialized;
+}
+
+        isAdmin = role === 'admin';
+        isEditor = true;
+        isPreviewDataMode = false;
+
+        closeLoginModal();
+        refreshSystemView();
+
+    } catch (error) {
+        console.error('正式資料載入失敗：', error);
+        alert('正式資料載入失敗，請重新整理後再試。');
+    }
+}
+
+
+/*
+ * 預覽者主動退出預覽。
+ */
+function exitPreviewMode() {
+    if (!isPreviewDataMode) return;
+
+    const confirmed = confirm(
+        '確定要退出預覽嗎？\n\n' +
+        '目前載入的預覽資料將被清除，' +
+        '但不會影響系統正式資料。'
+    );
+
+    if (!confirmed) return;
+
+    clearViewerWorkingData();
+    refreshSystemView();
+
+    alert('已退出預覽，暫存的預覽資料已清除。');
+}
+
     function escapeHTML(value) {
         return String(value ?? '').replace(/[&<>'"]/g, function(char) {
             return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char];
@@ -4367,7 +4745,7 @@ function closeAuxiliaryTooltip(element) {
         const statusIconHTML = renderStatusIconHTML(role.complete, 'check-circle-2');
         const reminderText = role.complete ? `已達法定最低配置要求，有效配置 ${role.validCount} 人。` : `有效配置 ${role.validCount} 人，仍需補足 ${role.missing} 人。`;
         return `
-            <div class="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+            <div class="rounded-2xl border border-slate-100 bg-slate-50/70 p-3">
                 <div class="flex items-start justify-between gap-3 mb-3">
                     <div class="flex items-start gap-3 min-w-0">
                         <div class="w-9 h-9 rounded-xl ${role.complete ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600 ring-2 ring-rose-100'} flex items-center justify-center shrink-0">
@@ -4452,31 +4830,31 @@ updateComplianceBasisButton();
 
         const trainingStats = getTrainingItemStats();
         if (trainingStats.length === 0) {
-            trainingList.innerHTML = '<div class="xl:col-span-3 text-center text-slate-400 text-sm font-bold py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200">目前尚無訓練項目資料</div>';
+            trainingList.innerHTML = '<div class="lg:col-span-3 text-center text-slate-400 text-sm font-bold py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200">目前尚無訓練項目資料</div>';
         } else {
             trainingList.innerHTML = trainingStats.map(stat => `
-                <div class="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
-                    <div class="flex items-center justify-between gap-3 mb-3">
+                <div class="rounded-2xl border border-slate-100 bg-slate-50/70 p-3">
+                    <div class="flex items-center justify-between gap-3 mb-2">
                         <p class="font-black text-slate-800 text-sm truncate" title="${escapeHTML(stat.item)}">${escapeHTML(stat.item)}</p>
                         <span class="text-xs font-black text-indigo-600 bg-indigo-50 rounded-full px-2.5 py-1">${stat.total} 人</span>
                     </div>
 <div class="grid grid-cols-4 gap-2 text-center">
-    <div class="bg-white rounded-xl border border-slate-100 px-2 py-2">
+    <div class="bg-white rounded-xl border border-slate-100 px-2 py-1.5">
         <p class="text-[10px] text-slate-400 font-bold">有效</p>
         <p class="text-sm font-black text-emerald-600">${stat.valid}</p>
     </div>
 
-    <div class="bg-white rounded-xl border border-slate-100 px-2 py-2">
+    <div class="bg-white rounded-xl border border-slate-100 px-2 py-1.5">
         <p class="text-[10px] text-slate-400 font-bold">停訓</p>
         <p class="text-sm font-black text-slate-600">${stat.stopped}</p>
     </div>
 
-    <div class="bg-white rounded-xl border border-slate-100 px-2 py-2">
+    <div class="bg-white rounded-xl border border-slate-100 px-2 py-1.5">
         <p class="text-[10px] text-slate-400 font-bold">待受訓</p>
         <p class="text-sm font-black text-amber-600">${stat.warning}</p>
     </div>
 
-    <div class="bg-white rounded-xl border border-slate-100 px-2 py-2">
+    <div class="bg-white rounded-xl border border-slate-100 px-2 py-1.5">
         <p class="text-[10px] text-slate-400 font-bold">已過期</p>
         <p class="text-sm font-black text-rose-600">${stat.expired}</p>
     </div>
@@ -5149,12 +5527,8 @@ ${canEditData() ? `
     }
 
 async function saveBudgetRecordsNow() {
-    if (!canEditData()) { openLoginModal(); return; }
-        await persistAllRecords(records);
-        await persistBudgetData();
-        alert('預算資料已儲存，並完成登出。');
-        finalLogoutConfirm();
-    }
+    await saveSystemNow();
+}
 
 function openBudgetAddModal() {
     if (!canEditData()) {
@@ -5331,7 +5705,7 @@ async function saveBudgetManualRow() {
         let visibleCount = 0;
 
         if (records.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="10" class="p-20 text-center text-slate-400">目前尚無資料，請登入管理帳號新增或匯入資料。</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="10" class="p-20 text-center text-slate-400">目前尚無資料，可載入預覽資料或使用權限登入。</td></tr>';
         } else {
             [...records]
     .sort((a, b) => compareTrainingItemDateDeptName(a, b, 'lastDate'))
@@ -5467,14 +5841,31 @@ function handleLinkClick(id) {
         initIcons();
     }
 
-    async function closeAttachmentModal() {
-        document.getElementById('attachment-modal').classList.add('hidden');
-        document.getElementById('upload-area').classList.remove('hidden');
-        document.getElementById('attachment-modal-title').innerText = '附件資料管理';
-        currentAttachRecordId = null;
+async function closeAttachmentModal() {
+    document
+        .getElementById('attachment-modal')
+        .classList.add('hidden');
+
+    document
+        .getElementById('upload-area')
+        .classList.remove('hidden');
+
+    document
+        .getElementById('attachment-modal-title')
+        .innerText = '附件資料管理';
+
+    currentAttachRecordId = null;
+
+    /*
+     * 預覽者關閉附件視窗時，只關閉畫面，
+     * 不得把預覽資料寫入正式資料庫。
+     */
+    if (canEditData() && !isPreviewDataMode) {
         await persistAllRecords(records);
-        renderReport();
     }
+
+    renderReport();
+}
 
     function closeAttachmentModalOutside(event) {
         if (event.target === event.currentTarget) closeAttachmentModal();
@@ -6789,18 +7180,48 @@ summaryWs['!merges'] = [
 // --- 驗證與登入邏輯 ---
 
 function openLoginModal() {
-    const modal = document.getElementById('login-modal');
-    const input = document.getElementById('login-pwd');
-    const loginError = document.getElementById('login-error');
+    /*
+     * 比照績效管理系統：
+     * 預覽資料存在時，登入前先詢問。
+     * 確認後立即退出預覽並清除目前預覽資料，
+     * 再開啟權限登入視窗。
+     */
+    if (isPreviewDataMode) {
+        if (
+            !confirm(
+                '登入前將先退出預覽並清除目前預覽資料，是否繼續？'
+            )
+        ) {
+            return;
+        }
 
-    if (input) input.value = "";
+        clearViewerWorkingData();
+        refreshSystemView();
+    }
+
+    const modal =
+        document.getElementById('login-modal');
+
+    const input =
+        document.getElementById('login-pwd');
+
+    const loginError =
+        document.getElementById('login-error');
+
+    if (input) {
+        input.value = "";
+    }
 
     if (loginError) {
-        loginError.innerText = "密碼錯誤，請重新輸入";
+        loginError.innerText =
+            "密碼錯誤，請重新輸入";
+
         loginError.classList.add('hidden');
     }
 
-    if (modal) modal.classList.remove('hidden');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
 
     setTimeout(() => {
         if (input) input.focus();
@@ -6859,27 +7280,15 @@ async function checkPassword() {
         return;
     }
 
-    if (pwd === systemPassword) {
-        isAdmin = true;
-        isEditor = true;
-        isPreviewDataMode = false;
+if (pwd === systemPassword) {
+    await completeFormalLogin('admin');
+    return;
+}
 
-        closeLoginModal();
-        updateUIForRole();
-        renderReport();
-        return;
-    }
-
-    if (editorEnabled && pwd === editorPassword) {
-        isAdmin = false;
-        isEditor = true;
-        isPreviewDataMode = false;
-
-        closeLoginModal();
-        updateUIForRole();
-        renderReport();
-        return;
-    }
+if (editorEnabled && pwd === editorPassword) {
+    await completeFormalLogin('editor');
+    return;
+}
 
     if (!editorEnabled && pwd === editorPassword) {
         if (loginError) {
@@ -6983,36 +7392,104 @@ async function savePasswordSettings() {
     document.getElementById('new-editor-pwd').value = '';
 }
 
-async function saveAndLogoutSystem() {
+/*
+ * 將目前畫面中的資料正式寫入 IndexedDB。
+ * 不顯示訊息，也不改變登入狀態。
+ */
+async function persistCurrentSystemData() {
+    /*
+     * 讓正在輸入的欄位先失去焦點，
+     * 觸發 onchange，避免最後一格尚未同步。
+     */
+    if (
+        document.activeElement &&
+        document.activeElement instanceof HTMLElement
+    ) {
+        document.activeElement.blur();
+    }
+
+    /*
+     * 讓 blur / change 事件先完成。
+     */
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    isPreviewDataMode = false;
+
+    normalizeBudgetManualRows();
+
+    await persistAllRecords(records);
+    await persistBudgetData();
+}
+
+
+/*
+ * 手動儲存資料，但不登出。
+ * 證照清單與預算表的儲存圖示共用此函式。
+ */
+async function saveSystemNow() {
     if (!canEditData()) {
         openLoginModal();
         return;
     }
 
     try {
+        await persistCurrentSystemData();
+
+        alert('資料已儲存。');
+
+    } catch (error) {
+        console.error('資料儲存失敗：', error);
+
+        const message =
+            error && error.message
+                ? error.message
+                : String(error || '未知錯誤');
+
+        alert('資料儲存失敗：' + message);
+    }
+}
+
+
+/*
+ * 登出前仍執行最後一次安全儲存，
+ * 但介面功能名稱統一顯示為「登出」。
+ */
+async function logoutSystem() {
+    if (!canEditData()) {
+        openLoginModal();
+        return;
+    }
+
+    const confirmed = confirm(
+        '確定要登出目前模式嗎？'
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
         /*
-         * 管理者或使用者已登入時，代表目前為正式操作權限。
-         * 即使先前曾載入預覽，登入後也應回到正式可儲存流程。
+         * 最後安全儲存成功後才真正登出。
          */
-        isPreviewDataMode = false;
-
-        normalizeBudgetManualRows();
-
-        await persistAllRecords(records);
-        await persistBudgetData();
+        await persistCurrentSystemData();
 
         finalLogoutConfirm();
 
-        alert("資料已儲存，並完成登出。");
+        alert('已完成登出。');
 
     } catch (error) {
-        console.error("儲存並登出失敗：", error);
+        console.error('登出前儲存失敗：', error);
 
-        const message = error && error.message
-            ? error.message
-            : String(error || "未知錯誤");
+        const message =
+            error && error.message
+                ? error.message
+                : String(error || '未知錯誤');
 
-        alert("儲存並登出失敗：" + message);
+        alert(
+            '資料尚未完成儲存，因此目前未執行登出：' +
+            message
+        );
     }
 }
 
@@ -7030,6 +7507,8 @@ if (isAdmin) {
 const badge = document.getElementById('admin-badge');
 const loginBtn = document.getElementById('login-toggle-btn');
 const addPersonBtn = document.getElementById('add-person-btn');
+const saveCertificateBtn =
+    document.getElementById('save-certificate-btn');
 const permissionSettingsBtn = document.getElementById('permission-settings-btn');
 
     if (isAdmin) {
@@ -7037,26 +7516,44 @@ const permissionSettingsBtn = document.getElementById('permission-settings-btn')
             badge.innerHTML = '<i data-lucide="unlock" class="w-4 h-4 text-blue-400"></i> 管理者全功能模式';
         }
 
-        if (loginBtn) {
-            loginBtn.innerHTML = '<i data-lucide="log-out" class="w-4 h-4"></i><span>儲存並登出</span>';
-            loginBtn.className = "bg-red-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-red-700 transition inline-flex items-center gap-2";
-            loginBtn.onclick = saveAndLogoutSystem;
-        }
+if (loginBtn) {
+    loginBtn.innerHTML =
+        '<i data-lucide="door-open" class="w-4 h-4"></i>' +
+        '<span>登出</span>';
+
+    loginBtn.className =
+        "header-logout-btn px-5 py-2.5 rounded-xl " +
+        "font-bold text-sm transition inline-flex " +
+        "items-center justify-center gap-2";
+
+    loginBtn.onclick = logoutSystem;
+    loginBtn.blur();
+}
 
     } else if (isEditor) {
         if (badge) {
             badge.innerHTML = '<i data-lucide="edit-3" class="w-4 h-4 text-emerald-400"></i> 使用者編輯模式';
         }
 
-        if (loginBtn) {
-            loginBtn.innerHTML = '<i data-lucide="log-out" class="w-4 h-4"></i><span>儲存並登出</span>';
-            loginBtn.className = "bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-emerald-700 transition inline-flex items-center gap-2";
-            loginBtn.onclick = saveAndLogoutSystem;
-        }
+if (loginBtn) {
+    loginBtn.innerHTML =
+        '<i data-lucide="door-open" class="w-4 h-4"></i>' +
+        '<span>登出</span>';
+
+    loginBtn.className =
+        "header-logout-btn px-5 py-2.5 rounded-xl " +
+        "font-bold text-sm transition inline-flex " +
+        "items-center justify-center gap-2";
+
+    loginBtn.onclick = logoutSystem;
+    loginBtn.blur();
+}
 
     } else {
         if (badge) {
-            badge.innerHTML = '<i data-lucide="eye" class="w-4 h-4"></i> 檢視模式';
+            badge.innerHTML = isPreviewDataMode
+    ? '<i data-lucide="eye" class="w-4 h-4"></i> 預覽模式'
+    : '<i data-lucide="eye" class="w-4 h-4"></i> 檢視模式';
         }
 
 if (loginBtn) {
@@ -7069,6 +7566,13 @@ loginBtn.onclick = openLoginModal;
     if (addPersonBtn) {
         addPersonBtn.classList.toggle('hidden', !canEditData());
     }
+
+    if (saveCertificateBtn) {
+    saveCertificateBtn.classList.toggle(
+        'hidden',
+        !canEditData()
+    );
+}
 
     if (permissionSettingsBtn) {
     permissionSettingsBtn.classList.toggle('hidden', !isAdmin);
@@ -7097,16 +7601,34 @@ function updateJsonActionButtons() {
 if (importJsonBtn) {
     importJsonBtn.classList.remove('hidden');
 
-    if (isAdmin) {
-        importJsonBtn.innerHTML = '<i data-lucide="file-input" class="w-3.5 h-3.5"></i> 匯入資料';
-        importJsonBtn.title = '管理者正式匯入 JSON 資料';
-    } else if (isEditor) {
-        importJsonBtn.innerHTML = '<i data-lucide="file-input" class="w-3.5 h-3.5"></i> 載入資料';
-        importJsonBtn.title = '載入 JSON 資料以接續編輯，不會匯入密碼或高權限設定';
-    } else {
-        importJsonBtn.innerHTML = '<i data-lucide="file-search" class="w-3.5 h-3.5"></i> 載入預覽';
-        importJsonBtn.title = '載入 JSON 預覽資料，不會匯入密碼或高權限設定';
-    }
+if (isAdmin) {
+    importJsonBtn.innerHTML =
+        '<i data-lucide="file-input" class="w-3.5 h-3.5"></i> 匯入資料';
+
+    importJsonBtn.title =
+        '管理者正式匯入 JSON 資料';
+
+} else if (isEditor) {
+    importJsonBtn.innerHTML =
+        '<i data-lucide="file-input" class="w-3.5 h-3.5"></i> 載入資料';
+
+    importJsonBtn.title =
+        '載入 JSON 資料以接續編輯，不會匯入密碼或高權限設定';
+
+} else if (isPreviewDataMode) {
+    importJsonBtn.innerHTML =
+        '<i data-lucide="eye-off" class="w-3.5 h-3.5"></i> 退出預覽';
+
+    importJsonBtn.title =
+        '清除目前暫存的預覽資料並回到空白檢視模式';
+
+} else {
+    importJsonBtn.innerHTML =
+        '<i data-lucide="file-search" class="w-3.5 h-3.5"></i> 載入預覽';
+
+    importJsonBtn.title =
+        '載入 JSON 預覽資料，不會匯入密碼或高權限設定';
+}
 }
     initIcons();
 }
@@ -7115,15 +7637,24 @@ function finalLogoutConfirm() {
     isAdmin = false;
     isEditor = false;
 
-    updateUIForRole();
+    /*
+     * 只清空目前畫面。
+     * 正式資料已經儲存在 IndexedDB，不會被刪除。
+     */
+    clearViewerWorkingData();
 
-    const addPersonBtn = document.getElementById('add-person-btn');
-    if (addPersonBtn) addPersonBtn.classList.add('hidden');
+    const addPersonBtn =
+        document.getElementById('add-person-btn');
 
-    document.body.classList.remove('budget-admin-enabled');
+    if (addPersonBtn) {
+        addPersonBtn.classList.add('hidden');
+    }
 
-    renderReport();
-    renderBudgetReport();
+    document.body.classList.remove(
+        'budget-admin-enabled'
+    );
+
+    refreshSystemView();
 }
 
     // --- 資料編輯功能 ---
@@ -7304,8 +7835,23 @@ async function confirmRemove() {
 
 function handleJsonLoadButton() {
     if (canImportData()) {
+        /*
+         * 管理者：匯入資料
+         * 使用者：載入資料
+         */
         triggerImportJSON();
+
+    } else if (isPreviewDataMode) {
+        /*
+         * 預覽者已載入預覽資料時，
+         * 同一顆按鈕改為退出預覽。
+         */
+        exitPreviewMode();
+
     } else {
+        /*
+         * 預覽者尚未載入資料。
+         */
         triggerLoadPreviewJSON();
     }
 }
@@ -7589,63 +8135,68 @@ async function importJSON(event) {
 }
 
 async function startAutoUpdate() {
-    if (isPreviewDataMode) {
-        renderReport();
-        renderBudgetReport();
-        renderComplianceDashboard();
-        updateComplianceBasisButton();
-        updateStats();
-        initIcons();
+    /*
+     * 預覽者不能透過同步功能讀取正式資料庫。
+     */
+    if (!canEditData()) {
+        if (isPreviewDataMode) {
+            renderReport();
+            renderBudgetReport();
+            renderComplianceDashboard();
+            updateComplianceBasisButton();
+            initIcons();
 
-        alert('預覽資料已重新整理。');
+            alert('預覽資料已重新整理。');
+
+        } else {
+            alert(
+                '目前尚未載入預覽資料，' +
+                '請先載入預覽或使用權限登入。'
+            );
+        }
+
         return;
     }
 
-    const animModal = document.getElementById('update-animation-modal');
-    const progressBar = document.getElementById('update-progress-bar');
-        
-        progressBar.classList.remove('animate-progress');
-        progressBar.style.width = '0%';
-        animModal.classList.remove('hidden');
-        
-        // Trigger reflow
-        void progressBar.offsetWidth;
-        progressBar.classList.add('animate-progress');
-        
-setTimeout(async () => { 
-    records = await fetchAllRecords();
+    const animModal =
+        document.getElementById('update-animation-modal');
 
-    const savedBudgetRecords = await getConfig('budget_records');
-    budgetRecords = savedBudgetRecords && typeof savedBudgetRecords === 'object'
-        ? savedBudgetRecords
-        : {};
+    const progressBar =
+        document.getElementById('update-progress-bar');
 
-    const savedBudgetFeeDefaults = await getConfig('budget_fee_defaults');
-    budgetFeeDefaults = savedBudgetFeeDefaults && typeof savedBudgetFeeDefaults === 'object'
-        ? savedBudgetFeeDefaults
-        : {};
+    progressBar.classList.remove('animate-progress');
+    progressBar.style.width = '0%';
+    animModal.classList.remove('hidden');
 
-    const savedManualBudgetRows = await getConfig('manual_budget_rows');
-    manualBudgetRows = Array.isArray(savedManualBudgetRows)
-        ? savedManualBudgetRows
-        : [];
+    /*
+     * 重新觸發進度動畫。
+     */
+    void progressBar.offsetWidth;
+    progressBar.classList.add('animate-progress');
 
-    normalizeBudgetManualRows();
+    setTimeout(async () => {
+        try {
+            /*
+             * 管理者／使用者同步時，
+             * 重新讀取正式資料。
+             */
+            await loadFormalDataFromDB();
 
-    updateItemFilter();
-    updateYearFilter();
-    updateBudgetFilters();
+            animModal.classList.add('hidden');
+            refreshSystemView();
 
-    animModal.classList.add('hidden'); 
+        } catch (error) {
+            animModal.classList.add('hidden');
 
-    renderReport();
-    renderBudgetReport();
-    renderComplianceDashboard();
-    updateComplianceBasisButton();
-    initIcons();
+            console.error(
+                '同步正式資料失敗：',
+                error
+            );
 
-}, 3000);
-    }
+            alert('同步資料失敗，請稍後再試。');
+        }
+    }, 3000);
+}
 
     // --- 應用程式啟動 ---
 
@@ -7676,74 +8227,62 @@ document.addEventListener('click', function(event) {
     }
 });
     
-    window.onload = async () => { 
-        setTodayDate(); 
-        try {
-            await initDB();
-            
-            // 讀取密碼配置
-            const savedPwd = await getConfig('admin_password');
-            if (savedPwd) systemPassword = savedPwd;
+window.onload = async () => {
+    setTodayDate();
 
-            const savedEditorPwd = await getConfig('editor_password');
-if (savedEditorPwd) editorPassword = savedEditorPwd;
+    try {
+        await initDB();
 
-const savedEditorEnabled = await getConfig('editor_enabled');
-if (typeof savedEditorEnabled === 'boolean') {
-    editorEnabled = savedEditorEnabled;
-}
-            
-            // 讀取法規合規檢核基準
-            const savedComplianceSettings = await getConfig('compliance_settings');
-            if (savedComplianceSettings) applyComplianceSettings(savedComplianceSettings);
+        /*
+         * 啟動時只讀取權限配置。
+         * 不向預覽者載入正式的人員、附件及預算資料。
+         */
+        const savedPwd =
+            await getConfig('admin_password');
 
-            // 讀取法定人員設置基準依據檔案
-            const savedComplianceBasisFiles = await getConfig('compliance_basis_files');
-            if (Array.isArray(savedComplianceBasisFiles)) complianceBasisFiles = savedComplianceBasisFiles;
-            
-            // 讀取年度預算統計資料
-const savedBudgetRecords = await getConfig('budget_records');
-if (savedBudgetRecords && typeof savedBudgetRecords === 'object') {
-    budgetRecords = savedBudgetRecords;
-} else {
-    budgetRecords = {};
-}
-
-const savedBudgetFeeDefaults = await getConfig('budget_fee_defaults');
-if (savedBudgetFeeDefaults && typeof savedBudgetFeeDefaults === 'object') {
-    budgetFeeDefaults = savedBudgetFeeDefaults;
-} else {
-    budgetFeeDefaults = {};
-}
-
-const savedManualBudgetRows = await getConfig('manual_budget_rows');
-if (Array.isArray(savedManualBudgetRows)) {
-    manualBudgetRows = savedManualBudgetRows;
-} else {
-    manualBudgetRows = [];
-}
-
-normalizeBudgetManualRows();
-document.body.classList.toggle('budget-admin-enabled', canEditData());
-
-            // 讀取證照數據
-records = await fetchAllRecords();
-
-updateItemFilter();
-updateYearFilter();
-updateBudgetFilters();
-
-renderReport();
-renderBudgetReport();
-renderComplianceDashboard();
-updateComplianceBasisButton();
-updateUIForRole();
-initIcons();
-        } catch(e) { 
-            console.error('應用程式啟動失敗', e); 
-            alert('無法載入本地數據庫，請檢查瀏覽器隱私設定或嘗試清除快取。');
+        if (savedPwd) {
+            systemPassword = savedPwd;
         }
-    };
+
+        const savedEditorPwd =
+            await getConfig('editor_password');
+
+        if (savedEditorPwd) {
+            editorPassword = savedEditorPwd;
+        }
+
+        const savedEditorEnabled =
+            await getConfig('editor_enabled');
+
+        if (
+            typeof savedEditorEnabled ===
+            'boolean'
+        ) {
+            editorEnabled = savedEditorEnabled;
+        }
+
+        /*
+         * 每次開啟或重新整理系統，
+         * 都從空白預覽者模式開始。
+         */
+        isAdmin = false;
+        isEditor = false;
+
+        clearViewerWorkingData();
+        refreshSystemView();
+
+    } catch (e) {
+        console.error(
+            '應用程式啟動失敗',
+            e
+        );
+
+        alert(
+            '無法載入本地數據庫，' +
+            '請檢查瀏覽器隱私設定或嘗試清除快取。'
+        );
+    }
+};
 </script>
 </body>
 </html>
