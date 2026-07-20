@@ -3727,72 +3727,93 @@ body.print-certificate-report .text-slate-600 {
    一、預算表新增／儲存按鈕：
    桌機、手機統一使用與證照清單相同的 8px 間距
 ========================================================= */
+/* 預算新增／儲存群組：依可編輯狀態決定顯示 */
 #budget-panel .budget-edit-actions {
-    display: inline-flex;
     align-items: center;
     gap: 8px !important;
 }
 
+/* 預覽者模式一定隱藏 */
+body:not(.budget-admin-enabled)
+#budget-panel .budget-edit-actions {
+    display: none !important;
+}
+
+/* 管理者與使用者模式才顯示 */
+body.budget-admin-enabled
+#budget-panel .budget-edit-actions {
+    display: inline-flex !important;
+}
 
 /* =========================================================
-   二、手機直式預覽模式：
-   匯出預算報表／權限登入等寬
-   並分別對齊下方所有項目／當年度篩選框
+   手機直式預覽者模式：
+   上排匯出／登入、下排項目／年度
+   四個欄位完全等寬、等高並上下對齊
 ========================================================= */
 @media screen and (orientation: portrait) and (max-width: 767px) {
 
-    /*
-     * 僅套用於預覽者模式。
-     * 管理者／使用者原有的新增、儲存排列維持不變。
-     */
-    body:not(.budget-admin-enabled)
+    body.role-viewer
     #budget-panel .budget-toolbar-actions {
+        width: 100% !important;
+        min-width: 0 !important;
+
         display: grid !important;
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+        grid-template-rows:
+            repeat(2, 36px) !important;
+
         gap: 0.5rem !important;
         align-items: stretch !important;
         justify-content: stretch !important;
     }
 
+    /* 預覽者模式不得顯示新增與儲存 */
+    body.role-viewer
+    #budget-panel .budget-edit-actions {
+        display: none !important;
+    }
+
     /* 左上：匯出預算報表 */
-    body:not(.budget-admin-enabled)
+    body.role-viewer
     #budget-panel .budget-export-btn {
         grid-column: 1 !important;
         grid-row: 1 !important;
     }
 
     /* 右上：權限登入 */
-    body:not(.budget-admin-enabled)
+    body.role-viewer
     #budget-panel .budget-login-shortcut {
         grid-column: 2 !important;
         grid-row: 1 !important;
+        display: inline-flex !important;
     }
 
     /* 左下：所有項目 */
-    body:not(.budget-admin-enabled)
+    body.role-viewer
     #budget-panel #budgetItemFilter {
         grid-column: 1 !important;
         grid-row: 2 !important;
     }
 
-    /* 右下：當年度 */
-    body:not(.budget-admin-enabled)
+    /* 右下：當年度／所有年度 */
+    body.role-viewer
     #budget-panel #budgetYearFilter {
         grid-column: 2 !important;
         grid-row: 2 !important;
     }
 
     /*
-     * 上下四個欄位使用完全相同的寬度與高度，
-     * 因此權限登入會精準對齊下方當年度。
+     * 四個元件統一實際尺寸。
+     * transform 必須清除，否則篩選框仍會被縮成 80%。
      */
-    body:not(.budget-admin-enabled)
+    body.role-viewer
     #budget-panel .budget-export-btn,
-    body:not(.budget-admin-enabled)
+    body.role-viewer
     #budget-panel .budget-login-shortcut,
-    body:not(.budget-admin-enabled)
+    body.role-viewer
     #budget-panel #budgetItemFilter,
-    body:not(.budget-admin-enabled)
+    body.role-viewer
     #budget-panel #budgetYearFilter {
         width: 100% !important;
         min-width: 0 !important;
@@ -3802,22 +3823,131 @@ body.print-certificate-report .text-slate-600 {
         min-height: 36px !important;
         max-height: 36px !important;
 
-        box-sizing: border-box !important;
         margin: 0 !important;
+        box-sizing: border-box !important;
+
+        transform: none !important;
+        transform-origin: initial !important;
+
+        justify-self: stretch !important;
+        align-self: stretch !important;
     }
 
-    body:not(.budget-admin-enabled)
+    /* 上排兩個按鈕 */
+    body.role-viewer
     #budget-panel .budget-export-btn,
-    body:not(.budget-admin-enabled)
+    body.role-viewer
     #budget-panel .budget-login-shortcut {
-        display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
 
         padding: 0 0.55rem !important;
-        font-size: 0.72rem !important;
+        border-radius: 0.75rem !important;
+
+        font-size: 0.78rem !important;
         line-height: 1.2 !important;
         white-space: nowrap !important;
+    }
+
+    /*
+     * 下排兩個篩選框。
+     * 使用 16px，避免 iPhone 點擊 select 時自動放大。
+     */
+    body.role-viewer
+    #budget-panel #budgetItemFilter,
+    body.role-viewer
+    #budget-panel #budgetYearFilter {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0.6rem !important;
+        padding-right: 0.4rem !important;
+
+        border-radius: 0.75rem !important;
+        font-size: 16px !important;
+        line-height: 1.2 !important;
+    }
+}
+
+/* =========================================================
+   桌機管理者／使用者：
+   證照新增與儲存移到姓名證號搜尋框左側
+   預覽者、手機直式與手機橫式不受影響
+========================================================= */
+@media screen and (min-width: 1024px) {
+
+    body.role-admin
+    #certificate-panel .certificate-report-title-row,
+    body.role-editor
+    #certificate-panel .certificate-report-title-row {
+        display: grid !important;
+        grid-template-columns:
+            max-content
+            max-content
+            minmax(0, 1fr) !important;
+
+        align-items: center !important;
+        justify-content: stretch !important;
+        column-gap: 0.65rem !important;
+        row-gap: 0 !important;
+    }
+
+    /*
+     * 解除原本標題左側包裝層，
+     * 讓標題與按鈕成為外層 Grid 的直接項目。
+     */
+    body.role-admin
+    #certificate-panel .certificate-report-title-left,
+    body.role-editor
+    #certificate-panel .certificate-report-title-left {
+        display: contents !important;
+    }
+
+    /* 第一欄：報表標題 */
+    body.role-admin
+    #certificate-panel .certificate-report-title-left > div,
+    body.role-editor
+    #certificate-panel .certificate-report-title-left > div {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+        transform: none !important;
+        min-width: 0 !important;
+    }
+
+    /* 第二欄：新增與儲存，位於搜尋框左側 */
+    body.role-admin
+    #certificate-panel .certificate-title-actions,
+    body.role-editor
+    #certificate-panel .certificate-title-actions {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        align-self: center !important;
+
+        margin: 0 !important;
+        gap: 8px !important;
+    }
+
+    /* 第三欄：搜尋與三個篩選框 */
+    body.role-admin
+    #certificate-panel .certificate-report-filters,
+    body.role-editor
+    #certificate-panel .certificate-report-filters {
+        grid-column: 3 !important;
+        grid-row: 1 !important;
+
+        width: 100% !important;
+        min-width: 0 !important;
+
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+
+        padding-top: 0 !important;
+        margin: 0 !important;
     }
 }
 
