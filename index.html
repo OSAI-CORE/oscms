@@ -3863,91 +3863,124 @@ body.budget-admin-enabled
         padding-right: 0.4rem !important;
 
         border-radius: 0.75rem !important;
-        font-size: 16px !important;
+        font-size: 0.85rem !important;
         line-height: 1.2 !important;
     }
 }
 
 /* =========================================================
    桌機管理者／使用者：
-   證照新增與儲存移到姓名證號搜尋框左側
-   預覽者、手機直式與手機橫式不受影響
+   證照新增、儲存、搜尋與篩選整排靠右
+   最右側對齊下方報表右邊
+   預覽者與手機版不受影響
 ========================================================= */
 @media screen and (min-width: 1024px) {
 
+    /* 外層維持：左側標題、右側完整操作列 */
     body.role-admin
     #certificate-panel .certificate-report-title-row,
     body.role-editor
     #certificate-panel .certificate-report-title-row {
-        display: grid !important;
-        grid-template-columns:
-            max-content
-            max-content
-            minmax(0, 1fr) !important;
+        width: 100% !important;
+
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
 
         align-items: center !important;
-        justify-content: stretch !important;
-        column-gap: 0.65rem !important;
-        row-gap: 0 !important;
+        justify-content: flex-end !important;
+
+        gap: 0.65rem !important;
     }
 
     /*
-     * 解除原本標題左側包裝層，
-     * 讓標題與按鈕成為外層 Grid 的直接項目。
+     * 左側標題區填滿剩餘空間。
+     * 新增與儲存位於此區最右端，
+     * 因此會自然銜接右側搜尋與篩選區。
      */
     body.role-admin
     #certificate-panel .certificate-report-title-left,
     body.role-editor
     #certificate-panel .certificate-report-title-left {
-        display: contents !important;
+        display: flex !important;
+        align-items: center !important;
+
+        flex: 1 1 auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+
+        padding-top: 0 !important;
+        gap: 0 !important;
     }
 
-    /* 第一欄：報表標題 */
+    /* 報表標題維持左側 */
     body.role-admin
     #certificate-panel .certificate-report-title-left > div,
     body.role-editor
     #certificate-panel .certificate-report-title-left > div {
-        grid-column: 1 !important;
-        grid-row: 1 !important;
-        transform: none !important;
+        flex: 0 0 auto !important;
         min-width: 0 !important;
+        transform: none !important;
     }
 
-    /* 第二欄：新增與儲存，位於搜尋框左側 */
+    /*
+     * 新增與儲存推到標題區最右端，
+     * 並位於搜尋框左邊。
+     */
     body.role-admin
     #certificate-panel .certificate-title-actions,
     body.role-editor
     #certificate-panel .certificate-title-actions {
-        grid-column: 2 !important;
-        grid-row: 1 !important;
-
         display: inline-flex !important;
         align-items: center !important;
-        justify-content: flex-start !important;
-        align-self: center !important;
+        justify-content: flex-end !important;
 
-        margin: 0 !important;
+        flex: 0 0 auto !important;
+
+        margin-left: auto !important;
+        margin-right: 0 !important;
+        margin-top: 0 !important;
+
         gap: 8px !important;
     }
 
-    /* 第三欄：搜尋與三個篩選框 */
+    /*
+     * 搜尋與三個篩選框本身不撐滿剩餘寬度，
+     * 整組固定靠右，最後一個年度框對齊報表右邊。
+     */
     body.role-admin
     #certificate-panel .certificate-report-filters,
     body.role-editor
     #certificate-panel .certificate-report-filters {
-        grid-column: 3 !important;
-        grid-row: 1 !important;
-
-        width: 100% !important;
-        min-width: 0 !important;
-
         display: flex !important;
+        flex-direction: row !important;
         flex-wrap: nowrap !important;
+
         align-items: center !important;
-        justify-content: flex-start !important;
+        justify-content: flex-end !important;
+
+        flex: 0 0 auto !important;
+        width: auto !important;
+        min-width: 0 !important;
 
         padding-top: 0 !important;
         margin: 0 !important;
+
+        gap: 0.65rem !important;
+    }
+
+    /* 所有元件保持同一水平線 */
+    body.role-admin
+    #certificate-panel .certificate-report-filters .search-container,
+    body.role-admin
+    #certificate-panel .certificate-report-filters select,
+    body.role-editor
+    #certificate-panel .certificate-report-filters .search-container,
+    body.role-editor
+    #certificate-panel .certificate-report-filters select {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        align-self: center !important;
     }
 }
 
