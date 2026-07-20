@@ -3643,6 +3643,86 @@ body.print-certificate-report .text-slate-600 {
     }
 }
 
+/* =========================================================
+   手機直式：搜尋／篩選文字比例微調
+   保留實際 16px 防止 iPhone Safari 點擊時自動放大
+========================================================= */
+@media screen and (orientation: portrait) and (max-width: 767px) {
+
+    /* -----------------------------------------------------
+       一、證照清單：視覺字體約 13.6px
+       16px × 0.85 = 13.6px
+    ----------------------------------------------------- */
+
+    #certificate-panel .certificate-report-filters .search-container {
+        overflow: hidden !important;
+    }
+
+    #certificate-panel #searchInput {
+        font-size: 16px !important;
+        line-height: 1.2 !important;
+
+        width: 117.6471% !important;
+        max-width: none !important;
+        height: 42.3529px !important;
+        flex: 0 0 117.6471% !important;
+
+        transform: scale(0.85);
+        transform-origin: left center;
+    }
+
+    #certificate-panel #searchInput::placeholder {
+        font-size: 16px !important;
+    }
+
+    #certificate-panel #itemFilter,
+    #certificate-panel #statusFilter,
+    #certificate-panel #yearFilter {
+        font-size: 16px !important;
+        line-height: 1.2 !important;
+
+        width: 117.6471% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+
+        height: 42.3529px !important;
+        min-height: 42.3529px !important;
+        max-height: 42.3529px !important;
+
+        transform: scale(0.85);
+        transform-origin: left top;
+
+        justify-self: start !important;
+        align-self: start !important;
+    }
+
+
+    /* -----------------------------------------------------
+       二、預算表：視覺字體約 12.8px
+       16px × 0.80 = 12.8px
+    ----------------------------------------------------- */
+
+    #budget-panel #budgetItemFilter,
+    #budget-panel #budgetYearFilter {
+        font-size: 16px !important;
+        line-height: 1.2 !important;
+
+        width: 125% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+
+        height: 45px !important;
+        min-height: 45px !important;
+        max-height: 45px !important;
+
+        transform: scale(0.80);
+        transform-origin: left top;
+
+        justify-self: start !important;
+        align-self: start !important;
+    }
+}
+
     </style>
 </head>
 <body>
