@@ -3984,6 +3984,131 @@ body.budget-admin-enabled
     }
 }
 
+/* =========================================================
+   桌機版：新增／編輯紀錄與新增預算人員視窗精簡高度
+   手機直式與手機橫式不受影響
+========================================================= */
+@media screen and (min-width: 951px) {
+
+    /* 視窗外圍留白略微縮小 */
+    #edit-modal,
+    #budget-add-modal {
+        padding: 12px !important;
+    }
+
+    /*
+     * 原本 p-8 約 32px，
+     * 桌機改為 22px。
+     */
+    #edit-modal > div,
+    #budget-add-modal > div {
+        padding: 22px !important;
+        border-radius: 20px !important;
+        max-height: 86vh !important;
+    }
+
+    /* 標題區與表單之間 */
+    #edit-modal > div > .flex,
+    #budget-add-modal > div > .flex {
+        margin-bottom: 14px !important;
+        gap: 10px !important;
+    }
+
+    /* 視窗主標題稍微縮小 */
+    #edit-modal #modal-title,
+    #budget-add-modal h2 {
+        font-size: 1.35rem !important;
+        line-height: 1.2 !important;
+        margin-top: 0 !important;
+    }
+
+    /* 英文副標 */
+    #edit-modal #modal-subtitle,
+    #budget-add-modal > div > .flex p {
+        font-size: 0.68rem !important;
+        line-height: 1.15 !important;
+        margin-bottom: 2px !important;
+    }
+
+    /* 關閉圖示略縮小 */
+    #edit-modal > div > .flex > button svg,
+    #budget-add-modal > div > .flex > button svg {
+        width: 20px !important;
+        height: 20px !important;
+    }
+
+    /*
+     * 原本 gap-4 約 16px，
+     * 桌機改成 10px。
+     */
+    #edit-modal #edit-form,
+    #budget-add-modal #budget-add-form {
+        gap: 10px !important;
+    }
+
+    /* 標籤與輸入框之間距離 */
+    #edit-modal #edit-form label,
+    #budget-add-modal #budget-add-form label {
+        margin-bottom: 3px !important;
+        line-height: 1.15 !important;
+    }
+
+    /* 一般輸入欄位由 36px 縮成 34px */
+    #edit-modal #edit-form input:not([type="hidden"]),
+    #edit-modal #edit-form select,
+    #edit-modal #edit-form textarea,
+    #budget-add-modal #budget-add-form input:not([type="hidden"]),
+    #budget-add-modal #budget-add-form select {
+        height: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
+
+        padding: 0.35rem 0.55rem !important;
+        border-radius: 0.6rem !important;
+
+        font-size: 0.82rem !important;
+        line-height: 1.2 !important;
+    }
+
+    /* 日期欄位同步縮小 */
+    #edit-modal input[type="date"],
+    #budget-add-modal input[type="date"] {
+        height: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
+
+        padding: 0.35rem 0.55rem !important;
+        font-size: 0.82rem !important;
+        line-height: 1.2 !important;
+    }
+
+    /* 作業單位、姓名、訓練項目等 textarea */
+    #edit-modal .edit-resize-field {
+        height: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
+        padding: 0.35rem 0.55rem !important;
+    }
+
+    /* 底部功能按鈕列 */
+    #edit-modal #edit-form > .md\:col-span-2.flex.gap-3.mt-4,
+    #budget-add-modal #budget-add-form > .md\:col-span-2.flex.gap-3.mt-4 {
+        margin-top: 4px !important;
+        gap: 8px !important;
+    }
+
+    #edit-modal #edit-form > .md\:col-span-2.flex.gap-3.mt-4 button,
+    #budget-add-modal #budget-add-form > .md\:col-span-2.flex.gap-3.mt-4 button {
+        height: 36px !important;
+        min-height: 36px !important;
+
+        padding: 0.4rem 0.75rem !important;
+        border-radius: 0.6rem !important;
+
+        font-size: 0.78rem !important;
+    }
+}
+
     </style>
 </head>
 <body>
