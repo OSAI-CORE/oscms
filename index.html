@@ -2967,6 +2967,567 @@ body.print-certificate-report .text-slate-600 {
     transform: translateY(0);
 }
 
+/* =========================================================
+   手機直式：證照清單篩選區重新排列
+   左上搜尋、右上項目、左下狀態、右下年度
+   新增／儲存按鈕靠右
+   三個資料視窗同步精簡高度
+========================================================= */
+@media screen and (orientation: portrait) and (max-width: 767px) {
+
+    /* -----------------------------------------------------
+       一、證照清單標題與新增／儲存按鈕
+    ----------------------------------------------------- */
+
+    #certificate-panel .certificate-report-title-row {
+        gap: 0.7rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    #certificate-panel .certificate-report-title-left {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 0.75rem !important;
+    }
+
+    /* 左側英文副標與中文標題 */
+    #certificate-panel .certificate-report-title-left > div {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }
+
+    /* 新增與儲存兩顆圖示固定靠右 */
+    #certificate-panel .certificate-title-actions {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        flex: 0 0 auto !important;
+        margin-left: auto !important;
+        margin-top: 0 !important;
+        gap: 8px !important;
+    }
+
+    /* 圖示按鈕維持目前 36 × 36px */
+    #certificate-panel #add-person-btn,
+    #certificate-panel #save-certificate-btn {
+        width: 36px !important;
+        min-width: 36px !important;
+        max-width: 36px !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
+        flex: 0 0 36px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+
+    /* -----------------------------------------------------
+       二、證照清單搜尋及篩選改成 2 × 2
+    ----------------------------------------------------- */
+
+    #certificate-panel .certificate-report-filters {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        grid-auto-rows: 36px;
+        gap: 0.55rem !important;
+        align-items: stretch !important;
+        justify-content: stretch !important;
+        padding-top: 0 !important;
+    }
+
+    /* 左上：姓名、證號搜尋 */
+    #certificate-panel .certificate-report-filters .search-container {
+        grid-column: 1 / 2 !important;
+        grid-row: 1 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
+        padding: 0 7px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 右上：所有項目 */
+    #certificate-panel #itemFilter {
+        grid-column: 2 / 3 !important;
+        grid-row: 1 !important;
+    }
+
+    /* 左下：所有狀態 */
+    #certificate-panel #statusFilter {
+        grid-column: 1 / 2 !important;
+        grid-row: 2 !important;
+    }
+
+    /* 右下：所有年度 */
+    #certificate-panel #yearFilter {
+        grid-column: 2 / 3 !important;
+        grid-row: 2 !important;
+    }
+
+    #certificate-panel #itemFilter,
+    #certificate-panel #statusFilter,
+    #certificate-panel #yearFilter {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0.55rem !important;
+        padding-right: 0.35rem !important;
+        font-size: 0.75rem !important;
+        line-height: 1.2 !important;
+        box-sizing: border-box !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container input {
+        width: 100% !important;
+        min-width: 0 !important;
+        height: 100% !important;
+        padding: 0 0.25rem !important;
+        font-size: 0.75rem !important;
+        line-height: 1.2 !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container svg {
+        width: 14px !important;
+        height: 14px !important;
+        flex: 0 0 14px !important;
+        margin-left: 0 !important;
+    }
+
+    /*
+     * 選擇年度後出現的「年度需複訓」統計，
+     * 放在四格篩選區下方並橫跨兩欄。
+     */
+    #certificate-panel #yearTrainingCount {
+        grid-column: 1 / -1 !important;
+        grid-row: 3 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 36px !important;
+        height: 36px !important;
+        justify-content: center !important;
+    }
+
+    #certificate-panel #yearTrainingCount.hidden {
+        display: none !important;
+    }
+
+
+    /* -----------------------------------------------------
+       三、新增／編輯紀錄與新增預算人員視窗精簡
+    ----------------------------------------------------- */
+
+    #edit-modal,
+    #budget-add-modal {
+        padding: 12px !important;
+    }
+
+    /*
+     * 原本 p-8 約為 32px，
+     * 手機直式縮成 16px，明顯降低視窗總高度。
+     */
+    #edit-modal > div,
+    #budget-add-modal > div {
+        padding: 16px !important;
+        border-radius: 20px !important;
+        max-height: 86vh !important;
+    }
+
+    /* 視窗標題區與表單間距 */
+    #edit-modal > div > .flex,
+    #budget-add-modal > div > .flex {
+        margin-bottom: 12px !important;
+        gap: 10px !important;
+    }
+
+    #edit-modal #modal-title,
+    #budget-add-modal h2 {
+        font-size: 1.2rem !important;
+        line-height: 1.25 !important;
+        margin-top: 0 !important;
+    }
+
+    #edit-modal #modal-subtitle,
+    #budget-add-modal > div > .flex p {
+        font-size: 0.62rem !important;
+        line-height: 1.2 !important;
+        margin-bottom: 2px !important;
+    }
+
+    /* 關閉符號略微縮小 */
+    #edit-modal > div > .flex > button svg,
+    #budget-add-modal > div > .flex > button svg {
+        width: 20px !important;
+        height: 20px !important;
+    }
+
+    /*
+     * 原本表單 gap-4 約為 16px，
+     * 改成約 9px，降低各項目上下距離。
+     */
+    #edit-modal #edit-form,
+    #budget-add-modal #budget-add-form {
+        gap: 9px !important;
+    }
+
+    #edit-modal #edit-form label,
+    #budget-add-modal #budget-add-form label {
+        margin-bottom: 3px !important;
+        line-height: 1.15 !important;
+    }
+
+    /*
+     * 原本欄位高度 36px，
+     * 手機直式稍微縮成 34px。
+     */
+    #edit-modal #edit-form input,
+    #edit-modal #edit-form select,
+    #edit-modal #edit-form textarea,
+    #budget-add-modal #budget-add-form input,
+    #budget-add-modal #budget-add-form select {
+        height: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
+        padding: 0.35rem 0.55rem !important;
+        border-radius: 0.6rem !important;
+        font-size: 0.82rem !important;
+        line-height: 1.2 !important;
+    }
+
+    /* 日期欄位避免被前方 36px 規則覆蓋 */
+    #edit-modal input[type="date"],
+    #budget-add-modal input[type="date"] {
+        height: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
+        padding: 0.35rem 0.55rem !important;
+        font-size: 0.82rem !important;
+    }
+
+    /* 編輯視窗的自動高度文字欄位也固定為 34px */
+    #edit-modal .edit-resize-field {
+        height: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
+        padding: 0.35rem 0.55rem !important;
+    }
+
+    /* 底部更新、移除、新增、取消按鈕區 */
+    #edit-modal #edit-form > .md\:col-span-2.flex.gap-3.mt-4,
+    #budget-add-modal #budget-add-form > .md\:col-span-2.flex.gap-3.mt-4 {
+        margin-top: 3px !important;
+        gap: 8px !important;
+    }
+
+    #edit-modal #edit-form > .md\:col-span-2.flex.gap-3.mt-4 button,
+    #budget-add-modal #budget-add-form > .md\:col-span-2.flex.gap-3.mt-4 button {
+        height: 36px !important;
+        min-height: 36px !important;
+        padding: 0.4rem 0.7rem !important;
+        border-radius: 0.6rem !important;
+        font-size: 0.78rem !important;
+    }
+}
+
+/* =========================================================
+   手機橫式：
+   1. 證照清單四個搜尋／篩選欄等寬
+   2. 預算表四個主要欄位等寬
+   3. 預算工具列與下方四個圖卡精準對齊
+========================================================= */
+@media screen and (orientation: landscape) and (max-width: 950px) {
+
+    /* =====================================================
+       一、證照清單：四個搜尋／篩選欄平均等寬
+    ===================================================== */
+
+    #certificate-panel .certificate-report-filters {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 0.6rem !important;
+        align-items: stretch !important;
+        justify-content: stretch !important;
+        flex-wrap: initial !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container,
+    #certificate-panel #itemFilter,
+    #certificate-panel #statusFilter,
+    #certificate-panel #yearFilter {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+    }
+
+    /* 第一欄：姓名、證號搜尋 */
+    #certificate-panel .certificate-report-filters .search-container {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+        padding: 0 8px !important;
+        flex: initial !important;
+    }
+
+    /* 第二欄：所有項目 */
+    #certificate-panel #itemFilter {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+    }
+
+    /* 第三欄：所有狀態 */
+    #certificate-panel #statusFilter {
+        grid-column: 3 !important;
+        grid-row: 1 !important;
+    }
+
+    /* 第四欄：所有年度 */
+    #certificate-panel #yearFilter {
+        grid-column: 4 !important;
+        grid-row: 1 !important;
+    }
+
+    #certificate-panel .certificate-report-filters select {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0.6rem !important;
+        padding-right: 0.4rem !important;
+        font-size: 0.76rem !important;
+        line-height: 1.2 !important;
+        flex: initial !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container input {
+        width: 100% !important;
+        min-width: 0 !important;
+        height: 100% !important;
+        padding: 0 0.3rem !important;
+        font-size: 0.76rem !important;
+    }
+
+    #certificate-panel .certificate-report-filters .search-container svg {
+        width: 14px !important;
+        height: 14px !important;
+        flex: 0 0 14px !important;
+        margin-left: 0 !important;
+    }
+
+    /*
+     * 選擇年度後出現的年度複訓統計：
+     * 放在四欄下方並橫跨整列。
+     */
+    #certificate-panel #yearTrainingCount {
+        grid-column: 1 / -1 !important;
+        grid-row: 2 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        height: 34px !important;
+        min-height: 34px !important;
+        justify-content: center !important;
+    }
+
+    #certificate-panel #yearTrainingCount.hidden {
+        display: none !important;
+    }
+
+
+    /* =====================================================
+       二、預算表：工具列四欄平均等寬
+    ===================================================== */
+
+    #budget-panel .budget-toolbar-actions {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+
+        /*
+         * 與下方圖卡 gap-4 相同：
+         * gap-4 約為 1rem。
+         */
+        gap: 1rem !important;
+
+        align-items: stretch !important;
+        justify-content: stretch !important;
+    }
+
+    /* 第一欄：匯出預算報表 */
+    #budget-panel .budget-export-btn {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+    }
+
+    /*
+     * 第二欄：
+     * 預覽者顯示權限登入；
+     * 管理者／使用者顯示新增及儲存。
+     */
+    #budget-panel .budget-login-shortcut,
+    #budget-panel .budget-edit-actions {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+    }
+
+    /* 第三欄：所有項目 */
+    #budget-panel #budgetItemFilter {
+        grid-column: 3 !important;
+        grid-row: 1 !important;
+    }
+
+    /* 第四欄：所有年度／當年度 */
+    #budget-panel #budgetYearFilter {
+        grid-column: 4 !important;
+        grid-row: 1 !important;
+    }
+
+    /*
+     * 四個主要欄位填滿各自欄寬，
+     * 長度與下面四張圖卡一致。
+     */
+    #budget-panel .budget-export-btn,
+    #budget-panel .budget-login-shortcut,
+    #budget-panel #budgetItemFilter,
+    #budget-panel #budgetYearFilter {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
+        box-sizing: border-box !important;
+        justify-content: center !important;
+    }
+
+    #budget-panel #budgetItemFilter,
+    #budget-panel #budgetYearFilter {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0.6rem !important;
+        padding-right: 0.4rem !important;
+        font-size: 0.76rem !important;
+    }
+
+    #budget-panel .budget-export-btn,
+    #budget-panel .budget-login-shortcut {
+        padding-left: 0.55rem !important;
+        padding-right: 0.55rem !important;
+        font-size: 0.76rem !important;
+        white-space: nowrap !important;
+    }
+
+    /*
+     * 管理者／使用者模式：
+     * 新增與儲存共用第二欄，並靠右排列。
+     */
+    #budget-panel .budget-edit-actions {
+        width: 100% !important;
+        min-width: 0 !important;
+        height: 36px !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 8px !important;
+    }
+
+    #budget-panel .budget-edit-actions .budget-add-person-btn,
+    #budget-panel .budget-edit-actions .budget-save-btn {
+        width: 36px !important;
+        min-width: 36px !important;
+        max-width: 36px !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
+        flex: 0 0 36px !important;
+        padding: 0 !important;
+    }
+
+
+    /* =====================================================
+       三、下方四個圖卡強制等寬，對齊上方四欄
+    ===================================================== */
+
+    #budget-panel .budget-summary-grid {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 1rem !important;
+        align-items: stretch !important;
+    }
+
+    #budget-panel .budget-summary-card {
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+}
+
+/* =========================================================
+   手機觸控裝置：避免點擊搜尋及資料輸入欄時瀏覽器自動放大
+   iPhone Safari 的輸入欄計算字體需至少為 16px
+========================================================= */
+@media (hover: none) and (pointer: coarse) {
+
+    /* 證照清單：姓名、證號搜尋欄 */
+    #certificate-panel #searchInput {
+        font-size: 16px !important;
+        line-height: 1.2 !important;
+    }
+
+    #certificate-panel #searchInput::placeholder {
+        font-size: 16px !important;
+    }
+
+    /* 證照清單：所有項目、所有狀態、所有年度 */
+    #certificate-panel #itemFilter,
+    #certificate-panel #statusFilter,
+    #certificate-panel #yearFilter {
+        font-size: 16px !important;
+        line-height: 1.2 !important;
+    }
+
+    /* 新增人員紀錄／編輯紀錄明細視窗 */
+    #edit-modal #edit-form input:not([type="hidden"]),
+    #edit-modal #edit-form select,
+    #edit-modal #edit-form textarea {
+        font-size: 16px !important;
+        line-height: 1.2 !important;
+    }
+
+    #edit-modal #edit-form input::placeholder,
+    #edit-modal #edit-form textarea::placeholder {
+        font-size: 16px !important;
+    }
+
+    /* 新增預算人員視窗 */
+    #budget-add-modal #budget-add-form input:not([type="hidden"]),
+    #budget-add-modal #budget-add-form select,
+    #budget-add-modal #budget-add-form textarea {
+        font-size: 16px !important;
+        line-height: 1.2 !important;
+    }
+
+    #budget-add-modal #budget-add-form input::placeholder,
+    #budget-add-modal #budget-add-form textarea::placeholder {
+        font-size: 16px !important;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -3266,7 +3827,7 @@ body.print-certificate-report .text-slate-600 {
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-5">
+        <div class="budget-summary-grid grid grid-cols-1 md:grid-cols-4 gap-4 mb-5">
             <div class="budget-summary-card">
                 <p class="text-xs text-slate-400 font-black">預算年度</p>
                 <p id="budget-summary-year" class="text-xl font-black text-slate-800 mt-1">--</p>
