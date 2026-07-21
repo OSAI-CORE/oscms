@@ -2542,25 +2542,54 @@ body.role-editor .admin-floating-logout-btn:hover {
     transform: translateY(-1px);
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (orientation: portrait) and (max-width: 767px) {
+
     .admin-floating-bar {
         left: 12px;
         right: 12px;
         bottom: calc(12px + env(safe-area-inset-bottom));
+
         justify-content: space-between;
+        gap: 8px;
+
         border-radius: 18px;
-        padding: 10px;
+        padding: 8px 9px;
     }
 
-.admin-floating-logout-btn {
-    flex: 1;
-    min-height: 44px;
-    font-size: 14px;
-}
-
+    /* 左側狀態文字使用剩餘空間 */
     .admin-floating-status {
-        flex: 0 0 auto;
+        flex: 1 1 auto;
+        min-width: 0;
+
+        padding: 0 3px;
         font-size: 11px;
+        gap: 5px;
+    }
+
+    .admin-floating-status svg {
+        width: 15px !important;
+        height: 15px !important;
+        flex: 0 0 15px;
+    }
+
+    /* 登出按鈕不再橫向延伸 */
+    .admin-floating-logout-btn {
+        flex: 0 0 auto;
+
+        width: auto;
+        min-width: 86px;
+        min-height: 42px;
+
+        padding: 8px 13px;
+        gap: 6px;
+
+        font-size: 13px;
+        line-height: 1;
+    }
+
+    .admin-floating-logout-btn svg {
+        width: 15px !important;
+        height: 15px !important;
     }
 }
 
@@ -5857,7 +5886,7 @@ p[id^="budget-summary-"] {
 <div id="admin-floating-bar" class="admin-floating-bar">
     <div class="admin-floating-status">
         <i data-lucide="unlock" class="w-4 h-4"></i>
-        <span>編輯模式中</span>
+        <span>編輯模式</span>
     </div>
 
     <button type="button"
