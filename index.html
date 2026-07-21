@@ -2843,100 +2843,138 @@ body.print-certificate-report .text-slate-600 {
         padding-right: 0.75rem !important;
     }
 
-    /*
-     * 上排兩張圖卡改為較平衡比例。
-     * 原本 1 : 2 導致左卡過窄；
-     * 改成約 1 : 1.55。
-     */
-    #compliance-dashboard {
-        width: 100% !important;
-        display: grid !important;
-        grid-template-columns:
-            minmax(280px, 1fr)
-            minmax(0, 1.55fr) !important;
+/* ---------------------------------------------------------
+   手機橫式：
+   上方兩張合規圖卡完全沿用桌機 1：2 比例
+--------------------------------------------------------- */
 
-        gap: 0.75rem !important;
-        align-items: start !important;
-    }
+/*
+ * 桌機原本是三欄：
+ * 法規配置合規狀態佔 1 欄
+ * 法定應置人員檢核佔 2 欄
+ */
+#compliance-dashboard {
+    width: 100% !important;
 
-    #compliance-status-card {
-        grid-column: 1 !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        align-self: start !important;
-    }
+    display: grid !important;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr)) !important;
 
-    #compliance-role-card {
-        grid-column: 2 !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        align-self: start !important;
-    }
+    column-gap: 1rem !important;
+    row-gap: 0.75rem !important;
 
-    /*
-     * 不再強制左右圖卡等高。
-     * 各自依內容自然高度呈現。
-     */
-    #compliance-status-card,
-    #compliance-role-card {
-        height: auto !important;
-        min-height: 0 !important;
-    }
+    align-items: stretch !important;
+}
 
-    /* 圖卡內距略縮，但不壓縮文字可用寬度 */
-    #compliance-dashboard > div {
-        padding: 0.9rem !important;
-    }
+/* 左側：與桌機相同，佔三分之一 */
+#compliance-status-card {
+    grid-column: 1 / 2 !important;
 
-    #compliance-dashboard h3 {
-        font-size: 0.95rem !important;
-        line-height: 1.25 !important;
-    }
+    width: 100% !important;
+    min-width: 0 !important;
 
-    /* 左側百分比與狀態保持同排 */
-    #compliance-status-card .flex.items-end {
-        flex-wrap: nowrap !important;
-        gap: 0.5rem !important;
-    }
+    align-self: stretch !important;
+}
 
-    #compliance-percent {
-        font-size: 2.2rem !important;
-        flex: 0 0 auto !important;
-    }
+/* 右側：與桌機相同，佔三分之二 */
+#compliance-role-card {
+    grid-column: 2 / 4 !important;
 
-    #compliance-status-label {
-        white-space: nowrap !important;
-        padding-left: 0.6rem !important;
-        padding-right: 0.6rem !important;
-        font-size: 0.68rem !important;
-    }
+    width: 100% !important;
+    min-width: 0 !important;
 
-    #compliance-profile-summary,
-    #compliance-note {
-        line-height: 1.4 !important;
-    }
+    align-self: stretch !important;
+}
 
-    /*
-     * 右側法定人員卡片標題與依據按鈕維持同排，
-     * 避免按鈕落到下一行撐高圖卡。
-     */
-    #compliance-role-card > .flex {
-        flex-direction: row !important;
-        align-items: center !important;
-        flex-wrap: nowrap !important;
-        gap: 0.6rem !important;
-    }
+/*
+ * 桌機 Grid 預設會把同一排卡片拉成一致高度，
+ * 手機橫式也恢復相同行為。
+ */
+#compliance-status-card,
+#compliance-role-card {
+    height: auto !important;
+    min-height: 0 !important;
 
-    #compliance-basis-btn {
-        flex: 0 0 auto !important;
-        white-space: nowrap !important;
-        font-size: 0.68rem !important;
-        padding: 0.35rem 0.6rem !important;
-    }
+    padding: 1.15rem !important;
+}
 
-    #compliance-role-list {
-        gap: 0.55rem !important;
-    }
+/* 兩張卡片的中英文標題恢復桌機比例 */
+#compliance-status-card h3,
+#compliance-role-card h3 {
+    font-size: 1rem !important;
+    line-height: 1.25 !important;
+}
+
+#compliance-status-card h3 {
+    white-space: nowrap !important;
+}
+
+/* 左側百分比恢復桌機大小 */
+#compliance-percent {
+    font-size: 2.5rem !important;
+    line-height: 1 !important;
+    flex: 0 0 auto !important;
+}
+
+/* 狀態標籤恢復桌機比例 */
+#compliance-status-label {
+    padding: 0.25rem 0.75rem !important;
+
+    font-size: 0.75rem !important;
+    line-height: 1.25 !important;
+
+    white-space: nowrap !important;
+}
+
+/* 左側說明文字恢復桌機行距 */
+#compliance-profile-summary {
+    font-size: 0.875rem !important;
+    line-height: 1.625 !important;
+}
+
+#compliance-note {
+    font-size: 0.75rem !important;
+    line-height: 1.625 !important;
+}
+
+/*
+ * 法定應置人員標題及基準按鈕，
+ * 沿用桌機同排排列。
+ */
+#compliance-role-card > .flex {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+
+    gap: 0.75rem !important;
+    margin-bottom: 1rem !important;
+}
+
+/* 法定人員設置基準按鈕恢復桌機尺寸 */
+#compliance-basis-btn {
+    flex: 0 0 auto !important;
+
+    padding: 0.25rem 0.75rem !important;
+
+    font-size: 0.75rem !important;
+    line-height: 1.25 !important;
+
+    white-space: nowrap !important;
+}
+
+/*
+ * 桌機版法定人員內容為兩欄，
+ * 即使部分手機橫式寬度未達 Tailwind md，
+ * 仍強制維持桌機排列。
+ */
+#compliance-role-list {
+    display: grid !important;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr)) !important;
+
+    gap: 0.75rem !important;
+}
 
     /*
      * 訓練統計卡橫跨整排。
