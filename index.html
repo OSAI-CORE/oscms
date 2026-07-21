@@ -6474,29 +6474,61 @@ function closeAuxiliaryTooltip(element) {
             </div>`;
     }
 
-    function renderAuxiliaryComplianceCard(role) {
-        const statusClass = role.complete ? 'bg-sky-100 text-sky-700 border-sky-200' : 'bg-amber-100 text-amber-700 border-amber-200';
-        const statusText = role.complete ? '達標' : `缺少 ${role.missing}`;
-        const statusIconHTML = renderStatusIconHTML(role.complete, 'circle-check');
-        return `
-            <div class="md:col-span-2 rounded-2xl border border-sky-100 bg-gradient-to-r from-sky-50 to-white p-4">
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-                    <div class="flex items-start gap-3 min-w-0">
-                        <div class="w-10 h-10 rounded-xl ${role.complete ? 'bg-sky-100 text-sky-600' : 'bg-amber-100 text-amber-600 ring-2 ring-amber-100'} flex items-center justify-center shrink-0">
-                            ${statusIconHTML}
-                        </div>
-                        <div class="min-w-0">
-                            <div class="flex flex-wrap items-center gap-2">
-                                <p class="font-black text-slate-800 text-sm leading-snug">${escapeHTML(role.label)}</p>
-                                ${renderAuxiliaryTooltip(role)}
-                            </div>
-                            <p class="text-xs text-slate-500 font-bold mt-1">應置 ${role.required} 人｜有效 ${role.validCount} 人｜待受訓 ${role.warningCount}｜已過期 ${role.expiredCount}</p>
-                        </div>
+function renderAuxiliaryComplianceCard(role) {
+    const statusClass = role.complete
+        ? 'bg-sky-100 text-sky-700 border-sky-200'
+        : 'bg-amber-100 text-amber-700 border-amber-200';
+
+    const statusText = role.complete
+        ? '達標'
+        : `缺少 ${role.missing}`;
+
+    const statusIconHTML =
+        renderStatusIconHTML(role.complete, 'circle-check');
+
+    return `
+        <div class="md:col-span-2 rounded-2xl border border-sky-100 bg-gradient-to-r from-sky-50 to-white p-3">
+
+            <div class="flex flex-row items-start justify-between gap-3">
+
+                <div class="flex items-start gap-3 min-w-0">
+
+                    <div class="w-10 h-10 rounded-xl ${
+                        role.complete
+                            ? 'bg-sky-100 text-sky-600'
+                            : 'bg-amber-100 text-amber-600 ring-2 ring-amber-100'
+                    } flex items-center justify-center shrink-0">
+
+                        ${statusIconHTML}
                     </div>
-                    <span class="shrink-0 text-[11px] font-black px-3 py-1.5 rounded-full border ${statusClass}">${statusText}</span>
+
+                    <div class="min-w-0">
+
+                        <div class="flex flex-wrap items-center gap-2">
+                            <p class="font-black text-slate-800 text-sm leading-snug">
+                                ${escapeHTML(role.label)}
+                            </p>
+
+                            ${renderAuxiliaryTooltip(role)}
+                        </div>
+
+                        <p class="text-xs text-slate-500 font-bold mt-1">
+                            應置 ${role.required} 人｜
+                            有效 ${role.validCount} 人｜
+                            待受訓 ${role.warningCount}｜
+                            已過期 ${role.expiredCount}
+                        </p>
+
+                    </div>
                 </div>
-            </div>`;
-    }
+
+                <span class="shrink-0 self-start text-[11px] font-black px-2.5 py-1 rounded-full border whitespace-nowrap ${statusClass}">
+                    ${statusText}
+                </span>
+
+            </div>
+        </div>`;
+}
 
     function renderComplianceDashboard() {
         const dashboard = document.getElementById('compliance-dashboard');
