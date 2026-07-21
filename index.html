@@ -2827,35 +2827,187 @@ body.print-certificate-report .text-slate-600 {
 
 }
 
-/* 手機橫式：合規看板比照桌機配置 */
+/* =========================================================
+   手機橫式：合規看板寬度與內部圖卡防擁擠修正
+========================================================= */
 @media screen and (orientation: landscape) and (max-width: 950px) {
+
+    /*
+     * 減少主內容左右留白，
+     * 讓三張合規圖卡取得更多實際寬度。
+     */
+    main.max-w-7xl {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+
+    /*
+     * 上排兩張圖卡改為較平衡比例。
+     * 原本 1 : 2 導致左卡過窄；
+     * 改成約 1 : 1.55。
+     */
     #compliance-dashboard {
+        width: 100% !important;
         display: grid !important;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) !important;
-        gap: 1rem !important;
-        align-items: stretch !important;
+        grid-template-columns:
+            minmax(280px, 1fr)
+            minmax(0, 1.55fr) !important;
+
+        gap: 0.75rem !important;
+        align-items: start !important;
     }
 
     #compliance-status-card {
         grid-column: 1 !important;
         width: 100% !important;
         min-width: 0 !important;
+        align-self: start !important;
     }
 
     #compliance-role-card {
         grid-column: 2 !important;
         width: 100% !important;
         min-width: 0 !important;
+        align-self: start !important;
     }
 
+    /*
+     * 不再強制左右圖卡等高。
+     * 各自依內容自然高度呈現。
+     */
+    #compliance-status-card,
+    #compliance-role-card {
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    /* 圖卡內距略縮，但不壓縮文字可用寬度 */
+    #compliance-dashboard > div {
+        padding: 0.9rem !important;
+    }
+
+    #compliance-dashboard h3 {
+        font-size: 0.95rem !important;
+        line-height: 1.25 !important;
+    }
+
+    /* 左側百分比與狀態保持同排 */
+    #compliance-status-card .flex.items-end {
+        flex-wrap: nowrap !important;
+        gap: 0.5rem !important;
+    }
+
+    #compliance-percent {
+        font-size: 2.2rem !important;
+        flex: 0 0 auto !important;
+    }
+
+    #compliance-status-label {
+        white-space: nowrap !important;
+        padding-left: 0.6rem !important;
+        padding-right: 0.6rem !important;
+        font-size: 0.68rem !important;
+    }
+
+    #compliance-profile-summary,
+    #compliance-note {
+        line-height: 1.4 !important;
+    }
+
+    /*
+     * 右側法定人員卡片標題與依據按鈕維持同排，
+     * 避免按鈕落到下一行撐高圖卡。
+     */
+    #compliance-role-card > .flex {
+        flex-direction: row !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
+        gap: 0.6rem !important;
+    }
+
+    #compliance-basis-btn {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+        font-size: 0.68rem !important;
+        padding: 0.35rem 0.6rem !important;
+    }
+
+    #compliance-role-list {
+        gap: 0.55rem !important;
+    }
+
+    /*
+     * 訓練統計卡橫跨整排。
+     */
     #training-stats-card {
         grid-column: 1 / -1 !important;
         width: 100% !important;
         min-width: 0 !important;
+        padding: 0.9rem !important;
     }
 
-    #training-stats-list {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+#training-stats-list {
+    width: 100% !important;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr)) !important;
+
+    gap: 0.55rem !important;
+    padding-right: 0 !important;
+}
+
+    /* 每個訓練項目外卡 */
+    #training-stats-list > div {
+        min-width: 0 !important;
+        padding: 0.65rem !important;
+    }
+
+    /*
+     * 四個狀態仍維持同一排，
+     * 並縮小間距與左右 padding。
+     */
+    #training-stats-list > div > .grid {
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr)) !important;
+
+        gap: 0.35rem !important;
+    }
+
+    #training-stats-list > div > .grid > div {
+        min-width: 0 !important;
+        padding: 0.35rem 0.25rem !important;
+        border-radius: 0.65rem !important;
+    }
+
+    /* 待受訓、已過期等標籤禁止拆成兩行 */
+    #training-stats-list > div > .grid p:first-child {
+        font-size: 0.62rem !important;
+        line-height: 1.1 !important;
+        white-space: nowrap !important;
+        word-break: keep-all !important;
+    }
+
+    #training-stats-list > div > .grid p:last-child {
+        font-size: 0.78rem !important;
+        line-height: 1.15 !important;
+    }
+
+    /* 訓練項目名稱與人數維持同排 */
+    #training-stats-list > div > .flex {
+        flex-wrap: nowrap !important;
+        gap: 0.5rem !important;
+    }
+
+    #training-stats-list > div > .flex > p {
+        min-width: 0 !important;
+        font-size: 0.76rem !important;
+    }
+
+    #training-stats-list > div > .flex > span {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+        font-size: 0.68rem !important;
     }
 }
 
@@ -4106,6 +4258,377 @@ body.budget-admin-enabled
         border-radius: 0.6rem !important;
 
         font-size: 0.78rem !important;
+    }
+}
+
+/* =========================================================
+   手機橫式：預算表表頭字體比例
+   與證照清單明細報表一致
+========================================================= */
+@media screen and (orientation: landscape) and (max-width: 950px) {
+
+    /* 預算表英文副標 */
+    #budget-panel > div:first-child > div:first-child > p {
+        font-size: 0.62rem !important;
+        line-height: 1.2 !important;
+        margin-bottom: 0 !important;
+        white-space: nowrap !important;
+    }
+
+    /* 預算表中文主標題 */
+    #budget-panel > div:first-child > div:first-child h2 {
+        font-size: 1rem !important;
+        line-height: 1.2 !important;
+        white-space: nowrap !important;
+        margin-top: 0 !important;
+    }
+
+    /* 標題前方計算機圖示同步縮小 */
+    #budget-panel > div:first-child > div:first-child h2 svg {
+        width: 1rem !important;
+        height: 1rem !important;
+        flex: 0 0 1rem !important;
+    }
+
+    /* 英文與中文標題之間的距離 */
+    #budget-panel > div:first-child > div:first-child > div {
+        margin-top: 0.2rem !important;
+        gap: 0.4rem !important;
+    }
+}
+
+/* =========================================================
+   編輯法規配置基準視窗：
+   桌機、手機直式、手機橫式統一壓縮高度
+========================================================= */
+
+/* 外層與視窗主體共用設定 */
+#compliance-settings-modal {
+    box-sizing: border-box !important;
+}
+
+#compliance-settings-modal > div {
+    width: 100% !important;
+    max-width: 32rem !important;
+    box-sizing: border-box !important;
+
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    overscroll-behavior-x: none !important;
+    overscroll-behavior-y: contain !important;
+}
+
+/* 標題列 */
+#compliance-settings-modal > div > .flex:first-child {
+    margin-bottom: 14px !important;
+    gap: 10px !important;
+}
+
+#compliance-settings-modal > div > .flex:first-child h2 {
+    font-size: 1.35rem !important;
+    line-height: 1.2 !important;
+    margin-top: 2px !important;
+}
+
+#compliance-settings-modal > div > .flex:first-child p:first-child {
+    font-size: 0.68rem !important;
+    line-height: 1.15 !important;
+}
+
+#compliance-settings-modal > div > .flex:first-child h2 + p {
+    font-size: 0.75rem !important;
+    line-height: 1.3 !important;
+    margin-top: 3px !important;
+}
+
+#compliance-settings-modal > div > .flex:first-child button svg {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+/* 第一區表單欄位間距 */
+#compliance-settings-modal > div > .grid {
+    gap: 10px !important;
+}
+
+#compliance-settings-modal label {
+    margin-bottom: 3px !important;
+    line-height: 1.15 !important;
+}
+
+/* 下拉選單與人數輸入框 */
+#compliance-settings-modal #compliance-business-type,
+#compliance-settings-modal #compliance-employee-count {
+    height: 34px !important;
+    min-height: 34px !important;
+    max-height: 34px !important;
+
+    padding: 0.35rem 0.55rem !important;
+    border-radius: 0.6rem !important;
+
+    font-size: 0.82rem !important;
+    line-height: 1.2 !important;
+
+    box-sizing: border-box !important;
+}
+
+/* 自動判定級距 */
+#compliance-settings-modal #compliance-range-preview {
+    min-height: 34px !important;
+    height: auto !important;
+
+    padding: 0.4rem 0.55rem !important;
+    border-radius: 0.6rem !important;
+
+    font-size: 0.78rem !important;
+    line-height: 1.25 !important;
+}
+
+/* 應置人員預覽區 */
+#compliance-settings-modal #compliance-requirement-preview {
+    padding: 10px !important;
+    border-radius: 0.75rem !important;
+}
+
+#compliance-settings-modal #compliance-requirement-preview > div {
+    padding: 0.45rem 0.6rem !important;
+    border-radius: 0.65rem !important;
+    gap: 0.5rem !important;
+}
+
+#compliance-settings-modal #compliance-requirement-preview > div span {
+    font-size: 0.72rem !important;
+    line-height: 1.2 !important;
+}
+
+/* 應置人員預覽區上方間距 */
+#compliance-settings-modal #compliance-requirement-preview
+    + * {
+    margin-top: 0 !important;
+}
+
+#compliance-settings-modal > div > .mt-5 {
+    margin-top: 12px !important;
+}
+
+/* 提示文字 */
+#compliance-settings-modal > div > p.text-xs {
+    margin-top: 10px !important;
+    font-size: 0.68rem !important;
+    line-height: 1.35 !important;
+}
+
+/* 儲存與取消按鈕 */
+#compliance-settings-modal > div > .flex.gap-3.mt-6 {
+    margin-top: 12px !important;
+    gap: 8px !important;
+}
+
+#compliance-settings-modal > div > .flex.gap-3.mt-6 button {
+    height: 36px !important;
+    min-height: 36px !important;
+
+    padding: 0.4rem 0.7rem !important;
+    border-radius: 0.6rem !important;
+
+    font-size: 0.78rem !important;
+    line-height: 1 !important;
+}
+
+
+/* =========================================================
+   桌機版
+========================================================= */
+@media screen and (min-width: 951px) {
+
+    #compliance-settings-modal {
+        padding: 12px !important;
+    }
+
+    #compliance-settings-modal > div {
+        padding: 22px !important;
+        max-height: 86vh !important;
+        border-radius: 20px !important;
+    }
+}
+
+
+/* =========================================================
+   手機橫式
+========================================================= */
+@media screen and (orientation: landscape) and (max-width: 950px) {
+
+    #compliance-settings-modal {
+        padding: 8px !important;
+        align-items: center !important;
+    }
+
+    #compliance-settings-modal > div {
+        max-width: 34rem !important;
+        max-height: 92vh !important;
+
+        padding: 14px !important;
+        border-radius: 16px !important;
+    }
+
+    #compliance-settings-modal > div > .flex:first-child {
+        margin-bottom: 9px !important;
+    }
+
+    #compliance-settings-modal > div > .flex:first-child h2 {
+        font-size: 1.1rem !important;
+    }
+
+    #compliance-settings-modal > div > .grid {
+        gap: 8px !important;
+    }
+
+    #compliance-settings-modal > div > .mt-5 {
+        margin-top: 8px !important;
+    }
+
+    #compliance-settings-modal #compliance-requirement-preview {
+        max-height: 145px !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    #compliance-settings-modal > div > p.text-xs {
+        margin-top: 7px !important;
+    }
+
+    #compliance-settings-modal > div > .flex.gap-3.mt-6 {
+        margin-top: 8px !important;
+    }
+}
+
+
+/* =========================================================
+   手機直式：
+   僅允許上下捲動，禁止左右移動
+========================================================= */
+@media screen and (orientation: portrait) and (max-width: 767px) {
+
+    #compliance-settings-modal {
+        width: 100vw !important;
+        max-width: 100vw !important;
+
+        padding: 10px !important;
+        align-items: center !important;
+
+        overflow-x: hidden !important;
+        overflow-y: hidden !important;
+
+        touch-action: pan-y !important;
+        overscroll-behavior-x: none !important;
+    }
+
+    #compliance-settings-modal > div {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+
+        max-height: calc(
+            100dvh - 20px -
+            env(safe-area-inset-top) -
+            env(safe-area-inset-bottom)
+        ) !important;
+
+        padding: 15px !important;
+        border-radius: 18px !important;
+
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+
+        touch-action: pan-y !important;
+        overscroll-behavior-x: none !important;
+        overscroll-behavior-y: contain !important;
+
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /*
+     * 防止表單或預覽內容超出視窗，
+     * 造成整個 Modal 可以左右拖動。
+     */
+    #compliance-settings-modal > div *,
+    #compliance-settings-modal > div > .grid,
+    #compliance-settings-modal #compliance-requirement-preview,
+    #compliance-settings-modal #compliance-requirement-preview > div {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    #compliance-settings-modal > div > .flex:first-child {
+        margin-bottom: 10px !important;
+    }
+
+    #compliance-settings-modal > div > .flex:first-child h2 {
+        font-size: 1.15rem !important;
+    }
+
+    #compliance-settings-modal > div > .flex:first-child h2 + p {
+        font-size: 0.7rem !important;
+    }
+
+    /*
+     * 手機直式維持單欄，
+     * 避免人數與級距兩欄過窄。
+     */
+    #compliance-settings-modal > div > .grid {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 8px !important;
+    }
+
+    #compliance-settings-modal > div > .grid > div {
+        grid-column: 1 !important;
+        width: 100% !important;
+    }
+
+    /*
+     * 保留 16px，避免 iPhone 點擊輸入框或 select
+     * 時瀏覽器自動放大。
+     */
+    #compliance-settings-modal #compliance-business-type,
+    #compliance-settings-modal #compliance-employee-count {
+        width: 100% !important;
+        font-size: 16px !important;
+    }
+
+    #compliance-settings-modal #compliance-requirement-preview {
+        max-height: 190px !important;
+
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+
+        touch-action: pan-y !important;
+    }
+
+    #compliance-settings-modal #compliance-requirement-preview > div {
+        width: 100% !important;
+        flex-wrap: nowrap !important;
+    }
+
+    #compliance-settings-modal #compliance-requirement-preview > div > span:first-child {
+        min-width: 0 !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+    }
+
+    #compliance-settings-modal #compliance-requirement-preview > div > span:last-child {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+    }
+
+    #compliance-settings-modal > div > p.text-xs {
+        margin-top: 8px !important;
+    }
+
+    #compliance-settings-modal > div > .flex.gap-3.mt-6 {
+        margin-top: 9px !important;
     }
 }
 
