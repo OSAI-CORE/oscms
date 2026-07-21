@@ -3327,12 +3327,15 @@ body.print-certificate-report .text-slate-600 {
      * 原本 p-8 約為 32px，
      * 手機直式縮成 16px，明顯降低視窗總高度。
      */
-    #edit-modal > div,
-    #budget-add-modal > div {
-        padding: 16px !important;
-        border-radius: 20px !important;
-        max-height: 86vh !important;
-    }
+#edit-modal > div,
+#budget-add-modal > div {
+    width: 100% !important;
+    max-width: 30rem !important;
+
+    padding: 22px !important;
+    border-radius: 20px !important;
+    max-height: 86vh !important;
+}
 
     /* 視窗標題區與表單間距 */
     #edit-modal > div > .flex,
@@ -4670,6 +4673,642 @@ body.budget-admin-enabled
     }
 }
 
+/* =========================================================
+   法定人員設置基準依據視窗：
+   桌機、手機直式、手機橫式統一精簡高度
+========================================================= */
+
+/* 共用：避免內容產生水平位移 */
+#compliance-basis-modal {
+    box-sizing: border-box !important;
+}
+
+#compliance-basis-modal > div {
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-x: none !important;
+    overscroll-behavior-y: contain !important;
+}
+
+/* 標題區 */
+#compliance-basis-modal > div > .flex:first-child {
+    margin-bottom: 14px !important;
+    gap: 10px !important;
+}
+
+#compliance-basis-modal > div > .flex:first-child h2 {
+    font-size: 1.3rem !important;
+    line-height: 1.2 !important;
+    margin-top: 2px !important;
+}
+
+#compliance-basis-modal > div > .flex:first-child p:first-child {
+    font-size: 0.68rem !important;
+    line-height: 1.1 !important;
+}
+
+#compliance-basis-modal > div > .flex:first-child h2 + p {
+    margin-top: 3px !important;
+    font-size: 0.75rem !important;
+    line-height: 1.35 !important;
+}
+
+#compliance-basis-modal > div > .flex:first-child button svg {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+/* 目前看板基準區塊 */
+#compliance-basis-profile-display {
+    font-size: 0.78rem !important;
+    line-height: 1.4 !important;
+}
+
+#compliance-basis-modal
+> div
+> .bg-slate-50.border.border-slate-100 {
+    padding: 9px 12px !important;
+    margin-bottom: 12px !important;
+    border-radius: 0.75rem !important;
+}
+
+#compliance-basis-modal
+> div
+> .bg-slate-50.border.border-slate-100
+> p:first-child {
+    margin-bottom: 2px !important;
+}
+
+/* 管理者／使用者上傳區 */
+#compliance-basis-admin-tools {
+    margin-bottom: 12px !important;
+}
+
+#compliance-basis-drop-zone {
+    padding: 14px !important;
+    border-radius: 0.85rem !important;
+}
+
+#compliance-basis-drop-zone
+> .bg-white {
+    width: 36px !important;
+    height: 36px !important;
+    margin-bottom: 7px !important;
+}
+
+#compliance-basis-drop-zone
+> .bg-white svg {
+    width: 17px !important;
+    height: 17px !important;
+}
+
+#compliance-basis-drop-zone p.text-sm {
+    font-size: 0.75rem !important;
+    line-height: 1.25 !important;
+}
+
+#compliance-basis-drop-zone p.text-\[10px\] {
+    margin-top: 2px !important;
+    font-size: 0.62rem !important;
+    line-height: 1.25 !important;
+}
+
+/* 附件清單 */
+#compliance-basis-list {
+    max-height: 260px !important;
+    padding-right: 2px !important;
+}
+
+#compliance-basis-list > div {
+    min-height: 46px !important;
+    padding: 8px 10px !important;
+    gap: 8px !important;
+    border-radius: 0.7rem !important;
+}
+
+/* 尚未上傳檔案時的提示區 */
+#compliance-basis-list > .text-center {
+    min-height: 0 !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+    font-size: 0.75rem !important;
+    line-height: 1.4 !important;
+}
+
+/* 底部關閉按鈕 */
+#compliance-basis-modal > div > button:last-child {
+    height: 36px !important;
+    min-height: 36px !important;
+
+    margin-top: 12px !important;
+    padding: 0.4rem 0.75rem !important;
+
+    border-radius: 0.65rem !important;
+    font-size: 0.78rem !important;
+    line-height: 1 !important;
+}
+
+
+/* =========================================================
+   桌機版
+========================================================= */
+@media screen and (min-width: 951px) {
+
+    #compliance-basis-modal {
+        padding: 12px !important;
+    }
+
+    #compliance-basis-modal > div {
+        padding: 20px !important;
+        max-height: 86vh !important;
+        border-radius: 20px !important;
+    }
+}
+
+
+/* =========================================================
+   手機橫式
+========================================================= */
+@media screen and (orientation: landscape) and (max-width: 950px) {
+
+    #compliance-basis-modal {
+        padding: 8px !important;
+    }
+
+    #compliance-basis-modal > div {
+        width: min(34rem, 100%) !important;
+        max-width: 34rem !important;
+        max-height: 92vh !important;
+
+        padding: 13px !important;
+        border-radius: 16px !important;
+    }
+
+    #compliance-basis-modal > div > .flex:first-child {
+        margin-bottom: 9px !important;
+    }
+
+    #compliance-basis-modal > div > .flex:first-child h2 {
+        font-size: 1.05rem !important;
+    }
+
+    #compliance-basis-modal > div > .flex:first-child h2 + p {
+        font-size: 0.68rem !important;
+    }
+
+    #compliance-basis-drop-zone {
+        padding: 10px !important;
+    }
+
+    #compliance-basis-list {
+        max-height: 150px !important;
+    }
+
+    #compliance-basis-modal > div > button:last-child {
+        margin-top: 8px !important;
+        height: 34px !important;
+        min-height: 34px !important;
+    }
+}
+
+
+/* =========================================================
+   手機直式：
+   固定左右位置，只允許上下捲動
+========================================================= */
+@media screen and (orientation: portrait) and (max-width: 767px) {
+
+    #compliance-basis-modal {
+        width: 100vw !important;
+        max-width: 100vw !important;
+
+        padding: 10px !important;
+
+        overflow-x: hidden !important;
+        overflow-y: hidden !important;
+
+        touch-action: pan-y !important;
+        overscroll-behavior-x: none !important;
+    }
+
+    #compliance-basis-modal > div {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+
+        max-height: calc(
+            100dvh - 20px -
+            env(safe-area-inset-top) -
+            env(safe-area-inset-bottom)
+        ) !important;
+
+        padding: 14px !important;
+        border-radius: 18px !important;
+
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+
+        touch-action: pan-y !important;
+        overscroll-behavior-x: none !important;
+        overscroll-behavior-y: contain !important;
+
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* 所有內部內容不得超出視窗寬度 */
+    #compliance-basis-modal > div *,
+    #compliance-basis-admin-tools,
+    #compliance-basis-drop-zone,
+    #compliance-basis-list,
+    #compliance-basis-list > div {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    #compliance-basis-modal > div > .flex:first-child {
+        margin-bottom: 10px !important;
+    }
+
+    #compliance-basis-modal > div > .flex:first-child h2 {
+        font-size: 1.08rem !important;
+    }
+
+    #compliance-basis-modal > div > .flex:first-child h2 + p {
+        font-size: 0.68rem !important;
+        line-height: 1.35 !important;
+    }
+
+    #compliance-basis-drop-zone {
+        padding: 11px !important;
+    }
+
+    #compliance-basis-list {
+        max-height: 210px !important;
+
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+
+        touch-action: pan-y !important;
+    }
+
+    #compliance-basis-list > div {
+        width: 100% !important;
+    }
+
+    #compliance-basis-modal > div > button:last-child {
+        margin-top: 9px !important;
+        height: 36px !important;
+        min-height: 36px !important;
+    }
+}
+
+/* =========================================================
+   桌機與手機直式：
+   訓練項目人員統計圖卡輕度降低高度
+   手機橫式既有三欄設定不受影響
+========================================================= */
+
+/* 桌機版 */
+@media screen and (min-width: 951px) {
+
+    #training-stats-card {
+        padding: 1rem !important;
+    }
+
+    #training-stats-card > .flex:first-child {
+        margin-bottom: 0.7rem !important;
+        gap: 0.6rem !important;
+    }
+
+    #training-stats-list {
+        max-height: 240px !important;
+        gap: 0.6rem !important;
+    }
+
+    #training-stats-list > div {
+        padding: 0.65rem !important;
+    }
+
+    #training-stats-list > div > .flex:first-child {
+        margin-bottom: 0.4rem !important;
+        gap: 0.5rem !important;
+    }
+
+    #training-stats-list > div > .grid {
+        gap: 0.35rem !important;
+    }
+
+    #training-stats-list > div > .grid > div {
+        padding: 0.3rem 0.3rem !important;
+        border-radius: 0.65rem !important;
+    }
+}
+
+/* 手機直式 */
+@media screen and (orientation: portrait) and (max-width: 767px) {
+
+    #training-stats-card {
+        padding: 0.9rem !important;
+    }
+
+    #training-stats-card > .flex:first-child {
+        margin-bottom: 0.65rem !important;
+        gap: 0.45rem !important;
+    }
+
+    #training-stats-list {
+        max-height: 220px !important;
+        gap: 0.55rem !important;
+        padding-right: 2px !important;
+    }
+
+    #training-stats-list > div {
+        padding: 0.6rem !important;
+    }
+
+    #training-stats-list > div > .flex:first-child {
+        margin-bottom: 0.4rem !important;
+    }
+
+    #training-stats-list > div > .grid {
+        gap: 0.35rem !important;
+    }
+
+    #training-stats-list > div > .grid > div {
+        padding: 0.3rem 0.25rem !important;
+        border-radius: 0.65rem !important;
+    }
+}
+
+/* =========================================================
+   手機直式：
+   法定專職與兼任／輔助備註改為畫面中央顯示
+========================================================= */
+@media screen and (orientation: portrait) and (max-width: 767px) {
+
+    /*
+     * 僅處理法定應置人員檢核圖卡中的備註。
+     * 不影響其他視窗與桌機版。
+     */
+    #compliance-role-list .legal-duty-panel,
+    #compliance-role-list .auxiliary-tooltip-panel {
+        position: fixed !important;
+
+        left: 50% !important;
+        right: auto !important;
+        top: 50% !important;
+
+        width: calc(100vw - 32px) !important;
+        max-width: 340px !important;
+        max-height: 68dvh !important;
+
+        padding: 14px 15px !important;
+        margin: 0 !important;
+
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+
+        border-radius: 16px !important;
+        box-sizing: border-box !important;
+
+        z-index: 540 !important;
+
+        transform:
+            translate(-50%, calc(-50% - 4px))
+            scale(0.98) !important;
+
+        overscroll-behavior: contain !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /*
+     * 點擊開啟後固定在畫面中央，
+     * 不再依觸發按鈕靠左或靠右定位。
+     */
+    #compliance-role-list
+    .legal-duty-tooltip-wrap:hover
+    .legal-duty-panel,
+
+    #compliance-role-list
+    .legal-duty-tooltip-wrap:focus-within
+    .legal-duty-panel,
+
+    #compliance-role-list
+    .legal-duty-tooltip-wrap.is-open
+    .legal-duty-panel,
+
+    #compliance-role-list
+    .auxiliary-tooltip-wrap:hover
+    .auxiliary-tooltip-panel,
+
+    #compliance-role-list
+    .auxiliary-tooltip-wrap:focus-within
+    .auxiliary-tooltip-panel,
+
+    #compliance-role-list
+    .auxiliary-tooltip-wrap.is-open
+    .auxiliary-tooltip-panel {
+        transform:
+            translate(-50%, -50%)
+            scale(1) !important;
+    }
+
+    /*
+     * 因為備註改成中央浮動，
+     * 不再顯示原本指向按鈕的小三角形。
+     */
+    #compliance-role-list .legal-duty-panel::before,
+    #compliance-role-list .auxiliary-tooltip-panel::before {
+        display: none !important;
+    }
+}
+
+/* =========================================================
+   五種資料視窗：
+   中文標題與英文副標統一精簡
+========================================================= */
+
+/* 桌機及共用預設：中文標題 */
+#compliance-settings-modal > div > .flex:first-child h2,
+#compliance-basis-modal > div > .flex:first-child h2,
+#edit-modal #modal-title,
+#budget-add-modal > div > .flex:first-child h2 {
+    font-size: 1.2rem !important;
+    line-height: 1.2 !important;
+    margin-top: 1px !important;
+}
+
+/* 桌機及共用預設：英文副標 */
+#compliance-settings-modal
+> div
+> .flex:first-child
+> div
+> p:first-child,
+
+#compliance-basis-modal
+> div
+> .flex:first-child
+> div
+> p:first-child,
+
+#edit-modal #modal-subtitle,
+
+#budget-add-modal
+> div
+> .flex:first-child
+> div
+> p:first-child {
+    font-size: 0.62rem !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0.14em !important;
+    margin-bottom: 1px !important;
+}
+
+
+/* 手機直式及橫式 */
+@media screen and (max-width: 950px) {
+
+    #compliance-settings-modal > div > .flex:first-child h2,
+    #compliance-basis-modal > div > .flex:first-child h2,
+    #edit-modal #modal-title,
+    #budget-add-modal > div > .flex:first-child h2 {
+        font-size: 1.05rem !important;
+        line-height: 1.18 !important;
+    }
+
+    #compliance-settings-modal
+    > div
+    > .flex:first-child
+    > div
+    > p:first-child,
+
+    #compliance-basis-modal
+    > div
+    > .flex:first-child
+    > div
+    > p:first-child,
+
+    #edit-modal #modal-subtitle,
+
+    #budget-add-modal
+    > div
+    > .flex:first-child
+    > div
+    > p:first-child {
+        font-size: 0.58rem !important;
+        line-height: 1.1 !important;
+        letter-spacing: 0.12em !important;
+    }
+}
+
+/* =========================================================
+   編輯法規配置基準：
+   專職、兼任／輔助保留為純狀態標籤
+   不提供備註彈窗或提示游標
+========================================================= */
+#compliance-settings-modal .compliance-preview-static-badge {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none !important;
+}
+
+/* 靜態專職標籤維持原本顏色 */
+#compliance-settings-modal
+.compliance-preview-static-badge.legal-duty-trigger {
+    background: #fffbeb !important;
+    color: #b45309 !important;
+    border-color: #f59e0b !important;
+    box-shadow: none !important;
+}
+
+/* 靜態兼任／輔助標籤維持原本顏色 */
+#compliance-settings-modal
+.compliance-preview-static-badge.auxiliary-tooltip-trigger {
+    background: #f0f9ff !important;
+    color: #0369a1 !important;
+    border-color: #38bdf8 !important;
+    box-shadow: none !important;
+}
+
+/* =========================================================
+   桌機與手機版：
+   表頭四張證照統計卡輕量精簡
+========================================================= */
+
+/* 四張統計卡所在區域 */
+.hero-section > .max-w-7xl > .grid {
+    gap: 0.6rem !important;
+    margin-top: 1rem !important;
+}
+
+/* 四張統計卡本體 */
+.hero-section > .max-w-7xl > .grid > div {
+    min-width: 0 !important;
+    min-height: 48px !important;
+
+    padding: 0.5rem 0.65rem !important;
+    gap: 0.5rem !important;
+
+    border-radius: 0.65rem !important;
+    box-sizing: border-box !important;
+}
+
+/* 左側圓形圖示外框 */
+.hero-section > .max-w-7xl > .grid > div > div:first-child {
+    width: 28px !important;
+    min-width: 28px !important;
+    height: 28px !important;
+
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex: 0 0 28px !important;
+}
+
+/* 圖示同步略縮小 */
+.hero-section > .max-w-7xl > .grid > div > div:first-child svg {
+    width: 14px !important;
+    height: 14px !important;
+}
+
+/* 總證照數、已過期、待受訓、有效中文字 */
+.hero-section > .max-w-7xl > .grid > div > div:last-child > p:first-child {
+    font-size: 0.65rem !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+}
+
+/* 四個統計數字 */
+#stat-total,
+#stat-expired,
+#stat-warning,
+#stat-valid {
+    font-size: 1rem !important;
+    line-height: 1.1 !important;
+    margin-top: 1px !important;
+}
+
+
+/* 手機直式與橫式再略微精簡間距 */
+@media screen and (max-width: 950px) {
+
+    .hero-section > .max-w-7xl > .grid {
+        gap: 0.5rem !important;
+        margin-top: 0.85rem !important;
+    }
+
+    .hero-section > .max-w-7xl > .grid > div {
+        min-height: 46px !important;
+        padding: 0.45rem 0.55rem !important;
+        gap: 0.45rem !important;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -5457,9 +6096,22 @@ body.budget-admin-enabled
 </div>
                 <div class="md:col-span-2 flex gap-3 mt-4">
                     <button type="button" onclick="saveEdit()" id="save-btn" class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition">更新資料</button>
-                    <button type="button" id="remove-btn" onclick="confirmRemove()" class="bg-red-50 text-red-500 px-6 py-3 rounded-xl font-bold hover:bg-red-100 transition flex items-center gap-2">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i> 移除
-                    </button>
+<button type="button"
+        id="remove-btn"
+        onclick="confirmRemove()"
+        class="bg-red-50 text-red-500 px-6 py-3 rounded-xl font-bold hover:bg-red-100 transition flex items-center gap-2">
+
+    <span class="attachment-symbol attachment-trash-symbol" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+            <path fill="currentColor"
+                  d="M9 3.5h6l.8 1.7H20a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2h4.2L9 3.5Z"/>
+            <path fill="currentColor"
+                  d="M6.2 8.7h11.6l-.8 10.1A2.5 2.5 0 0 1 14.5 21h-5a2.5 2.5 0 0 1-2.5-2.2L6.2 8.7Zm3.2 2.2a.8.8 0 0 0-.8.8l.3 5.6a.8.8 0 0 0 1.6-.1l-.3-5.6a.8.8 0 0 0-.8-.7Zm5.2 0a.8.8 0 0 0-.8.7l-.3 5.6a.8.8 0 1 0 1.6.1l.3-5.6a.8.8 0 0 0-.8-.8Z"/>
+        </svg>
+    </span>
+
+    <span>移除</span>
+</button>
                 </div>
             </form>
         </div>
@@ -6632,15 +7284,44 @@ function openComplianceSettingsModal() {
         if (rangePreview) rangePreview.innerText = previewProfile.employeeRange;
         if (requirementPreview) {
             const previewRoles = [...(previewProfile.requiredRoles || []), ...(previewProfile.auxiliaryRoles || [])];
-            requirementPreview.innerHTML = previewRoles.map(role => `
-                <div class="flex items-center justify-between gap-3 bg-white border border-slate-100 rounded-xl px-4 py-3">
-                    <span class="text-sm font-bold text-slate-700 flex flex-wrap items-center gap-2">
-                        <span>${escapeHTML(role.label)}</span>
-                        ${renderFullTimeCompactTooltip(role)}
-                        ${role.auxiliary ? renderAuxiliaryTooltip(role) : ''}
-                    </span>
-                    <span class="text-xs font-black text-indigo-600 bg-indigo-50 rounded-full px-2.5 py-1">應置 ${role.required} 人</span>
-                </div>`).join('');
+requirementPreview.innerHTML = previewRoles.map(role => `
+    <div class="flex items-center justify-between gap-3 bg-white border border-slate-100 rounded-xl px-4 py-3">
+
+        <span class="text-sm font-bold text-slate-700 flex flex-wrap items-center gap-2 min-w-0">
+
+            <span>
+                ${escapeHTML(role.label)}
+            </span>
+
+            ${
+                shouldShowFullTimeTooltip(role)
+                    ? `
+                        <span class="legal-duty-trigger compliance-preview-static-badge"
+                              aria-label="專職">
+                            專職
+                        </span>
+                    `
+                    : ''
+            }
+
+            ${
+                role.auxiliary
+                    ? `
+                        <span class="auxiliary-tooltip-trigger compliance-preview-static-badge"
+                              aria-label="兼任輔助">
+                            ${escapeHTML(role.auxiliaryLabel || '兼任 / 輔助')}
+                        </span>
+                    `
+                    : ''
+            }
+
+        </span>
+
+        <span class="shrink-0 text-xs font-black text-indigo-600 bg-indigo-50 rounded-full px-2.5 py-1 whitespace-nowrap">
+            應置 ${role.required} 人
+        </span>
+
+    </div>`).join('');
         }
     }
 
@@ -7209,7 +7890,24 @@ return `
 <td class="table-cell font-mono text-slate-400 text-sm text-center budget-index-cell">
     <div class="budget-index-inner">
         <span class="budget-index-number">${index + 1}</span>
-        ${row.sourceType === 'manual' && isAdmin ? `<span class="budget-index-actions"><button type="button" onclick="removeBudgetManualRow('${escapeJSString(row.recordId)}')" class="p-1.5 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-lg transition" title="移除"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></span>` : ''}
+        ${row.sourceType === 'manual' && isAdmin ? `
+    <span class="budget-index-actions">
+        <button type="button"
+                onclick="removeBudgetManualRow('${escapeJSString(row.recordId)}')"
+                class="w-8 h-8 rounded-lg bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition shrink-0"
+                title="移除"
+                aria-label="移除預算人員">
+
+            <span class="attachment-symbol attachment-trash-symbol" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                    <path fill="currentColor"
+                          d="M9 3.5h6l.8 1.7H20a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2h4.2L9 3.5Z"/>
+                    <path fill="currentColor"
+                          d="M6.2 8.7h11.6l-.8 10.1A2.5 2.5 0 0 1 14.5 21h-5a2.5 2.5 0 0 1-2.5-2.2L6.2 8.7Zm3.2 2.2a.8.8 0 0 0-.8.8l.3 5.6a.8.8 0 0 0 1.6-.1l-.3-5.6a.8.8 0 0 0-.8-.7Zm5.2 0a.8.8 0 0 0-.8.7l-.3 5.6a.8.8 0 1 0 1.6.1l.3-5.6a.8.8 0 0 0-.8-.8Z"/>
+                </svg>
+            </span>
+        </button>
+    </span>` : ''}
     </div>
 </td>
                     <td class="table-cell font-medium text-slate-500">
