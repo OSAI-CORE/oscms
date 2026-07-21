@@ -5309,6 +5309,180 @@ body.budget-admin-enabled
     }
 }
 
+/* =========================================================
+   手機直式：
+   專職備註偏上、兼任／輔助備註偏下
+   避免兩種備註重疊
+========================================================= */
+@media screen and (orientation: portrait) and (max-width: 767px) {
+
+    /* 專職備註維持畫面偏上中央 */
+    #compliance-role-list .legal-duty-panel {
+        left: 50% !important;
+        right: auto !important;
+        top: 42% !important;
+        bottom: auto !important;
+
+        width: calc(100vw - 32px) !important;
+        max-width: 340px !important;
+        max-height: 48dvh !important;
+
+        transform:
+            translate(-50%, calc(-50% - 4px))
+            scale(0.98) !important;
+    }
+
+    #compliance-role-list
+    .legal-duty-tooltip-wrap.is-open
+    .legal-duty-panel {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+
+        transform:
+            translate(-50%, -50%)
+            scale(1) !important;
+    }
+
+    /*
+     * 急救人員兼任／輔助備註移到畫面下方，
+     * 位置會比專職備註低，也較接近急救人員小卡。
+     */
+    #compliance-role-list .auxiliary-tooltip-panel {
+        left: 50% !important;
+        right: auto !important;
+
+        top: auto !important;
+        bottom: calc(
+            18px + env(safe-area-inset-bottom)
+        ) !important;
+
+        width: calc(100vw - 32px) !important;
+        max-width: 340px !important;
+        max-height: 42dvh !important;
+
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+
+        transform:
+            translateX(-50%)
+            translateY(4px)
+            scale(0.98) !important;
+    }
+
+    #compliance-role-list
+    .auxiliary-tooltip-wrap.is-open
+    .auxiliary-tooltip-panel {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+
+        transform:
+            translateX(-50%)
+            translateY(0)
+            scale(1) !important;
+    }
+
+    /*
+     * 手機觸控版只依 is-open 顯示，
+     * 避免 focus 狀態殘留使兩個備註同時顯示。
+     */
+    #compliance-role-list
+    .legal-duty-tooltip-wrap:not(.is-open)
+    .legal-duty-panel,
+
+    #compliance-role-list
+    .auxiliary-tooltip-wrap:not(.is-open)
+    .auxiliary-tooltip-panel {
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* 固定式備註不需要指向按鈕的三角形 */
+    #compliance-role-list .legal-duty-panel::before,
+    #compliance-role-list .auxiliary-tooltip-panel::before {
+        display: none !important;
+    }
+}
+
+/* =========================================================
+   桌機及手機版：
+   新年度外訓預算四張統計圖卡輕量精簡
+========================================================= */
+
+#budget-panel .budget-summary-grid {
+    gap: 0.7rem !important;
+    margin-bottom: 1rem !important;
+}
+
+/* 四張預算統計圖卡 */
+#budget-panel .budget-summary-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 58px !important;
+
+    padding: 0.65rem 0.8rem !important;
+
+    border-radius: 0.75rem !important;
+    box-sizing: border-box !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+/* 預算年度、需受訓人次等名稱 */
+#budget-panel
+.budget-summary-card
+> p:first-child {
+    font-size: 0.68rem !important;
+    line-height: 1.15 !important;
+
+    margin: 0 !important;
+    white-space: nowrap !important;
+}
+
+/* 四張圖卡的統計值 */
+#budget-panel
+.budget-summary-card
+p[id^="budget-summary-"] {
+    font-size: 0.98rem !important;
+    line-height: 1.15 !important;
+
+    margin-top: 0.2rem !important;
+    margin-bottom: 0 !important;
+
+    min-width: 0 !important;
+    word-break: break-word !important;
+}
+
+
+/* 手機直式與橫式 */
+@media screen and (max-width: 950px) {
+
+    #budget-panel .budget-summary-grid {
+        gap: 0.55rem !important;
+        margin-bottom: 0.85rem !important;
+    }
+
+    #budget-panel .budget-summary-card {
+        min-height: 54px !important;
+        padding: 0.55rem 0.65rem !important;
+        border-radius: 0.7rem !important;
+    }
+
+    #budget-panel
+    .budget-summary-card
+    > p:first-child {
+        font-size: 0.64rem !important;
+    }
+
+    #budget-panel
+    .budget-summary-card
+    p[id^="budget-summary-"] {
+        font-size: 0.92rem !important;
+        margin-top: 0.15rem !important;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -7036,7 +7210,8 @@ function getTrainingItemStats() {
     function renderFullTimeTooltip(role) {
         if (!shouldShowFullTimeTooltip(role)) return '';
         return `
-            <span class="legal-duty-tooltip-wrap" onclick="event.stopPropagation(); this.classList.toggle('is-open');">
+            <span class="legal-duty-tooltip-wrap"
+      onclick="toggleLegalDutyTooltip(event, this)">
                 <button type="button" class="legal-duty-trigger" aria-label="法定專職不可兼任說明">
                     法定專職 (不可兼任)
                 </button>
@@ -7078,11 +7253,44 @@ function renderAuxiliaryTooltip(role) {
         </span>`;
 }
 
+function toggleLegalDutyTooltip(event, element) {
+    event.stopPropagation();
+
+    /* 關閉兼任／輔助備註 */
+    document.querySelectorAll(
+        '.auxiliary-tooltip-wrap.is-open'
+    ).forEach(item => {
+        item.classList.remove('is-open');
+    });
+
+    /* 關閉其他專職備註 */
+    document.querySelectorAll(
+        '.legal-duty-tooltip-wrap.is-open'
+    ).forEach(item => {
+        if (item !== element) {
+            item.classList.remove('is-open');
+        }
+    });
+
+    element.classList.toggle('is-open');
+}
+
 function toggleAuxiliaryTooltip(event, element) {
     event.stopPropagation();
 
-    document.querySelectorAll('.auxiliary-tooltip-wrap.is-open').forEach(item => {
-        if (item !== element) item.classList.remove('is-open');
+    /* 開啟急救人員備註時，先關閉專職備註 */
+    document.querySelectorAll(
+        '.legal-duty-tooltip-wrap.is-open'
+    ).forEach(item => {
+        item.classList.remove('is-open');
+    });
+
+    document.querySelectorAll(
+        '.auxiliary-tooltip-wrap.is-open'
+    ).forEach(item => {
+        if (item !== element) {
+            item.classList.remove('is-open');
+        }
     });
 
     element.classList.toggle('is-open');
