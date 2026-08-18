@@ -6055,10 +6055,17 @@ p[id^="budget-summary-"] {
                            placeholder="••••••">
                 </div>
 
-                <label class="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 cursor-pointer">
-                    <input type="checkbox" id="editor-enabled-checkbox" class="w-4 h-4 accent-indigo-600">
-                    <span class="text-sm font-bold text-slate-700">啟用使用者共用權限</span>
-                </label>
+<label class="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+    <input
+        type="checkbox"
+        id="editor-enabled-checkbox"
+        class="w-4 h-4 accent-indigo-600"
+        disabled
+    >
+    <span class="text-sm font-bold text-slate-700">
+        啟用使用者共用權限
+    </span>
+</label>
 
                 <p class="text-[11px] text-slate-400 leading-snug">
                     使用者權限可編輯、上傳附件、儲存、載入與匯出資料；刪除與權限設定仍限管理者。
@@ -6300,6 +6307,8 @@ const STORE_CONFIG = 'config';
 
 const DEFAULT_ADMIN_PASSWORD = "SamCore@1068";
 const DEFAULT_EDITOR_PASSWORD = "TeamUser001";
+const DEFAULT_EDITOR_ENABLED = true;
+
 const MASTER_RECOVERY_CODE = "SAM-SUN-CORE-RECOVERY";
 
 let db;
@@ -6348,40 +6357,78 @@ let db;
      * 儲存單一或複數紀錄 (覆蓋模式)
      */
 async function persistAllRecords(recordsArray) {
-    return new Promise((resolve, reject) => {
-        /*
-         * IndexedDB 使用 keyPath: 'id'
-         * 每一筆資料都必須有合法 id。
-         * 若舊版 JSON 或預覽資料缺少 id，這裡自動補上，避免儲存失敗。
-         */
-        const safeRecords = (Array.isArray(recordsArray) ? recordsArray : []).map((record, index) => {
-            const source = record && typeof record === 'object' ? record : {};
-            const numericId = Number(source.id);
+    /*
+     * 證照正式工作資料只存在目前頁面記憶體。
+     * 保留原本資料正規化與 ID 防護，
+     * 但不再將證照資料寫入 IndexedDB。
+     */
+    const safeRecords =
+        (Array.isArray(recordsArray) ? recordsArray : [])
+            .map((record, index) => {
+                const source =
+                    record &&
+                    typeof record === 'object'
+                        ? record
+                        : {};
 
-            return {
-                ...source,
-                id: Number.isFinite(numericId) && numericId > 0
-                    ? numericId
-                    : Date.now() + index
-            };
-        });
+                const numericId =
+                    Number(source.id);
 
-        records = safeRecords;
-
-        const transaction = db.transaction([STORE_RECORDS], 'readwrite');
-        const store = transaction.objectStore(STORE_RECORDS);
-
-        const clearReq = store.clear();
-
-        clearReq.onsuccess = () => {
-            safeRecords.forEach(record => {
-                store.put(record);
+                return {
+                    ...source,
+                    id:
+                        Number.isFinite(numericId) &&
+                        numericId > 0
+                            ? numericId
+                            : Date.now() + index
+                };
             });
+
+    /*
+     * 正式同步至本次工作階段記憶體。
+     */
+    records = safeRecords;
+
+    /*
+     * 不永久保存。
+     * 每次原本需要儲存時，
+     * 反而確認 IndexedDB 沒有留下證照資料。
+     */
+    return new Promise((resolve, reject) => {
+        const transaction =
+            db.transaction(
+                [STORE_RECORDS],
+                'readwrite'
+            );
+
+        const store =
+            transaction.objectStore(
+                STORE_RECORDS
+            );
+
+        store.clear();
+
+        transaction.oncomplete = () => {
+            resolve();
         };
 
-        clearReq.onerror = () => reject(clearReq.error || '清空舊資料失敗');
-        transaction.oncomplete = () => resolve();
-        transaction.onerror = () => reject(transaction.error || '資料保存失敗');
+        transaction.onerror = () => {
+            reject(
+                transaction.error ||
+                new Error(
+                    '清除本機證照暫存資料失敗'
+                )
+            );
+        };
+
+        transaction.onabort = () => {
+            reject(
+                transaction.error ||
+                new Error(
+                    '清除本機證照暫存資料已中止'
+                )
+            );
+        };
     });
 }
 
@@ -6400,22 +6447,114 @@ async function persistAllRecords(recordsArray) {
     /**
      * 儲存配置資訊
      */
-    async function setConfig(key, value) {
-        return new Promise((resolve) => {
-            const transaction = db.transaction([STORE_CONFIG], 'readwrite');
-            const store = transaction.objectStore(STORE_CONFIG);
-            store.put({ key, value });
-            transaction.oncomplete = () => resolve();
-        });
-    }
+async function setConfig(key, value) {
+    /*
+     * 所有正式資料與權限設定只存在目前頁面記憶體。
+     * 保留函式名稱，避免改動原本各功能呼叫邏輯。
+     *
+     * 此處不再寫入 IndexedDB；
+     * 反而清除舊版本可能留下的同名資料。
+     */
+    return new Promise((resolve, reject) => {
+        const transaction =
+            db.transaction(
+                [STORE_CONFIG],
+                'readwrite'
+            );
+
+        const store =
+            transaction.objectStore(
+                STORE_CONFIG
+            );
+
+        store.delete(key);
+
+        transaction.oncomplete = () => {
+            resolve();
+        };
+
+        transaction.onerror = () => {
+            reject(
+                transaction.error ||
+                new Error(
+                    '清除本機設定暫存失敗'
+                )
+            );
+        };
+
+        transaction.onabort = () => {
+            reject(
+                transaction.error ||
+                new Error(
+                    '清除本機設定暫存已中止'
+                )
+            );
+        };
+    });
+}
+
+async function clearPersistedSystemData() {
+    /*
+     * 清除舊版本可能殘留於 IndexedDB 的
+     * 證照資料、附件、預算、法規設定與權限資料。
+     *
+     * 正式資料來源改為 JSON；
+     * 正式權限來源改為 GitHub HTML。
+     */
+    return new Promise((resolve, reject) => {
+        const transaction =
+            db.transaction(
+                [
+                    STORE_RECORDS,
+                    STORE_CONFIG
+                ],
+                'readwrite'
+            );
+
+        const recordsStore =
+            transaction.objectStore(
+                STORE_RECORDS
+            );
+
+        const configStore =
+            transaction.objectStore(
+                STORE_CONFIG
+            );
+
+        recordsStore.clear();
+        configStore.clear();
+
+        transaction.oncomplete = () => {
+            resolve();
+        };
+
+        transaction.onerror = () => {
+            reject(
+                transaction.error ||
+                new Error(
+                    '清除舊版本本機資料失敗'
+                )
+            );
+        };
+
+        transaction.onabort = () => {
+            reject(
+                transaction.error ||
+                new Error(
+                    '清除舊版本本機資料已中止'
+                )
+            );
+        };
+    });
+}
 
     // --- 全域變數 ---
 let isAdmin = false;
 let isEditor = false;
 
-let systemPassword = DEFAULT_ADMIN_PASSWORD; // 管理者密碼
-let editorPassword = DEFAULT_EDITOR_PASSWORD; // 使用者共用密碼
-let editorEnabled = true; // 是否啟用使用者共用權限
+let systemPassword = DEFAULT_ADMIN_PASSWORD;
+let editorPassword = DEFAULT_EDITOR_PASSWORD;
+let editorEnabled = DEFAULT_EDITOR_ENABLED;
 
 let records = [];
 let currentAttachRecordId = null;
@@ -6605,40 +6744,13 @@ function canManageComplianceBasis() {
  * 正式資料只在管理者 / 使用者登入成功後載入。
  * 預覽者開啟系統時不讀取 IndexedDB 的正式業務資料。
  */
+/*
+ * 保留函式名稱供舊有流程相容使用。
+ *
+ * 新版正式資料不再從 IndexedDB 載入。
+ * 工作資料統一由目前頁面記憶體及 JSON 接管。
+ */
 async function loadFormalDataFromDB() {
-    const formalRecords = await fetchAllRecords();
-    const savedComplianceSettings = await getConfig('compliance_settings');
-    const savedComplianceBasisFiles = await getConfig('compliance_basis_files');
-    const savedBudgetRecords = await getConfig('budget_records');
-    const savedBudgetFeeDefaults = await getConfig('budget_fee_defaults');
-    const savedManualBudgetRows = await getConfig('manual_budget_rows');
-
-    records = Array.isArray(formalRecords) ? formalRecords : [];
-
-    applyComplianceSettings(
-        savedComplianceSettings || DEFAULT_COMPLIANCE_SETTINGS
-    );
-
-    complianceBasisFiles = Array.isArray(savedComplianceBasisFiles)
-        ? savedComplianceBasisFiles
-        : [];
-
-    budgetRecords =
-        savedBudgetRecords &&
-        typeof savedBudgetRecords === 'object'
-            ? savedBudgetRecords
-            : {};
-
-    budgetFeeDefaults =
-        savedBudgetFeeDefaults &&
-        typeof savedBudgetFeeDefaults === 'object'
-            ? savedBudgetFeeDefaults
-            : {};
-
-    manualBudgetRows = Array.isArray(savedManualBudgetRows)
-        ? savedManualBudgetRows
-        : [];
-
     normalizeBudgetManualRows();
 }
 
@@ -6700,7 +6812,8 @@ function refreshSystemView() {
 
 /*
  * 管理者或使用者密碼正確後，
- * 重新從 IndexedDB 載入正式資料。
+ * 建立乾淨的本次工作階段。
+ * 正式資料由使用者自行載入最新 JSON。
  */
 async function completeFormalLogin(role) {
     try {
@@ -6708,7 +6821,12 @@ async function completeFormalLogin(role) {
          * 先確認正式資料可完整讀取，再切換權限。
          * 若載入失敗，原本的預覽資料仍會保留。
          */
-        await loadFormalDataFromDB();
+        /*
+ * 登入後不讀取任何瀏覽器舊資料。
+ * 先建立乾淨工作階段，
+ * 正式資料由使用者自行載入最新 JSON。
+ */
+clearViewerWorkingData();
 
 [
     'searchInput',
@@ -9905,14 +10023,10 @@ async function checkPassword() {
         loginError.classList.add('hidden');
     }
 
-    if (pwd === MASTER_RECOVERY_CODE) {
-        systemPassword = DEFAULT_ADMIN_PASSWORD;
-        editorPassword = DEFAULT_EDITOR_PASSWORD;
-        editorEnabled = true;
-
-        await setConfig('admin_password', DEFAULT_ADMIN_PASSWORD);
-        await setConfig('editor_password', DEFAULT_EDITOR_PASSWORD);
-        await setConfig('editor_enabled', true);
+if (pwd === MASTER_RECOVERY_CODE) {
+    systemPassword = DEFAULT_ADMIN_PASSWORD;
+    editorPassword = DEFAULT_EDITOR_PASSWORD;
+    editorEnabled = DEFAULT_EDITOR_ENABLED;
 
         isAdmin = false;
         isEditor = false;
@@ -9976,7 +10090,10 @@ function openChangePasswordModal() {
     if (oldPwdInput) oldPwdInput.value = '';
     if (newAdminPwdInput) newAdminPwdInput.value = '';
     if (newEditorPwdInput) newEditorPwdInput.value = '';
-    if (editorEnabledCheckbox) editorEnabledCheckbox.checked = editorEnabled;
+    if (editorEnabledCheckbox) {
+    editorEnabledCheckbox.checked =
+        DEFAULT_EDITOR_ENABLED;
+}
 
     document.getElementById('change-pwd-modal').classList.remove('hidden');
 }
@@ -9993,52 +10110,90 @@ function closeChangePasswordModalOutside(event) {
 
 async function savePasswordSettings() {
     if (!canChangePassword()) {
-        alert('只有管理者可以修改權限與密碼設定。');
+        alert(
+            '只有管理者可以修改權限與密碼設定。'
+        );
         return;
     }
 
-    const oldP = document.getElementById('old-pwd').value;
-    const newAdminP = document.getElementById('new-admin-pwd').value.trim();
-    const newEditorP = document.getElementById('new-editor-pwd').value.trim();
-    const editorEnabledNext = document.getElementById('editor-enabled-checkbox').checked;
+    const oldP =
+        document.getElementById(
+            'old-pwd'
+        ).value;
+
+    const newAdminP =
+        document.getElementById(
+            'new-admin-pwd'
+        ).value.trim();
+
+    const newEditorP =
+        document.getElementById(
+            'new-editor-pwd'
+        ).value.trim();
 
     /*
-      只有在修改「管理者密碼」時，才需要再次輸入目前管理者密碼。
-      若只是修改使用者密碼，或勾選 / 取消使用者共用權限，不需要輸入目前管理者密碼。
-    */
+     * 只有修改管理者密碼時，
+     * 才再次驗證目前管理者密碼。
+     */
     if (newAdminP) {
         if (!oldP) {
-            alert("修改管理者密碼時，請先輸入目前管理者密碼。");
+            alert(
+                '修改管理者密碼時，請先輸入目前管理者密碼。'
+            );
             return;
         }
 
         if (oldP !== systemPassword) {
-            alert("目前管理者密碼不正確");
+            alert(
+                '目前管理者密碼不正確'
+            );
             return;
         }
 
+        /*
+         * 僅修改目前工作階段記憶體。
+         * 不寫入 IndexedDB。
+         */
         systemPassword = newAdminP;
-        await setConfig('admin_password', systemPassword);
     }
 
     if (newEditorP) {
+        /*
+         * 僅修改目前工作階段記憶體。
+         * 不寫入 IndexedDB。
+         */
         editorPassword = newEditorP;
-        await setConfig('editor_password', editorPassword);
     }
 
-    editorEnabled = editorEnabledNext;
-    await setConfig('editor_enabled', editorEnabled);
+    /*
+     * 使用者正式啟用狀態
+     * 永遠以 GitHub HTML 為準。
+     */
+    editorEnabled =
+        DEFAULT_EDITOR_ENABLED;
 
-    alert("權限與密碼設定已更新成功！");
+    alert(
+        "權限與密碼設定已更新成功！"
+    );
+
     closeChangePasswordModal();
 
-    document.getElementById('old-pwd').value = '';
-    document.getElementById('new-admin-pwd').value = '';
-    document.getElementById('new-editor-pwd').value = '';
+    document.getElementById(
+        'old-pwd'
+    ).value = '';
+
+    document.getElementById(
+        'new-admin-pwd'
+    ).value = '';
+
+    document.getElementById(
+        'new-editor-pwd'
+    ).value = '';
 }
 
 /*
- * 將目前畫面中的資料正式寫入 IndexedDB。
+ * 將目前畫面中的資料同步至本次工作階段記憶體。
+ * 不永久保存於 IndexedDB，
  * 不顯示訊息，也不改變登入狀態。
  */
 async function persistCurrentSystemData() {
@@ -10117,9 +10272,19 @@ async function logoutSystem() {
         /*
          * 最後安全儲存成功後才真正登出。
          */
-        await persistCurrentSystemData();
+/*
+ * 先把畫面最後輸入同步到目前工作階段，
+ * 同時確保不留下 IndexedDB 工作資料。
+ */
+await persistCurrentSystemData();
 
-        finalLogoutConfirm();
+/*
+ * 登出前再次全面清除
+ * 舊版本可能殘留的 IndexedDB 資料。
+ */
+await clearPersistedSystemData();
+
+finalLogoutConfirm();
 
         alert('已完成登出。');
 
@@ -10283,9 +10448,21 @@ function finalLogoutConfirm() {
     isEditor = false;
 
     /*
-     * 只清空目前畫面。
-     * 正式資料已經儲存在 IndexedDB，不會被刪除。
+     * 登出後立即恢復 GitHub HTML 正式權限設定。
      */
+    systemPassword =
+        DEFAULT_ADMIN_PASSWORD;
+
+    editorPassword =
+        DEFAULT_EDITOR_PASSWORD;
+
+    editorEnabled =
+        DEFAULT_EDITOR_ENABLED;
+
+/*
+ * 登出後清除目前工作階段資料，
+ * 正式資料僅以匯出的 JSON 作為後續接續來源。
+ */
     clearViewerWorkingData();
 
     const addPersonBtn =
@@ -10878,33 +11055,27 @@ window.onload = async () => {
     try {
         await initDB();
 
-        /*
-         * 啟動時只讀取權限配置。
-         * 不向預覽者載入正式的人員、附件及預算資料。
-         */
-        const savedPwd =
-            await getConfig('admin_password');
+/*
+ * 權限設定統一以目前 GitHub HTML
+ * 發布版本為正式來源。
+ *
+ * 不讀取任何瀏覽器舊有權限設定。
+ */
+systemPassword =
+    DEFAULT_ADMIN_PASSWORD;
 
-        if (savedPwd) {
-            systemPassword = savedPwd;
-        }
+editorPassword =
+    DEFAULT_EDITOR_PASSWORD;
 
-        const savedEditorPwd =
-            await getConfig('editor_password');
+editorEnabled =
+    DEFAULT_EDITOR_ENABLED;
 
-        if (savedEditorPwd) {
-            editorPassword = savedEditorPwd;
-        }
-
-        const savedEditorEnabled =
-            await getConfig('editor_enabled');
-
-        if (
-            typeof savedEditorEnabled ===
-            'boolean'
-        ) {
-            editorEnabled = savedEditorEnabled;
-        }
+/*
+ * 每次重新開啟 / F5：
+ * 清除舊版本可能殘留於 IndexedDB
+ * 的證照、附件、預算、法規與權限資料。
+ */
+await clearPersistedSystemData();
 
         /*
          * 每次開啟或重新整理系統，
