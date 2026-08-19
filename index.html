@@ -6566,6 +6566,80 @@ let manualBudgetRows = [];
 /* 預覽載入模式：只暫存在目前頁面，不寫入瀏覽器 IndexedDB */
 let isPreviewDataMode = false;
 
+/* =========================================================
+   工作階段防呆狀態
+========================================================= */
+
+/*
+ * 證照系統目前已有正式工作資料修改，
+ * 但尚未按下綠色「儲存」。
+ *
+ * 包含：
+ * - 證照人員新增／修改／刪除
+ * - 證照排序
+ * - 證照附件
+ * - 法規配置設定
+ * - 法定人員設置基準附件
+ * - 外訓預算資料
+ */
+let certificateDirty = false;
+
+
+/*
+ * 已完成綠色「儲存」，
+ * 但最新版工作成果尚未匯出 JSON。
+ */
+let sessionNeedsExport = false;
+
+
+function hasUnsavedCertificateChanges() {
+    return certificateDirty;
+}
+
+
+function hasPendingSessionChanges() {
+    return (
+        certificateDirty ||
+        sessionNeedsExport
+    );
+}
+
+
+function markCertificateDirty() {
+    if (
+        canEditData() &&
+        !isPreviewDataMode
+    ) {
+        certificateDirty = true;
+    }
+}
+
+
+function clearWorkProtectionState() {
+    certificateDirty = false;
+    sessionNeedsExport = false;
+}
+
+
+/*
+ * F5、關閉分頁、關閉瀏覽器、
+ * 離開目前網站時的最後防呆。
+ */
+window.addEventListener(
+    'beforeunload',
+    event => {
+
+        if (
+            !hasPendingSessionChanges()
+        ) {
+            return;
+        }
+
+        event.preventDefault();
+        event.returnValue = '';
+    }
+);
+
 function getCurrentRole() {
     if (isAdmin) return 'admin';
     if (isEditor) return 'editor';
@@ -6765,10 +6839,18 @@ function clearViewerWorkingData() {
     complianceBasisFiles = [];
     budgetRecords = {};
     budgetFeeDefaults = {};
-    manualBudgetRows = [];
-    isPreviewDataMode = false;
+manualBudgetRows = [];
+isPreviewDataMode = false;
 
-    applyComplianceSettings(DEFAULT_COMPLIANCE_SETTINGS);
+/*
+ * 新工作階段／登出／退出預覽時，
+ * 一併清除尚未儲存及尚未匯出狀態。
+ */
+clearWorkProtectionState();
+
+applyComplianceSettings(
+    DEFAULT_COMPLIANCE_SETTINGS
+);
     normalizeBudgetManualRows();
 
     const resetIds = [
@@ -7047,8 +7129,16 @@ async function processComplianceBasisFiles(files) {
             reader.readAsDataURL(file);
         })));
 
-        complianceBasisFiles.push(...storedFiles);
-        await setConfig('compliance_basis_files', complianceBasisFiles);
+complianceBasisFiles.push(
+    ...storedFiles
+);
+
+markCertificateDirty();
+
+await setConfig(
+    'compliance_basis_files',
+    complianceBasisFiles
+);
         renderComplianceBasisModal();
         renderComplianceDashboard();
     }
@@ -7057,8 +7147,17 @@ async function processComplianceBasisFiles(files) {
         if (!isAdmin) return;
         if (index < 0 || index >= complianceBasisFiles.length) return;
         if (!confirm('確定移除此法定人員設置基準依據檔案嗎？')) return;
-        complianceBasisFiles.splice(index, 1);
-        await setConfig('compliance_basis_files', complianceBasisFiles);
+complianceBasisFiles.splice(
+    index,
+    1
+);
+
+markCertificateDirty();
+
+await setConfig(
+    'compliance_basis_files',
+    complianceBasisFiles
+);
         renderComplianceBasisModal();
         renderComplianceDashboard();
     }
@@ -7660,8 +7759,20 @@ async function saveComplianceSettings() {
 
     const typeKey = document.getElementById('compliance-business-type').value;
         const employeeCount = Math.max(parseInt(document.getElementById('compliance-employee-count').value, 10) || 0, 0);
-        applyComplianceSettings({ businessTypeKey: typeKey, employeeCount });
-        await setConfig('compliance_settings', complianceSettings);
+applyComplianceSettings({
+    businessTypeKey: typeKey,
+    employeeCount
+});
+
+/*
+ * 法規配置已正式修改目前工作階段。
+ */
+markCertificateDirty();
+
+await setConfig(
+    'compliance_settings',
+    complianceSettings
+);
         closeComplianceSettingsModal();
         renderReport();
     }
@@ -8013,10 +8124,15 @@ async function saveBudgetField(rowId, year, field, value, itemName = '', sourceT
             } else {
                 current[field] = String(value || '').trim();
             }
-            budgetRecords[key] = current;
-        }
+budgetRecords[key] = current;
+}
 
-        await persistBudgetData();
+/*
+ * 預算欄位已實際修改。
+ */
+markCertificateDirty();
+
+await persistBudgetData();
         if (shouldRerenderBudgetAfterFieldChange(field)) {
             renderBudgetReport();
         } else {
@@ -8330,8 +8446,11 @@ async function saveBudgetManualRow() {
             fee: '',
             note: ''
         };
-        manualBudgetRows.push(row);
-        await persistBudgetData();
+manualBudgetRows.push(row);
+
+markCertificateDirty();
+
+await persistBudgetData();
         closeBudgetAddModal();
         updateBudgetFilters();
         renderBudgetReport();
@@ -8340,8 +8459,15 @@ async function saveBudgetManualRow() {
     async function removeBudgetManualRow(rowId) {
         if (!isAdmin) return;
         if (!confirm('確定要移除此筆預算人員資料嗎？')) return;
-        manualBudgetRows = manualBudgetRows.filter(row => row.id !== rowId);
-        await persistBudgetData();
+manualBudgetRows =
+    manualBudgetRows.filter(
+        row =>
+            row.id !== rowId
+    );
+
+markCertificateDirty();
+
+await persistBudgetData();
         updateBudgetFilters();
         renderBudgetReport();
     }
@@ -8730,7 +8856,13 @@ record.attachments.push({
     size: file.size,
     lastModified: file.lastModified
 });
-                renderAttachmentList();
+
+/*
+ * FileReader 真正成功後才標記修改。
+ */
+markCertificateDirty();
+
+renderAttachmentList();
             };
             reader.readAsDataURL(file);
         });
@@ -8754,31 +8886,80 @@ record.attachments.push({
                 const type = file.type.includes('pdf') ? 'pdf' : (file.type.includes('image') ? 'image' : 'unknown');
                 const reader = new FileReader();
                 reader.onload = (re) => {
-                    record.attachments.push({
+record.attachments.push({
     name: file.name,
     url: re.target.result,
     type: type,
     size: file.size,
     lastModified: file.lastModified
 });
-                    renderAttachmentList();
+
+markCertificateDirty();
+
+renderAttachmentList();
                 };
                 reader.readAsDataURL(file);
             });
         }
     });
 
-    const complianceBasisDropZone = document.getElementById('compliance-basis-drop-zone');
-    if (complianceBasisDropZone) {
-        complianceBasisDropZone.addEventListener('dragover', (e) => { e.preventDefault(); if (isAdmin) complianceBasisDropZone.classList.add('drag-over'); });
-        complianceBasisDropZone.addEventListener('dragleave', () => complianceBasisDropZone.classList.remove('drag-over'));
-        complianceBasisDropZone.addEventListener('drop', async (e) => {
+const complianceBasisDropZone =
+    document.getElementById(
+        'compliance-basis-drop-zone'
+    );
+
+if (complianceBasisDropZone) {
+
+    complianceBasisDropZone.addEventListener(
+        'dragover',
+        e => {
             e.preventDefault();
-            complianceBasisDropZone.classList.remove('drag-over');
-            if (!isAdmin) return;
-            await processComplianceBasisFiles(Array.from(e.dataTransfer.files || []));
-        });
-    }
+
+            if (
+                canManageComplianceBasis() &&
+                !isPreviewDataMode
+            ) {
+                complianceBasisDropZone
+                    .classList
+                    .add('drag-over');
+            }
+        }
+    );
+
+    complianceBasisDropZone.addEventListener(
+        'dragleave',
+        () => {
+            complianceBasisDropZone
+                .classList
+                .remove('drag-over');
+        }
+    );
+
+    complianceBasisDropZone.addEventListener(
+        'drop',
+        async e => {
+            e.preventDefault();
+
+            complianceBasisDropZone
+                .classList
+                .remove('drag-over');
+
+            if (
+                !canManageComplianceBasis() ||
+                isPreviewDataMode
+            ) {
+                return;
+            }
+
+            await processComplianceBasisFiles(
+                Array.from(
+                    e.dataTransfer.files ||
+                    []
+                )
+            );
+        }
+    );
+}
 
 function formatAttachmentFileSize(size) {
     const bytes = Number(size || 0);
@@ -8798,8 +8979,14 @@ function removeAttachment(index) {
 
     if (confirm("確定要移除此附件嗎？")) {
         const record = records.find(r => r.id === currentAttachRecordId);
-        record.attachments.splice(index, 1);
-        renderAttachmentList();
+record.attachments.splice(
+    index,
+    1
+);
+
+markCertificateDirty();
+
+renderAttachmentList();
     }
 }
 
@@ -10233,26 +10420,88 @@ async function saveSystemNow() {
     }
 
     try {
+        /*
+         * 先同步最後仍在輸入中的欄位。
+         *
+         * 特別是預算欄位使用 onchange，
+         * blur 後可能才會把 certificateDirty
+         * 設為 true。
+         */
         await persistCurrentSystemData();
 
-        alert('資料已儲存。');
+        /*
+         * 一定要在同步完成後才讀取 hadChanges。
+         */
+        const hadChanges =
+            certificateDirty;
+
+        /*
+         * 真正有修改時，
+         * 按下綠色「儲存」後轉成
+         * 尚未匯出 JSON。
+         */
+        if (hadChanges) {
+            sessionNeedsExport =
+                true;
+        }
+
+        /*
+         * 本次人工修改已完成段落確認。
+         */
+        certificateDirty =
+            false;
+
+        if (hadChanges) {
+
+            alert(
+                '資料已儲存至目前工作階段，請記得匯出最新 JSON。'
+            );
+
+        } else if (
+            sessionNeedsExport
+        ) {
+
+            alert(
+                '目前沒有新的資料修改，但既有工作成果仍尚未匯出 JSON。'
+            );
+
+        } else {
+
+            alert(
+                '目前沒有新的資料修改。'
+            );
+        }
 
     } catch (error) {
-        console.error('資料儲存失敗：', error);
+
+        console.error(
+            '資料儲存失敗：',
+            error
+        );
 
         const message =
-            error && error.message
+            error &&
+            error.message
                 ? error.message
-                : String(error || '未知錯誤');
+                : String(
+                    error ||
+                    '未知錯誤'
+                );
 
-        alert('資料儲存失敗：' + message);
+        alert(
+            '資料儲存失敗：' +
+            message
+        );
     }
 }
 
 
 /*
- * 登出前仍執行最後一次安全儲存，
- * 但介面功能名稱統一顯示為「登出」。
+ * 登出只負責確認與清除目前工作階段。
+ *
+ * 不再自動替使用者完成「儲存」；
+ * 是否保存及匯出最新版 JSON，
+ * 由使用者自行確認。
  */
 async function logoutSystem() {
     if (!canEditData()) {
@@ -10260,44 +10509,62 @@ async function logoutSystem() {
         return;
     }
 
-    const confirmed = confirm(
-        '確定要登出目前模式嗎？'
-    );
+    const logoutMessage =
+        hasPendingSessionChanges()
+            ? (
+                '確定要登出目前模式嗎？\n\n' +
+                '目前仍有尚未儲存或尚未匯出 JSON 的工作成果，' +
+                '登出後本次工作階段資料將清除。\n\n' +
+                '請確認已先完成儲存並匯出最新 JSON。'
+            )
+            : (
+                '確定要登出目前模式嗎？\n\n' +
+                '目前沒有尚未儲存或尚未匯出的工作變更。'
+            );
 
-    if (!confirmed) {
+    if (
+        !confirm(
+            logoutMessage
+        )
+    ) {
         return;
     }
 
     try {
         /*
-         * 最後安全儲存成功後才真正登出。
+         * 登出前只清除舊版
+         * IndexedDB 殘留資料。
+         *
+         * 不自動執行 saveSystemNow()。
          */
-/*
- * 先把畫面最後輸入同步到目前工作階段，
- * 同時確保不留下 IndexedDB 工作資料。
- */
-await persistCurrentSystemData();
+        await clearPersistedSystemData();
 
-/*
- * 登出前再次全面清除
- * 舊版本可能殘留的 IndexedDB 資料。
- */
-await clearPersistedSystemData();
+        clearWorkProtectionState();
 
-finalLogoutConfirm();
-
-        alert('已完成登出。');
-
-    } catch (error) {
-        console.error('登出前儲存失敗：', error);
-
-        const message =
-            error && error.message
-                ? error.message
-                : String(error || '未知錯誤');
+        finalLogoutConfirm();
 
         alert(
-            '資料尚未完成儲存，因此目前未執行登出：' +
+            '已完成登出。'
+        );
+
+    } catch (error) {
+
+        console.error(
+            '登出清理失敗：',
+            error
+        );
+
+        const message =
+            error &&
+            error.message
+                ? error.message
+                : String(
+                    error ||
+                    '未知錯誤'
+                );
+
+        alert(
+            '清除本機暫存資料失敗，因此目前未執行登出：' +
             message
         );
     }
@@ -10491,10 +10758,17 @@ async function moveRecordUp(id) {
     if (index <= 0) return;
 
     const temp = records[index - 1];
-    records[index - 1] = records[index];
-    records[index] = temp;
+records[index - 1] =
+    records[index];
 
-    await persistAllRecords(records);
+records[index] =
+    temp;
+
+markCertificateDirty();
+
+await persistAllRecords(
+    records
+);
     renderReport();
 }
 
@@ -10508,10 +10782,17 @@ async function moveRecordDown(id) {
     if (index === -1 || index >= records.length - 1) return;
 
     const temp = records[index + 1];
-    records[index + 1] = records[index];
-    records[index] = temp;
+records[index + 1] =
+    records[index];
 
-    await persistAllRecords(records);
+records[index] =
+    temp;
+
+markCertificateDirty();
+
+await persistAllRecords(
+    records
+);
     renderReport();
 }
 
@@ -10628,9 +10909,15 @@ if (idVal === "") {
     }
 }
         
-        await persistAllRecords(records);
-        renderReport();
-        closeEditModal();
+markCertificateDirty();
+
+await persistAllRecords(
+    records
+);
+
+renderReport();
+
+closeEditModal();
     }
 
 async function confirmRemove() {
@@ -10646,8 +10933,16 @@ async function confirmRemove() {
 
     if(confirm("確定要永久移除此紀錄嗎？")) {
         const id = parseInt(document.getElementById('edit-id').value);
-        records = records.filter(r => r.id !== id);
-        await persistAllRecords(records);
+records =
+    records.filter(
+        r => r.id !== id
+    );
+
+markCertificateDirty();
+
+await persistAllRecords(
+    records
+);
         renderReport();
         closeEditModal();
     }
@@ -10699,11 +10994,29 @@ async function exportJSON() {
         return;
     }
 
-    try {
-        await persistAllRecords(records);
-        await persistBudgetData();
+try {
+    /*
+     * 先讓目前仍在焦點中的預算欄位
+     * 觸發 blur / onchange。
+     */
+    await persistCurrentSystemData();
 
-        const exportDate = new Date().toISOString().split('T')[0];
+    /*
+     * 還有尚未按綠色「儲存」的修改，
+     * 不允許直接匯出 JSON。
+     */
+    if (
+        hasUnsavedCertificateChanges()
+    ) {
+        alert(
+            '目前仍有尚未儲存的證照／合規／預算修改。\n\n' +
+            '請先按下綠色「儲存」後再匯出 JSON。'
+        );
+
+        return;
+    }
+
+    const exportDate = new Date().toISOString().split('T')[0];
         const exportTime = new Date().toISOString();
 
         const exportData = {
@@ -10732,10 +11045,24 @@ async function exportJSON() {
         a.href = url;
         a.download = `職安證照管理CMS_${exportDate}.json`;
 
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+document.body.appendChild(
+    a
+);
+
+a.click();
+
+document.body.removeChild(
+    a
+);
+
+/*
+ * 最新工作階段已完成 JSON 匯出。
+ */
+sessionNeedsExport = false;
+
+URL.revokeObjectURL(
+    url
+);
 
     } catch (error) {
         console.error(error);
@@ -10811,9 +11138,16 @@ async function loadPreviewJSON(event) {
              * editor_password
              * editor_enabled
              */
-            isPreviewDataMode = true;
+isPreviewDataMode = true;
 
-            updateItemFilter();
+/*
+ * 預覽 JSON 本身已是一份
+ * 外部存在的完整資料來源，
+ * 不視為尚未儲存工作。
+ */
+clearWorkProtectionState();
+
+updateItemFilter();
             updateYearFilter();
             updateBudgetFilters();
 
@@ -10856,9 +11190,22 @@ async function importJSON(event) {
 
             const importLabel = isAdmin ? '匯入資料' : '載入資料';
 
-            if (!confirm(`${importLabel}將覆蓋目前所有紀錄，確定要繼續嗎？`)) {
-                return;
-            }
+const pendingWorkWarning =
+    hasPendingSessionChanges()
+        ? (
+            '\n\n目前有尚未儲存或尚未匯出的工作成果，' +
+            '繼續後將被覆蓋。'
+        )
+        : '';
+
+if (
+    !confirm(
+        `${importLabel}將覆蓋目前所有紀錄，確定要繼續嗎？` +
+        pendingWorkWarning
+    )
+) {
+    return;
+}
 
             // =========================
             // 舊版格式：只有 records 陣列
@@ -10867,9 +11214,15 @@ async function importJSON(event) {
                 records = data;
                 await persistAllRecords(records);
 
-                isPreviewDataMode = false;
+isPreviewDataMode = false;
 
-                updateItemFilter();
+/*
+ * 剛載入的 JSON 本身已經存在於外部，
+ * 不需要再次提示尚未匯出。
+ */
+clearWorkProtectionState();
+
+updateItemFilter();
                 updateYearFilter();
                 updateBudgetFilters();
                 renderReport();
@@ -10930,9 +11283,11 @@ async function importJSON(event) {
             }
 
             // 7. 正式載入 / 匯入完成，取消預覽模式
-            isPreviewDataMode = false;
+isPreviewDataMode = false;
 
-            // 8. 重新整理畫面
+clearWorkProtectionState();
+
+// 8. 重新整理畫面
             updateItemFilter();
             updateYearFilter();
             updateBudgetFilters();
