@@ -6187,7 +6187,7 @@ p[id^="budget-summary-"] {
 
 
                 <p class="text-[11px] text-slate-400 leading-snug text-center mt-3">
-                    正式資料維持原有 JSON；預覽資料另設有效期限與開啟次數。
+                    正式資料維持原有檔案格式；預覽資料另設有效期限與開啟次數。
                 </p>
 
 
@@ -7175,8 +7175,7 @@ function validateAndConsumeLimitedPreview(
             ok: false,
 
             message:
-                '此檔案不是本系統產生的預覽專用 JSON。\n\n' +
-                '請使用「匯出資料 → 預覽資料」產生的檔案。'
+                "此檔案不是本系統產生的預覽專用檔案。"
         };
     }
 
@@ -11090,7 +11089,7 @@ async function saveSystemNow() {
         if (hadChanges) {
 
             alert(
-                '資料已儲存至目前工作階段，請記得匯出最新 JSON。'
+                '資料已儲存至目前工作階段，請記得匯出最新資料檔案。'
             );
 
         } else if (
@@ -11098,7 +11097,7 @@ async function saveSystemNow() {
         ) {
 
             alert(
-                '目前沒有新的資料修改，但既有工作成果仍尚未匯出 JSON。'
+                '目前沒有新的資料修改，但既有工作成果仍尚未匯出資料檔案。'
             );
 
         } else {
@@ -11149,9 +11148,9 @@ async function logoutSystem() {
         hasPendingSessionChanges()
             ? (
                 '確定要登出目前模式嗎？\n\n' +
-                '目前仍有尚未儲存或尚未匯出 JSON 的工作成果，' +
+                '目前仍有尚未儲存或尚未匯出資料檔案的工作成果，' +
                 '登出後本次工作階段資料將清除。\n\n' +
-                '請確認已先完成儲存並匯出最新 JSON。'
+                '請確認已先完成儲存並匯出最新資料檔案。'
             )
             : (
                 '確定要登出目前模式嗎？\n\n' +
@@ -11319,14 +11318,14 @@ if (isAdmin) {
         '<i data-lucide="file-input" class="w-3.5 h-3.5"></i> 匯入資料';
 
     importJsonBtn.title =
-        '管理者正式匯入 JSON 資料';
+        '管理者正式匯入資料檔案';
 
 } else if (isEditor) {
     importJsonBtn.innerHTML =
         '<i data-lucide="file-input" class="w-3.5 h-3.5"></i> 載入資料';
 
     importJsonBtn.title =
-        '載入 JSON 資料以接續編輯，不會匯入密碼或高權限設定';
+        '載入資料檔案以接續編輯，不會匯入密碼或高權限設定';
 
 } else if (isPreviewDataMode) {
     importJsonBtn.innerHTML =
@@ -11340,7 +11339,7 @@ if (isAdmin) {
         '<i data-lucide="file-search" class="w-3.5 h-3.5"></i> 載入預覽';
 
     importJsonBtn.title =
-        '載入 JSON 預覽資料，不會匯入密碼或高權限設定';
+        '載入限時／限次預覽檔案';
 }
 }
     initIcons();
@@ -12050,13 +12049,13 @@ async function exportPreviewJSON() {
     } catch (error) {
 
         console.error(
-            '匯出預覽 JSON 失敗：',
+            '匯出預覽檔案失敗：',
             error
         );
 
 
         alert(
-            '匯出預覽 JSON 時發生錯誤，請稍後再試。'
+            '匯出預覽檔案時發生錯誤，請稍後再試。'
         );
     }
 }
@@ -12084,7 +12083,7 @@ try {
     ) {
         alert(
             '目前仍有尚未儲存的證照／合規／預算修改。\n\n' +
-            '請先按下綠色「儲存」後再匯出 JSON。'
+            '請先按下綠色「儲存」後再匯出資料檔案。'
         );
 
         return;
@@ -12140,7 +12139,7 @@ URL.revokeObjectURL(
 
     } catch (error) {
         console.error(error);
-        alert('匯出 JSON 時發生錯誤，請稍後再試。');
+        alert('匯出資料檔案時發生錯誤，請稍後再試。');
     }
 }
 
@@ -12378,7 +12377,7 @@ if (
 
     alert(
         '此檔案為預覽專用資料，不能載入正式工作區。\n\n' +
-        '如需接續編輯，請使用正式「匯出資料」所產生的 JSON。'
+        '如需接續編輯，請使用正式「匯出資料」所產生的檔案。'
     );
 
     return;
@@ -12440,7 +12439,7 @@ updateItemFilter();
             // 新版統一資料格式
             // =========================
             if (!data || !Array.isArray(data.records)) {
-                alert('載入失敗：這不是有效的系統 JSON 資料檔。');
+                alert('載入失敗：這不是有效的系統資料檔。');
                 return;
             }
 
