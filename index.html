@@ -12299,23 +12299,9 @@ async function loadPreviewJSON(
                 initIcons();
 
 
-                alert(
-                    '預覽資料載入成功！\n\n' +
-
-                    `本裝置已使用 ${previewCheck.usedCount} / ${previewCheck.maxViews} 次\n` +
-
-                    `有效至：${
-                        new Date(
-                            data.expiresAt
-                        ).toLocaleString(
-                            'zh-TW',
-                            {
-                                hour12:
-                                    false
-                            }
-                        )
-                    }`
-                );
+alert(
+    '預覽資料載入成功！'
+);
 
 
             } catch (err) {
