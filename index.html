@@ -5849,7 +5849,7 @@ p[id^="budget-summary-"] {
     <div class="footer-line"></div>
 
     <p class="footer-title">
-        © 職業安全衛生室｜職業安全證照管理系統
+        © OSAI｜職業安全證照管理系統
     </p>
 
     <p class="footer-dev">
@@ -5940,7 +5940,7 @@ p[id^="budget-summary-"] {
 
 <!-- 權限登入 Modal：比照標準程序系統專業版安全驗證視窗 -->
 <div id="login-modal"
-     onclick="closeLoginModalOutside(event)"
+     onpointerdown="closeLoginModalOutside(event)"
      class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center hidden p-4">
 
     <div onclick="event.stopPropagation()"
@@ -6085,7 +6085,7 @@ p[id^="budget-summary-"] {
 
 <!-- 資料匯出 Modal -->
 <div id="data-export-modal"
-     onclick="closeDataExportModalOutside(event)"
+     onpointerdown="closeDataExportModalOutside(event)"
      class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[520] p-4">
 
     <div onclick="event.stopPropagation()"
@@ -6415,7 +6415,7 @@ p[id^="budget-summary-"] {
     </div>
 
     <!-- 附件管理 Modal -->
-    <div id="attachment-modal" onclick="closeAttachmentModalOutside(event)" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[150] p-4">
+    <div id="attachment-modal" onpointerdown="closeAttachmentModalOutside(event)" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[150] p-4">
         <div onclick="event.stopPropagation()" class="bg-white p-8 rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl scale-in-center">
             <div class="flex justify-between items-center mb-6">
                 <div>
@@ -6570,8 +6570,8 @@ const DB_VERSION = 1;
 const STORE_RECORDS = 'records';
 const STORE_CONFIG = 'config';
 
-const DEFAULT_ADMIN_PASSWORD = "SamCore@1068";
-const DEFAULT_EDITOR_PASSWORD = "TeamUser001";
+const DEFAULT_ADMIN_PASSWORD = "admincore1098";
+const DEFAULT_EDITOR_PASSWORD = "teamuser001";
 const DEFAULT_EDITOR_ENABLED = true;
 
 const MASTER_RECOVERY_CODE = "SAM-SUN-CORE-RECOVERY";
