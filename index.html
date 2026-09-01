@@ -421,11 +421,31 @@
         /* 手機觸控裝置避免點擊權限密碼欄位時瀏覽器自動放大 */
 @media (hover: none) and (pointer: coarse) {
 
-    .permission-password-input,
-    #preview-expiry-select,
-    #preview-max-views-select {
-        font-size: 16px !important;
-    }
+.permission-password-input,
+#preview-expiry-select,
+#preview-max-views-select,
+#cloud-publisher-account,
+#cloud-publisher-login-modal input[type="password"],
+#cloud-preview-publish-name,
+#cloud-preview-publish-password,
+#cloud-preview-publish-expiry,
+#cloud-preview-publish-max-views,
+#cloud-preview-view-id,
+#cloud-preview-view-password,
+#cloud-preview-edit-name,
+#cloud-preview-edit-password,
+#cloud-preview-password-new,
+#cloud-preview-password-confirm,
+#cloud-preview-edit-expiry,
+#cloud-preview-edit-max-views,
+#cloud-publisher-new-password,
+#cloud-publisher-confirm-password,
+#cloud-publisher-create-account,
+#cloud-publisher-create-password,
+#cloud-publisher-create-confirm-password,
+#cloud-workspace-rename-name {
+    font-size: 16px !important;
+}
 
     .permission-password-input::placeholder {
         font-size: 16px !important;
@@ -470,6 +490,90 @@
             color: #ffffff;
             border-color: rgba(255, 255, 255, 0.2);
         }
+
+/* =========================================================
+   雲端中心：純圖示功能按鈕 Tooltip
+   僅桌機滑鼠裝置顯示，手機觸控不顯示。
+========================================================= */
+.cloud-tooltip-btn {
+    position: relative;
+
+    /*
+     * 雲端中心純圖示管理功能鈕：
+     * 保留原本圖示顏色與點擊範圍，
+     * 移除外框、底色與陰影。
+     */
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+
+    .cloud-tooltip-btn::after {
+        content: attr(data-tooltip);
+
+        position: absolute;
+        z-index: 200;
+
+        left: 50%;
+        top: calc(100% + 6px);
+
+        transform:
+            translateX(-50%)
+            translateY(-2px);
+
+        padding: 4px 7px;
+
+        border-radius: 6px;
+
+        background: rgba(15, 23, 42, 0.94);
+        color: #ffffff;
+
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1.2;
+
+        white-space: nowrap;
+
+        opacity: 0;
+        visibility: hidden;
+
+        pointer-events: none;
+
+        transition:
+            opacity 0.14s ease,
+            transform 0.14s ease,
+            visibility 0.14s ease;
+
+        box-shadow:
+            0 6px 16px rgba(15, 23, 42, 0.18);
+    }
+
+    .cloud-tooltip-btn:hover::after {
+        opacity: 1;
+        visibility: visible;
+
+        transform:
+            translateX(-50%)
+            translateY(0);
+    }
+
+    /*
+     * 點擊純圖示功能鈕並開啟第二層視窗時，
+     * 強制隱藏原按鈕 Tooltip，
+     * 避免瀏覽器暫時保留 hover 狀態。
+     */
+    .cloud-tooltip-btn.cloud-tooltip-suppressed::after {
+        opacity: 0 !important;
+        visibility: hidden !important;
+
+        transform:
+            translateX(-50%)
+            translateY(-2px) !important;
+    }
+}
 
         .link-icon-btn {
             transition: transform 0.1s;
@@ -1732,6 +1836,61 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
 }
 
 /* 手機直式：主功能按鈕維持較醒目的方塊樣式 */
+
+/*
+ * 雲端中心：
+ * 三種角色皆顯示，
+ * 手機直式固定獨立一整排。
+ */
+.hero-section #cloud-preview-entry-btn {
+    order: 7;
+
+    grid-column: 1 / -1;
+
+    width: 100%;
+    min-width: 0;
+    min-height: 36px;
+
+    justify-content: center;
+
+    padding: 0.45rem 0.55rem;
+
+    font-size: 0.68rem;
+    font-weight: 700;
+
+    border-radius: 0.55rem;
+
+    gap: 0.35rem;
+
+    background: rgba(14, 165, 233, 0.12);
+    color: #bae6fd;
+
+    border:
+        1px solid
+        rgba(56, 189, 248, 0.28);
+
+    box-shadow: none;
+}
+
+
+.hero-section #cloud-preview-entry-btn:hover {
+    background:
+        rgba(14, 165, 233, 0.20);
+
+    color:
+        #ffffff;
+
+    border-color:
+        rgba(56, 189, 248, 0.42);
+}
+
+
+.hero-section #cloud-preview-entry-btn i,
+.hero-section #cloud-preview-entry-btn svg {
+    width: 13px !important;
+    height: 13px !important;
+}
+
 .hero-section #login-toggle-btn,
 .hero-section #permission-settings-btn,
 .hero-section #export-btn,
@@ -5544,6 +5703,17 @@ p[id^="budget-summary-"] {
         <i data-lucide="file-search" class="w-3.5 h-3.5"></i> 載入預覽
     </button>
 
+<button id="cloud-preview-entry-btn"
+        type="button"
+        onclick="openCloudPreviewModal()"
+        class="db-action-btn"
+        title="雲端中心"
+        aria-label="雲端中心">
+    <i data-lucide="cloudy"
+       class="w-3.5 h-3.5"></i>
+    雲端中心
+</button>    
+
     <input type="file" id="preview-json-file-input" class="hidden" accept=".json" onchange="loadPreviewJSON(event)">
     <input type="file" id="json-file-input" class="hidden" accept=".json" onchange="importJSON(event)">
 </div>
@@ -6414,6 +6584,1888 @@ p[id^="budget-summary-"] {
         </div>
     </div>
 
+<!-- =========================================================
+     雲端預覽中心
+========================================================= -->
+<div id="cloud-preview-modal"
+     onpointerdown="closeCloudPreviewModalOutside(event)"
+     class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm
+            z-[130] hidden flex items-center justify-center
+            p-4 no-print">
+
+<div onclick="event.stopPropagation()"
+     class="bg-white w-full max-w-sm mx-3
+            rounded-2xl shadow-2xl
+            border border-slate-200
+            scale-in-center
+            overflow-y-auto
+            max-h-[calc(100svh-24px)]">
+
+<!-- Header -->
+<div id="cloud-center-main-header"
+     class="relative
+            bg-gradient-to-r
+            from-slate-900
+            via-slate-800
+            to-sky-900
+            px-5 py-4
+            text-white">
+
+<!-- Header 右側操作 -->
+<div class="absolute right-3 top-3
+            flex items-center gap-1.5">
+
+    <!-- 第二層：返回 -->
+    <button type="button"
+            id="cloud-center-header-back-btn"
+            onclick="backToCloudPreviewHome()"
+            class="hidden
+                   w-8 h-8 rounded-full
+                   bg-white/10 hover:bg-white/20
+                   text-slate-200 hover:text-white
+                   transition
+                   items-center justify-center"
+            title="返回雲端中心"
+            aria-label="返回雲端中心">
+
+        <i data-lucide="arrow-left"
+           class="w-4 h-4"></i>
+
+    </button>
+
+
+    <!-- 第二層：重新整理 -->
+    <button type="button"
+            id="cloud-center-header-refresh-btn"
+            class="hidden
+                   w-8 h-8 rounded-full
+                   bg-white/10 hover:bg-white/20
+                   text-slate-200 hover:text-white
+                   transition
+                   items-center justify-center"
+            title="重新整理"
+            aria-label="重新整理">
+
+        <i data-lucide="refresh-cw"
+           class="w-4 h-4"></i>
+
+    </button>
+
+
+    <!-- 所有頁面：關閉 -->
+    <button type="button"
+            onclick="closeCloudPreviewModal()"
+            class="w-8 h-8 rounded-full
+                   bg-white/10 hover:bg-white/20
+                   text-slate-200 hover:text-white
+                   transition
+                   flex items-center justify-center"
+            title="關閉"
+            aria-label="關閉">
+
+        <i data-lucide="x"
+           class="w-4 h-4"></i>
+
+    </button>
+
+</div>
+
+    <div class="flex items-center gap-2.5">
+
+<i id="cloud-center-header-icon"
+   data-lucide="cloudy"
+   class="w-5 h-5 text-sky-300"></i>
+
+<h3 id="cloud-center-header-title"
+    class="text-lg font-black">
+    雲端中心
+</h3>
+
+    </div>
+
+<p id="cloud-center-header-subtitle"
+   class="mt-1
+          text-[10px]
+          text-slate-300
+          tracking-[0.14em]
+          font-semibold">
+    CLOUD CENTER
+</p>
+
+</div>
+
+        <!-- Body -->
+        <div class="px-5 pt-2 pb-5">
+
+            <!-- 目前角色 -->
+            <div class="flex items-center justify-between
+                        gap-3 mb-3
+                        bg-slate-50 border border-slate-200
+                        rounded-xl px-3 py-2">
+
+                <div class="flex items-center gap-2 min-w-0">
+
+                    <i id="cloud-preview-role-icon"
+                       data-lucide="eye"
+                       class="w-4 h-4 text-slate-500 shrink-0"></i>
+
+                    <span class="text-xs font-bold text-slate-500">
+                        目前權限
+                    </span>
+
+                </div>
+
+                <span id="cloud-preview-role-label"
+                      class="shrink-0 px-2.5 py-1 rounded-full
+                             text-[10px] font-black
+                             bg-slate-200 text-slate-600">
+                    預覽者模式
+                </span>
+
+            </div>
+
+
+<!-- =============================================
+     Viewer
+============================================== -->
+<div id="cloud-preview-viewer-home"
+     class="hidden">
+
+    <div class="space-y-3">
+
+        <!-- 預覽 ID -->
+        <div>
+
+            <label for="cloud-preview-view-id"
+                   class="block text-xs
+                          font-bold text-slate-600 mb-1">
+                預覽 ID
+            </label>
+
+            <input type="text"
+                   id="cloud-preview-view-id"
+                   autocomplete="off"
+                   spellcheck="false"
+                   class="w-full h-11 px-4
+                          bg-slate-100
+                          border-none
+                          rounded-xl
+                          focus:ring-2
+                          focus:ring-sky-500
+                          outline-none
+                          text-sm text-slate-700"
+                   placeholder="輸入 Preview ID">
+
+        </div>
+
+
+        <!-- 預覽密碼 -->
+        <div>
+
+            <label for="cloud-preview-view-password"
+                   class="block text-xs
+                          font-bold text-slate-600 mb-1">
+                預覽密碼
+            </label>
+
+            <input type="password"
+                   id="cloud-preview-view-password"
+                   autocomplete="current-password"
+                   class="w-full h-11 px-4
+                          bg-slate-100
+                          border-none
+                          rounded-xl
+                          focus:ring-2
+                          focus:ring-sky-500
+                          outline-none
+                          text-sm text-slate-700"
+                   onkeydown="if(event.key === 'Enter') submitCloudPreviewViewerOpen()">
+
+        </div>
+
+
+        <!-- 狀態 -->
+        <div id="cloud-preview-view-status"
+             class="hidden rounded-xl
+                    border px-3 py-2.5
+                    text-[11px] font-bold">
+        </div>
+
+
+        <!-- 開啟 -->
+        <button type="button"
+                id="cloud-preview-view-open-btn"
+                onclick="submitCloudPreviewViewerOpen()"
+                class="w-full h-11
+                       rounded-xl
+                       bg-sky-600 hover:bg-sky-700
+                       text-white
+                       text-sm font-black
+                       flex items-center
+                       justify-center gap-2
+                       transition shadow-sm">
+
+            <i data-lucide="cloud-download"
+               class="w-4 h-4"></i>
+
+            <span>開啟雲端預覽</span>
+
+        </button>
+
+    </div>
+
+</div>
+
+            <!-- =============================================
+                 Admin / Editor
+            ============================================== -->
+            <div id="cloud-preview-publisher-home"
+                 class="hidden">
+
+                <div class="space-y-2.5">
+
+<!-- 雲端工作資料：管理者／使用者共用 -->
+<button type="button"
+        id="cloud-workspace-card"
+        onclick="openCloudWorkspaceView()"
+        class="w-full min-h-[58px] rounded-xl
+               border border-slate-200
+               bg-slate-50
+               px-4 py-2.5
+               flex items-center gap-3
+               text-left
+               hover:bg-emerald-50/60
+               hover:border-emerald-200
+               hover:shadow-sm
+               transition-all duration-200
+               cursor-pointer group">
+
+    <span class="w-9 h-9 rounded-xl
+                 bg-white
+                 border border-emerald-100
+                 shadow-sm
+                 flex items-center justify-center
+                 shrink-0">
+
+        <i data-lucide="cloud"
+           class="w-4 h-4 text-emerald-600"></i>
+
+    </span>
+
+    <span class="min-w-0 flex-1">
+
+        <span class="block
+                     text-sm
+                     font-black
+                     text-slate-800
+                     leading-tight">
+            雲端工作資料
+        </span>
+
+        <span class="block mt-1
+                     text-[9px]
+                     font-bold
+                     tracking-[0.12em]
+                     text-emerald-600">
+            CLOUD WORKSPACE
+        </span>
+
+    </span>
+
+    <i data-lucide="chevron-right"
+       class="w-4 h-4
+              text-emerald-300
+              shrink-0"></i>
+
+</button>
+
+<!-- 發布 -->
+<button type="button"
+        id="cloud-preview-publish-card"
+        onclick="openCloudPreviewPublishView()"
+        class="w-full min-h-[58px] rounded-xl
+               border border-slate-200
+               bg-slate-50
+               px-4 py-2.5
+               flex items-center gap-3
+               text-left
+               hover:bg-sky-50/60
+               hover:border-sky-200
+               hover:shadow-sm
+               transition-all duration-200
+               cursor-pointer group">
+
+    <span class="w-9 h-9 rounded-xl
+                 bg-white
+                 border border-sky-100
+                 shadow-sm
+                 flex items-center justify-center
+                 shrink-0">
+
+        <i data-lucide="cloud-upload"
+           class="w-4 h-4 text-sky-600"></i>
+
+    </span>
+
+    <span class="min-w-0 flex-1">
+
+<span class="block
+             text-sm
+             font-black
+             text-slate-800
+             leading-tight">
+    發布新預覽
+</span>
+
+        <span class="block mt-1
+                     text-[9px]
+                     font-bold
+                     tracking-[0.12em]
+                     text-sky-600">
+            PUBLISH PREVIEW
+        </span>
+
+    </span>
+
+    <i data-lucide="chevron-right"
+       class="w-4 h-4
+              text-sky-300
+              shrink-0"></i>
+
+</button>
+
+<!-- 管理：只有管理者顯示 -->
+<button type="button"
+        id="cloud-preview-manage-card"
+        onclick="openCloudPreviewManageView()"
+        class="hidden w-full min-h-[58px] rounded-xl
+               border border-slate-200
+               bg-slate-50
+               px-4 py-2.5
+               text-left
+               items-center gap-3
+               hover:bg-sky-50/60
+               hover:border-sky-200
+               hover:shadow-sm
+               transition-all duration-200
+               cursor-pointer group">
+
+    <span class="w-9 h-9 rounded-xl
+                 bg-white
+                 border border-sky-100
+                 shadow-sm
+                 flex items-center justify-center
+                 shrink-0">
+
+        <i data-lucide="cloud-cog"
+           class="w-4 h-4 text-sky-600"></i>
+
+    </span>
+
+    <span class="min-w-0 flex-1">
+
+<span id="cloud-preview-manage-card-title"
+      class="block
+             text-sm
+             font-black
+             text-slate-800
+             leading-tight">
+    管理雲端預覽
+</span>
+
+        <span id="cloud-preview-manage-card-subtitle"
+              class="block mt-1
+                     text-[9px]
+                     font-bold
+                     tracking-[0.12em]
+                     text-sky-600">
+            MANAGE PREVIEWS
+        </span>
+
+    </span>
+
+    <i data-lucide="chevron-right"
+       class="w-4 h-4
+              text-sky-300
+              shrink-0"></i>
+
+</button>
+
+<!-- 發布帳號管理：只有管理者顯示 -->
+<button type="button"
+        id="cloud-publisher-accounts-card"
+        onclick="openCloudPublisherAccountsView()"
+        class="hidden w-full min-h-[58px] rounded-xl
+               border border-slate-200
+               bg-slate-50
+               px-4 py-2.5
+               text-left
+               items-center gap-3
+               hover:bg-indigo-50/60
+               hover:border-indigo-200
+               hover:shadow-sm
+               transition-all duration-200
+               cursor-pointer group">
+
+    <span class="w-9 h-9 rounded-xl
+                 bg-white
+                 border border-indigo-100
+                 shadow-sm
+                 flex items-center justify-center
+                 shrink-0">
+
+        <i data-lucide="users"
+           class="w-4 h-4 text-indigo-600"></i>
+
+    </span>
+
+    <span class="min-w-0 flex-1">
+
+        <span class="block
+                     text-sm
+                     font-black
+                     text-slate-800
+                     leading-tight">
+            管理發布帳號
+        </span>
+
+        <span class="block mt-1
+                     text-[9px]
+                     font-bold
+                     tracking-[0.12em]
+                     text-indigo-600">
+            PUBLISHER ACCOUNTS
+        </span>
+
+    </span>
+
+    <i data-lucide="chevron-right"
+       class="w-4 h-4
+              text-indigo-300
+              shrink-0"></i>
+
+</button>
+
+                </div>
+
+            </div>
+
+<!-- =============================================
+     Cloud Workspace
+     雲端工作資料
+============================================== -->
+<div id="cloud-workspace-view"
+     class="hidden">
+
+    <!-- 狀態 -->
+    <div id="cloud-workspace-status"
+         class="hidden mb-3 rounded-xl
+                border px-3 py-2.5
+                text-[11px] font-bold">
+    </div>
+
+
+    <!-- 未來建立 Workspace 的位置 -->
+    <div class="mb-3">
+
+<button type="button"
+        id="cloud-workspace-create-btn"
+        onclick="createCloudWorkspaceFromCurrentData()"
+        class="w-full h-10
+               rounded-xl
+               border border-emerald-200
+               bg-emerald-600
+               hover:bg-emerald-700
+               text-white
+               text-xs font-black
+               flex items-center
+               justify-center gap-2
+               transition
+               shadow-sm">
+
+    <i data-lucide="plus"
+       class="w-4 h-4"></i>
+
+    <span>
+        建立雲端工作資料
+    </span>
+
+</button>
+
+    </div>
+
+<!-- 目前已載入 Workspace 的雲端儲存 -->
+<div id="cloud-workspace-active-actions"
+     class="hidden mb-3">
+
+    <div class="
+        rounded-xl
+        border border-blue-100
+        bg-blue-50/60
+        px-3 py-2.5
+        mb-2
+    ">
+
+        <div class="
+            flex items-center
+            justify-between
+            gap-3
+        ">
+
+            <div class="min-w-0">
+
+                <p class="
+                    text-[10px]
+                    font-bold
+                    text-blue-500
+                ">
+                    目前雲端工作資料
+                </p>
+
+                <p id="cloud-workspace-active-name"
+                   class="
+                       mt-0.5
+                       text-xs
+                       font-black
+                       text-slate-700
+                       truncate
+                   ">
+                </p>
+
+            </div>
+
+            <span id="cloud-workspace-active-revision"
+                  class="
+                      shrink-0
+                      px-2 py-1
+                      rounded-full
+                      bg-blue-100
+                      text-blue-700
+                      text-[9px]
+                      font-black
+                  ">
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <button type="button"
+            id="cloud-workspace-save-btn"
+            onclick="saveCurrentCloudWorkspace()"
+            class="
+                w-full h-10
+                rounded-xl
+                border border-blue-200
+                bg-blue-600
+                hover:bg-blue-700
+                text-white
+                text-xs font-black
+                flex items-center
+                justify-center gap-2
+                transition
+                shadow-sm
+            ">
+
+        <i data-lucide="cloud-upload"
+           class="w-4 h-4"></i>
+
+        <span>
+            儲存至雲端
+        </span>
+
+    </button>
+
+</div>
+
+    <!-- Workspace 清單 -->
+    <div id="cloud-workspace-list"
+         class="space-y-2.5
+                max-h-[42svh]
+                overflow-y-auto
+                pr-1">
+    </div>
+
+</div>
+            
+<!-- =============================================
+     發布新雲端預覽
+============================================== -->
+<div id="cloud-preview-publish-view"
+     class="hidden">
+
+    <div class="space-y-3">
+
+        <!-- 預覽名稱 -->
+        <div>
+
+            <label for="cloud-preview-publish-name"
+                   class="block text-xs
+                          font-bold text-slate-600 mb-1">
+                預覽名稱
+            </label>
+
+            <input type="text"
+                   id="cloud-preview-publish-name"
+                   maxlength="80"
+                   autocomplete="off"
+                   class="w-full h-11 px-4
+                          bg-slate-100
+                          border-none
+                          rounded-xl
+                          focus:ring-2
+                          focus:ring-sky-500
+                          outline-none
+                          text-sm text-slate-700"
+                   placeholder="例如：證照資料預覽">
+
+        </div>
+
+
+        <!-- 預覽密碼 -->
+        <div>
+
+            <label for="cloud-preview-publish-password"
+                   class="block text-xs
+                          font-bold text-slate-600 mb-1">
+                預覽密碼
+            </label>
+
+            <input type="password"
+                   id="cloud-preview-publish-password"
+                   autocomplete="new-password"
+                   class="w-full h-11 px-4
+                          bg-slate-100
+                          border-none
+                          rounded-xl
+                          focus:ring-2
+                          focus:ring-sky-500
+                          outline-none
+                          text-sm text-slate-700">
+
+        </div>
+
+
+        <div class="grid grid-cols-2 gap-3">
+
+            <!-- 有效期限 -->
+            <div>
+
+                <label for="cloud-preview-publish-expiry"
+                       class="block text-xs
+                              font-bold text-slate-600 mb-1">
+                    有效期限
+                </label>
+
+                <select id="cloud-preview-publish-expiry"
+                        class="w-full h-11 px-3
+                               bg-slate-100
+                               border-none
+                               rounded-xl
+                               focus:ring-2
+                               focus:ring-sky-500
+                               outline-none
+                               text-sm font-bold
+                               text-slate-700">
+
+                    <option value="1">1 小時</option>
+                    <option value="8">8 小時</option>
+                    <option value="24" selected>24 小時</option>
+                    <option value="72">3 天</option>
+                    <option value="168">7 天</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- 可開啟次數 -->
+            <div>
+
+                <label for="cloud-preview-publish-max-views"
+                       class="block text-xs
+                              font-bold text-slate-600 mb-1">
+                    可開啟次數
+                </label>
+
+                <select id="cloud-preview-publish-max-views"
+                        class="w-full h-11 px-3
+                               bg-slate-100
+                               border-none
+                               rounded-xl
+                               focus:ring-2
+                               focus:ring-sky-500
+                               outline-none
+                               text-sm font-bold
+                               text-slate-700">
+
+                    <option value="1">1 次</option>
+                    <option value="2">2 次</option>
+                    <option value="3" selected>3 次</option>
+                    <option value="5">5 次</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- 發布進度／結果 -->
+        <div id="cloud-preview-publish-status"
+             class="hidden rounded-xl
+                    border px-3 py-2.5
+                    text-[11px] font-bold">
+        </div>
+
+
+        <!-- 發布雲端預覽 -->
+<button type="button"
+        id="cloud-preview-publish-submit-btn"
+        onclick="submitCloudPreviewPublish()"
+        class="w-full h-11
+               rounded-xl
+               bg-sky-600 hover:bg-sky-700
+               text-white
+               text-sm font-black
+               flex items-center justify-center gap-2
+               transition
+               shadow-sm">
+
+    <i data-lucide="cloud-upload"
+       class="w-4 h-4"></i>
+
+    <span>發布雲端預覽</span>
+
+</button>
+
+    </div>
+
+</div>            
+
+<!-- =============================================
+     管理雲端預覽
+============================================== -->
+<div id="cloud-preview-manage-view"
+     class="hidden">
+
+    <!-- 狀態訊息 -->
+    <div id="cloud-preview-manage-status"
+         class="hidden mb-3 rounded-xl
+                border px-3 py-2.5
+                text-[11px] font-bold">
+    </div>
+
+
+    <!-- 預覽清單 -->
+    <div id="cloud-preview-manage-list"
+         class="space-y-2.5
+                max-h-[46svh]
+                overflow-y-auto
+                pr-1">
+    </div>
+
+</div>
+
+<!-- =============================================
+     管理發布帳號
+============================================== -->
+<div id="cloud-publisher-accounts-view"
+     class="hidden">
+
+    <!-- 狀態 -->
+    <div id="cloud-publisher-accounts-status"
+         class="hidden mb-3 rounded-xl
+                border px-3 py-2.5
+                text-[11px] font-bold">
+    </div>
+
+
+
+    <!-- 帳號清單 -->
+    <div id="cloud-publisher-accounts-list"
+         class="space-y-2.5
+                max-h-[43svh]
+                overflow-y-auto
+                pr-1">
+    </div>
+
+</div>
+
+            <button type="button"
+                    onclick="closeCloudPreviewModal()"
+                    class="w-full mt-4
+                           h-10 rounded-xl
+                           bg-slate-100 hover:bg-slate-200
+                           text-slate-600
+                           text-xs font-bold
+                           transition">
+                關閉
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- =========================================================
+     Cloud Workspace：編輯工作資料名稱
+========================================================= -->
+<div id="cloud-workspace-rename-modal"
+     onpointerdown="closeCloudWorkspaceRenameModalOutside(event)"
+     class="fixed inset-0
+            bg-slate-900/60 backdrop-blur-sm
+            z-[150]
+            hidden
+            flex items-center justify-center
+            p-4 no-print">
+
+    <div onclick="event.stopPropagation()"
+         class="bg-white
+                w-full max-w-sm
+                rounded-2xl
+                shadow-2xl
+                border border-slate-200
+                overflow-hidden
+                scale-in-center">
+
+        <!-- Header -->
+        <div class="relative
+                    bg-gradient-to-r
+                    from-slate-900
+                    via-slate-800
+                    to-emerald-900
+                    px-5 py-4
+                    text-white">
+
+            <button type="button"
+                    onclick="closeCloudWorkspaceRenameModal()"
+                    class="absolute right-3 top-3
+                           w-8 h-8 rounded-full
+                           bg-white/10 hover:bg-white/20
+                           text-slate-200 hover:text-white
+                           transition
+                           flex items-center justify-center"
+                    aria-label="關閉">
+
+                <i data-lucide="x"
+                   class="w-4 h-4"></i>
+
+            </button>
+
+            <div class="pr-8">
+
+                <div class="flex items-center gap-2.5">
+
+                    <i data-lucide="square-pen"
+                       class="w-5 h-5 text-emerald-300"></i>
+
+                    <h3 class="text-lg font-black">
+                        編輯工作資料
+                    </h3>
+
+                </div>
+
+                <p class="mt-1
+                          text-[10px]
+                          text-slate-300
+                          tracking-[0.14em]
+                          font-semibold">
+                    EDIT WORKSPACE
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Body -->
+        <div class="px-5 py-5">
+
+            <label for="cloud-workspace-rename-name"
+                   class="block
+                          text-xs font-bold
+                          text-slate-600
+                          mb-1.5">
+                工作資料名稱
+            </label>
+
+            <input type="text"
+                   id="cloud-workspace-rename-name"
+                   maxlength="100"
+                   autocomplete="off"
+                   spellcheck="false"
+                   onkeydown="if(event.key === 'Enter') submitCloudWorkspaceRename()"
+                   class="w-full h-11
+                          px-4
+                          bg-slate-100
+                          border-none
+                          rounded-xl
+                          focus:ring-2
+                          focus:ring-emerald-500
+                          outline-none
+                          text-sm
+                          font-bold
+                          text-slate-700">
+
+
+            <div id="cloud-workspace-rename-status"
+                 class="hidden mt-3
+                        rounded-xl
+                        border
+                        px-3 py-2.5
+                        text-[11px]
+                        font-bold">
+            </div>
+
+
+            <div class="flex gap-2 mt-4">
+
+                <button type="button"
+                        onclick="closeCloudWorkspaceRenameModal()"
+                        class="flex-1 h-10
+                               rounded-xl
+                               bg-slate-100
+                               hover:bg-slate-200
+                               text-slate-600
+                               text-xs font-bold
+                               transition">
+                    取消
+                </button>
+
+                <button type="button"
+                        id="cloud-workspace-rename-save-btn"
+                        onclick="submitCloudWorkspaceRename()"
+                        class="flex-1 h-10
+                               rounded-xl
+                               bg-emerald-600
+                               hover:bg-emerald-700
+                               text-white
+                               text-xs font-black
+                               transition
+                               flex items-center
+                               justify-center
+                               gap-2">
+
+                    <i data-lucide="check"
+                       class="w-4 h-4"></i>
+
+                    <span>儲存</span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================================
+     Cloud Admin：新增發布帳號
+========================================================= -->
+<div id="cloud-publisher-create-modal"
+     onpointerdown="closeCloudPublisherCreateModalOutside(event)"
+     class="fixed inset-0
+            bg-slate-900/60 backdrop-blur-sm
+            z-[150]
+            hidden
+            flex items-center justify-center
+            p-4 no-print">
+
+<div onclick="event.stopPropagation()"
+     class="bg-white
+            w-full max-w-sm mx-3
+            rounded-2xl
+            shadow-2xl
+            border border-slate-200
+            overflow-hidden
+            max-h-[calc(100svh-24px)]
+            overflow-y-auto">
+
+        <!-- Header -->
+        <div class="relative
+                    bg-gradient-to-r
+                    from-slate-900
+                    via-slate-800
+                    to-indigo-900
+                    px-5 py-4
+                    text-white">
+
+            <button type="button"
+                    onclick="closeCloudPublisherCreateModal()"
+                    class="absolute right-3 top-3
+                           w-8 h-8 rounded-full
+                           bg-white/10 hover:bg-white/20
+                           text-slate-200 hover:text-white
+                           transition
+                           flex items-center justify-center"
+                    title="關閉"
+                    aria-label="關閉">
+
+                <i data-lucide="x"
+                   class="w-4 h-4"></i>
+
+            </button>
+
+
+            <div class="flex items-center gap-2.5">
+
+                <i data-lucide="user-plus"
+                   class="w-5 h-5 text-indigo-300"></i>
+
+                <h3 class="text-lg font-black">
+                    新增發布帳號
+                </h3>
+
+            </div>
+
+
+            <p class="mt-1
+                      text-[10px]
+                      text-slate-300
+                      tracking-[0.14em]
+                      font-semibold">
+                CREATE PUBLISHER ACCOUNT
+            </p>
+
+        </div>
+
+
+        <!-- Body -->
+        <div class="px-5 py-4 space-y-3">
+
+            <!-- 帳號 -->
+            <div>
+
+                <label for="cloud-publisher-create-account"
+                       class="block text-xs
+                              font-bold text-slate-600 mb-1">
+                    發布帳號
+                </label>
+
+                <select id="cloud-publisher-create-account"
+                        class="w-full h-11 px-4
+                               bg-slate-100
+                               border-none
+                               rounded-xl
+                               focus:ring-2
+                               focus:ring-indigo-500
+                               outline-none
+                               text-sm font-bold
+                               text-slate-700">
+
+                    <option value="">
+                        載入可用帳號中...
+                    </option>
+
+                </select>
+
+                <p class="mt-1
+                          text-[10px]
+                          text-slate-400
+                          leading-snug">
+                </p>
+
+            </div>
+
+
+            <!-- 初始密碼 -->
+            <div>
+
+                <label for="cloud-publisher-create-password"
+                       class="block text-xs
+                              font-bold text-slate-600 mb-1">
+                    初始密碼
+                </label>
+
+                <input type="password"
+                       id="cloud-publisher-create-password"
+                       autocomplete="new-password"
+                       minlength="8"
+                       maxlength="128"
+                       class="w-full h-11 px-4
+                              bg-slate-100
+                              border-none
+                              rounded-xl
+                              focus:ring-2
+                              focus:ring-indigo-500
+                              outline-none
+                              text-sm text-slate-700"
+                       placeholder="至少 8 個字元">
+
+            </div>
+
+
+            <!-- 確認密碼 -->
+            <div>
+
+                <label for="cloud-publisher-create-confirm-password"
+                       class="block text-xs
+                              font-bold text-slate-600 mb-1">
+                    再次輸入初始密碼
+                </label>
+
+                <input type="password"
+                       id="cloud-publisher-create-confirm-password"
+                       autocomplete="new-password"
+                       minlength="8"
+                       maxlength="128"
+                       onkeydown="if(event.key === 'Enter') submitCloudPublisherCreate()"
+                       class="w-full h-11 px-4
+                              bg-slate-100
+                              border-none
+                              rounded-xl
+                              focus:ring-2
+                              focus:ring-indigo-500
+                              outline-none
+                              text-sm text-slate-700">
+
+            </div>
+
+
+            <!-- 狀態 -->
+            <div id="cloud-publisher-create-status"
+                 class="hidden
+                        rounded-xl
+                        border px-3 py-2.5
+                        text-[11px]
+                        font-bold">
+            </div>
+
+
+            <!-- 操作 -->
+            <div class="grid grid-cols-2
+                        gap-2 pt-1">
+
+                <button type="button"
+                        onclick="closeCloudPublisherCreateModal()"
+                        class="h-10 rounded-xl
+                               bg-slate-100
+                               hover:bg-slate-200
+                               text-slate-600
+                               text-xs font-bold
+                               transition">
+
+                    取消
+
+                </button>
+
+
+                <button type="button"
+                        id="cloud-publisher-create-save-btn"
+                        onclick="submitCloudPublisherCreate()"
+                        class="h-10 rounded-xl
+                               bg-indigo-600
+                               hover:bg-indigo-700
+                               text-white
+                               text-xs font-black
+                               transition
+                               flex items-center
+                               justify-center gap-1.5">
+
+                    <i data-lucide="user-plus"
+                       class="w-4 h-4"></i>
+
+                    <span>建立帳號</span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================================
+     Cloud Admin：修改發布帳號密碼
+========================================================= -->
+<div id="cloud-publisher-password-modal"
+     onpointerdown="closeCloudPublisherPasswordModalOutside(event)"
+     class="fixed inset-0
+            bg-slate-900/60 backdrop-blur-sm
+            z-[150]
+            hidden
+            flex items-center justify-center
+            p-4 no-print">
+
+    <div onclick="event.stopPropagation()"
+         class="bg-white
+                w-full max-w-sm mx-3
+                rounded-2xl
+                shadow-2xl
+                border border-slate-200
+                overflow-hidden">
+
+        <!-- Header -->
+        <div class="relative
+                    bg-gradient-to-r
+                    from-slate-900
+                    via-slate-800
+                    to-indigo-900
+                    px-5 py-4
+                    text-white">
+
+            <button type="button"
+                    onclick="closeCloudPublisherPasswordModal()"
+                    class="absolute right-3 top-3
+                           w-8 h-8 rounded-full
+                           bg-white/10 hover:bg-white/20
+                           flex items-center justify-center">
+
+                <i data-lucide="x"
+                   class="w-4 h-4"></i>
+
+            </button>
+
+            <div class="flex items-center gap-2.5">
+
+                <i data-lucide="key-round"
+                   class="w-5 h-5 text-indigo-300"></i>
+
+                <h3 class="text-lg font-black">
+                    修改發布帳號密碼
+                </h3>
+
+            </div>
+
+            <p class="mt-1
+                      text-[10px]
+                      text-slate-300
+                      tracking-[0.14em]
+                      font-semibold">
+                CHANGE CLOUD PASSWORD
+            </p>
+
+        </div>
+
+
+        <!-- Body -->
+        <div class="px-5 py-5 space-y-3">
+
+            <div class="rounded-xl
+                        bg-indigo-50
+                        border border-indigo-100
+                        px-3 py-2.5
+                        text-center">
+
+                <p class="text-[10px]
+                          font-bold
+                          text-indigo-500">
+                    發布帳號
+                </p>
+
+                <p id="cloud-publisher-password-account"
+                   class="mt-0.5
+                          text-sm
+                          font-black
+                          text-indigo-700">
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <label for="cloud-publisher-new-password"
+                       class="block text-xs
+                              font-bold text-slate-600 mb-1">
+                    新密碼
+                </label>
+
+                <input type="password"
+                       id="cloud-publisher-new-password"
+                       autocomplete="new-password"
+                       minlength="8"
+                       maxlength="128"
+                       class="w-full h-11 px-4
+                              bg-slate-100
+                              border-none
+                              rounded-xl
+                              focus:ring-2
+                              focus:ring-indigo-500
+                              outline-none
+                              text-sm text-slate-700"
+                       placeholder="至少 8 個字元">
+
+            </div>
+
+
+            <div>
+
+                <label for="cloud-publisher-confirm-password"
+                       class="block text-xs
+                              font-bold text-slate-600 mb-1">
+                    再次輸入新密碼
+                </label>
+
+                <input type="password"
+                       id="cloud-publisher-confirm-password"
+                       autocomplete="new-password"
+                       minlength="8"
+                       maxlength="128"
+                       onkeydown="if(event.key === 'Enter') submitCloudPublisherPasswordChange()"
+                       class="w-full h-11 px-4
+                              bg-slate-100
+                              border-none
+                              rounded-xl
+                              focus:ring-2
+                              focus:ring-indigo-500
+                              outline-none
+                              text-sm text-slate-700">
+
+            </div>
+
+
+            <div id="cloud-publisher-password-status"
+                 class="hidden
+                        rounded-xl
+                        border px-3 py-2.5
+                        text-[11px]
+                        font-bold">
+            </div>
+
+
+            <div class="grid grid-cols-2 gap-2 pt-1">
+
+                <button type="button"
+                        onclick="closeCloudPublisherPasswordModal()"
+                        class="h-10 rounded-xl
+                               bg-slate-100
+                               hover:bg-slate-200
+                               text-slate-600
+                               text-xs font-bold
+                               transition">
+
+                    取消
+
+                </button>
+
+                <button type="button"
+                        id="cloud-publisher-password-save-btn"
+                        onclick="submitCloudPublisherPasswordChange()"
+                        class="h-10 rounded-xl
+                               bg-indigo-600
+                               hover:bg-indigo-700
+                               text-white
+                               text-xs font-black
+                               transition
+                               flex items-center
+                               justify-center gap-1.5">
+
+                    <i data-lucide="save"
+                       class="w-4 h-4"></i>
+
+                    <span>更新密碼</span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================================
+     管理者：編輯既有雲端預覽
+========================================================= -->
+<div id="cloud-preview-edit-modal"
+     onpointerdown="closeCloudPreviewEditModalOutside(event)"
+     class="fixed inset-0
+            bg-slate-900/60 backdrop-blur-sm
+            z-[145]
+            hidden
+            flex items-center justify-center
+            p-4 no-print">
+
+    <div onclick="event.stopPropagation()"
+         class="bg-white
+                w-full max-w-sm mx-3
+                rounded-2xl
+                shadow-2xl
+                border border-slate-200
+                overflow-hidden
+                max-h-[calc(100svh-24px)]
+                overflow-y-auto">
+
+        <!-- Header -->
+        <div class="relative
+                    bg-gradient-to-r
+                    from-slate-900
+                    via-slate-800
+                    to-sky-900
+                    px-5 py-4
+                    text-white">
+
+            <button type="button"
+                    onclick="closeCloudPreviewEditModal()"
+                    class="absolute right-3 top-3
+                           w-8 h-8 rounded-full
+                           bg-white/10 hover:bg-white/20
+                           text-slate-200 hover:text-white
+                           transition
+                           flex items-center justify-center"
+                    title="關閉">
+
+                <i data-lucide="x"
+                   class="w-4 h-4"></i>
+            </button>
+
+            <div class="flex items-center gap-2.5">
+
+                <i data-lucide="square-pen"
+                   class="w-5 h-5 text-sky-300"></i>
+
+                <h3 class="text-lg font-black">
+                    編輯雲端預覽
+                </h3>
+
+            </div>
+
+            <p class="mt-1
+                      text-[10px]
+                      text-slate-300
+                      tracking-[0.14em]
+                      font-semibold">
+                EDIT CLOUD PREVIEW
+            </p>
+
+        </div>
+
+
+        <!-- Body -->
+        <div class="px-5 py-5 space-y-3">
+
+            <!-- 預覽名稱 -->
+            <div>
+
+                <label for="cloud-preview-edit-name"
+                       class="block text-xs
+                              font-bold text-slate-600 mb-1">
+                    預覽名稱
+                </label>
+
+                <input type="text"
+                       id="cloud-preview-edit-name"
+                       maxlength="80"
+                       autocomplete="off"
+                       class="w-full h-11 px-4
+                              bg-slate-100
+                              border-none
+                              rounded-xl
+                              focus:ring-2
+                              focus:ring-sky-500
+                              outline-none
+                              text-sm text-slate-700">
+
+            </div>
+
+
+            <!-- 新預覽密碼 -->
+            <div>
+
+                <label for="cloud-preview-edit-password"
+                       class="block text-xs
+                              font-bold text-slate-600 mb-1">
+                    新預覽密碼
+                </label>
+
+                <input type="password"
+                       id="cloud-preview-edit-password"
+                       autocomplete="new-password"
+                       class="w-full h-11 px-4
+                              bg-slate-100
+                              border-none
+                              rounded-xl
+                              focus:ring-2
+                              focus:ring-sky-500
+                              outline-none
+                              text-sm text-slate-700">
+
+                <p class="mt-1 text-[10px]
+                          text-slate-400 leading-snug">
+                    如不需要變更密碼，請保持空白。
+                </p>
+
+            </div>
+
+
+            <!-- 有效期限 -->
+            <div>
+
+                <label for="cloud-preview-edit-expiry"
+                       class="block text-xs
+                              font-bold text-slate-600 mb-1">
+                    有效期限
+                </label>
+
+                <input type="datetime-local"
+                       id="cloud-preview-edit-expiry"
+                       class="w-full h-11 px-4
+                              bg-slate-100
+                              border-none
+                              rounded-xl
+                              focus:ring-2
+                              focus:ring-sky-500
+                              outline-none
+                              text-sm text-slate-700">
+
+            </div>
+
+
+            <!-- 可開啟次數 -->
+            <div>
+
+                <label for="cloud-preview-edit-max-views"
+                       class="block text-xs
+                              font-bold text-slate-600 mb-1">
+                    可開啟次數
+                </label>
+
+                <input type="number"
+                       id="cloud-preview-edit-max-views"
+                       min="1"
+                       step="1"
+                       inputmode="numeric"
+                       class="w-full h-11 px-4
+                              bg-slate-100
+                              border-none
+                              rounded-xl
+                              focus:ring-2
+                              focus:ring-sky-500
+                              outline-none
+                              text-sm text-slate-700">
+
+                <p id="cloud-preview-edit-view-hint"
+                   class="mt-1 text-[10px]
+                          text-slate-400 leading-snug">
+                </p>
+
+            </div>
+
+
+            <!-- 狀態 -->
+            <div id="cloud-preview-edit-status"
+                 class="hidden rounded-xl
+                        border px-3 py-2.5
+                        text-[11px] font-bold">
+            </div>
+
+
+            <!-- 操作 -->
+            <div class="grid grid-cols-2
+                        gap-2 pt-1">
+
+                <button type="button"
+                        onclick="closeCloudPreviewEditModal()"
+                        class="h-10 rounded-xl
+                               bg-slate-100
+                               hover:bg-slate-200
+                               text-slate-600
+                               text-xs font-bold
+                               transition">
+                    取消
+                </button>
+
+                <button type="button"
+                        id="cloud-preview-edit-save-btn"
+                        onclick="submitCloudPreviewEdit()"
+                        class="h-10 rounded-xl
+                               bg-sky-600
+                               hover:bg-sky-700
+                               text-white
+                               text-xs font-black
+                               transition
+                               flex items-center
+                               justify-center gap-1.5">
+
+                    <i data-lucide="save"
+                       class="w-4 h-4"></i>
+
+                    <span>儲存修改</span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================================
+     雲端預覽：重設預覽密碼
+========================================================= -->
+<div id="cloud-preview-password-reset-modal"
+     onpointerdown="closeCloudPreviewPasswordResetModalOutside(event)"
+     class="fixed inset-0
+            bg-slate-900/60 backdrop-blur-sm
+            z-[152]
+            hidden
+            flex items-center justify-center
+            p-4 no-print">
+
+    <div onclick="event.stopPropagation()"
+         class="bg-white
+                w-full max-w-sm mx-3
+                rounded-2xl
+                shadow-2xl
+                border border-slate-200
+                overflow-hidden">
+
+        <!-- Header -->
+        <div class="relative
+                    bg-gradient-to-r
+                    from-slate-900
+                    via-slate-800
+                    to-sky-900
+                    px-5 py-4
+                    text-white">
+
+            <button type="button"
+                    onclick="closeCloudPreviewPasswordResetModal()"
+                    class="absolute right-3 top-3
+                           w-8 h-8 rounded-full
+                           bg-white/10 hover:bg-white/20
+                           flex items-center justify-center"
+                    title="關閉">
+
+                <i data-lucide="x"
+                   class="w-4 h-4"></i>
+
+            </button>
+
+            <div class="flex items-center gap-2.5">
+
+                <i data-lucide="key-round"
+                   class="w-5 h-5 text-sky-300"></i>
+
+                <h3 class="text-lg font-black">
+                    重設預覽密碼
+                </h3>
+
+            </div>
+
+            <p class="mt-1
+                      text-[10px]
+                      text-slate-300
+                      tracking-[0.14em]
+                      font-semibold">
+                RESET PREVIEW PASSWORD
+            </p>
+
+        </div>
+
+
+        <!-- Body -->
+        <div class="px-5 py-5 space-y-3">
+
+            <div class="rounded-xl
+                        bg-sky-50
+                        border border-sky-100
+                        px-3 py-2.5
+                        text-center">
+
+                <p class="text-[10px]
+                          font-bold
+                          text-sky-500">
+                    雲端預覽
+                </p>
+
+                <p id="cloud-preview-password-reset-name"
+                   class="mt-0.5
+                          text-sm
+                          font-black
+                          text-sky-700">
+                </p>
+
+            </div>
+
+            <div>
+
+                <label for="cloud-preview-password-new"
+                       class="block text-xs
+                              font-bold text-slate-600 mb-1">
+                    新預覽密碼
+                </label>
+
+                <input type="password"
+                       id="cloud-preview-password-new"
+                       autocomplete="new-password"
+                       class="w-full h-11 px-4
+                              bg-slate-100
+                              border-none
+                              rounded-xl
+                              focus:ring-2
+                              focus:ring-sky-500
+                              outline-none
+                              text-sm text-slate-700">
+
+            </div>
+
+
+            <div>
+
+                <label for="cloud-preview-password-confirm"
+                       class="block text-xs
+                              font-bold text-slate-600 mb-1">
+                    再次輸入新密碼
+                </label>
+
+                <input type="password"
+                       id="cloud-preview-password-confirm"
+                       autocomplete="new-password"
+                       onkeydown="if(event.key === 'Enter') submitCloudPreviewPasswordReset()"
+                       class="w-full h-11 px-4
+                              bg-slate-100
+                              border-none
+                              rounded-xl
+                              focus:ring-2
+                              focus:ring-sky-500
+                              outline-none
+                              text-sm text-slate-700">
+
+            </div>
+
+
+            <div id="cloud-preview-password-reset-status"
+                 class="hidden
+                        rounded-xl
+                        border px-3 py-2.5
+                        text-[11px]
+                        font-bold">
+            </div>
+
+
+            <div class="grid grid-cols-2 gap-2 pt-1">
+
+                <button type="button"
+                        onclick="closeCloudPreviewPasswordResetModal()"
+                        class="h-10 rounded-xl
+                               bg-slate-100
+                               hover:bg-slate-200
+                               text-slate-600
+                               text-xs font-bold
+                               transition">
+
+                    取消
+
+                </button>
+
+
+<button type="button"
+        id="cloud-preview-password-reset-save-btn"
+        onclick="submitCloudPreviewPasswordReset()"
+        class="h-10 rounded-xl
+               bg-sky-600
+               hover:bg-sky-700
+               text-white
+               text-xs font-black
+               transition
+               flex items-center
+               justify-center">
+
+    <span>更新密碼</span>
+
+</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Cloud Publisher 雲端發布登入 -->
+<div id="cloud-publisher-login-modal"
+     onpointerdown="closeCloudPublisherLoginModalOutside(event)"
+     class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[140] hidden flex items-center justify-center p-4 no-print">
+
+<div onclick="event.stopPropagation()"
+     class="bg-white w-full max-w-sm mx-3 rounded-2xl shadow-2xl overflow-y-auto border border-slate-200 max-h-[calc(100svh-24px)]">
+
+        <div class="relative bg-gradient-to-r from-slate-900 via-slate-800 to-sky-900 px-5 py-4 text-white">
+
+            <button type="button"
+                    onclick="closeCloudPublisherLoginModal()"
+                    class="absolute right-3 top-3 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
+
+                <i data-lucide="x"
+                   class="w-4 h-4"></i>
+
+            </button>
+
+            <div class="flex items-center gap-2.5">
+                <i data-lucide="cloud-upload"
+                   class="w-5 h-5 text-sky-300"></i>
+
+                <h3 class="text-lg font-black">
+                    雲端發布驗證
+                </h3>
+            </div>
+
+            <p class="mt-1 text-[10px] text-slate-300 tracking-[0.14em] font-semibold">
+                CLOUD PUBLISHER
+            </p>
+        </div>
+
+        <div class="px-5 py-5 space-y-4">
+
+<div>
+    <label class="block text-xs font-bold text-slate-600 mb-1">
+        帳號
+    </label>
+
+    <input type="text"
+           id="cloud-publisher-account"
+           autocomplete="username"
+           autocapitalize="none"
+           spellcheck="false"
+           maxlength="7"
+           class="w-full h-11 px-4 bg-slate-100 border-none rounded-xl focus:ring-2 focus:ring-sky-500 outline-none text-sm">
+</div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">
+                    密碼
+                </label>
+
+                <input type="password"
+                       id="cloud-publisher-password"
+                       autocomplete="current-password"
+                       onkeydown="if(event.key === 'Enter') submitCloudPublisherLogin()"
+                       class="w-full h-11 px-4 bg-slate-100 border-none rounded-xl focus:ring-2 focus:ring-sky-500 outline-none text-sm">
+            </div>
+
+            <p id="cloud-publisher-login-error"
+               class="hidden text-center text-xs font-bold text-red-500">
+                雲端發布帳號驗證失敗
+            </p>
+
+            <button type="button"
+                    id="cloud-publisher-login-btn"
+                    onclick="submitCloudPublisherLogin()"
+                    class="w-full h-11 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-sm font-black transition flex items-center justify-center gap-2">
+
+                <i data-lucide="log-in"
+                   class="w-4 h-4"></i>
+
+                登入雲端發布
+            </button>
+
+        </div>
+    </div>
+</div>
+
     <!-- 附件管理 Modal -->
     <div id="attachment-modal" onpointerdown="closeAttachmentModalOutside(event)" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[150] p-4">
         <div onclick="event.stopPropagation()" class="bg-white p-8 rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl scale-in-center">
@@ -6856,6 +8908,6725 @@ let activeLimitedPreviewId = '';
  * 預覽到期自動清除 Timer。
  */
 let limitedPreviewExpiryTimer = null;
+
+/* =========================================================
+   OSAI Cloud：證照管理系統共用狀態
+========================================================= */
+
+/*
+ * 目前正在顯示的雲端預覽識別碼。
+ *
+ * 只存在目前網頁記憶體，
+ * 不寫入 localStorage / sessionStorage / IndexedDB。
+ */
+let activeCloudPreviewId = '';
+
+let cloudPreviewExpiryTimer = null;
+
+
+/*
+ * 目前載入的 Cloud Workspace。
+ *
+ * Revision 用於多人版本衝突保護。
+ * 同樣只存在目前頁面記憶體。
+ */
+let activeCloudWorkspaceId = '';
+let activeCloudWorkspaceName = '';
+let activeCloudWorkspaceRevision = 0;
+
+
+/* =========================================================
+   Supabase OSAI Cloud 共用設定
+========================================================= */
+
+const OSH_CLOUD_PROJECT_URL =
+    'https://tfjhwcapmtulqkuazwib.supabase.co';
+
+
+/*
+ * 前端只能使用 Supabase Publishable Key。
+ *
+ * 不可以在 HTML 中放入：
+ * service_role
+ * secret key
+ */
+const OSH_CLOUD_PUBLISHABLE_KEY =
+    'sb_publishable_z4Pnz8m-YIiMrgyA1VT7xg_T2VRqtyC';
+
+
+/*
+ * 這套系統在 OSAI Cloud 中的唯一系統識別。
+ */
+const OSH_CLOUD_SYSTEM_TYPE =
+    'certificate';
+
+
+const OSH_CLOUD_ADMIN_FUNCTION =
+    `${OSH_CLOUD_PROJECT_URL}/functions/v1/cloud-preview-admin`;
+
+
+const OSH_CLOUD_VIEW_FUNCTION =
+    `${OSH_CLOUD_PROJECT_URL}/functions/v1/cloud-preview-view`;
+
+
+const OSH_CLOUD_WORKSPACE_FUNCTION =
+    `${OSH_CLOUD_PROJECT_URL}/functions/v1/cloud-workspace`;
+
+
+/* =========================================================
+   Cloud Publisher Session
+========================================================= */
+
+/*
+ * Cloud Publisher 登入資訊只存在目前頁面記憶體。
+ *
+ * 不寫入：
+ * localStorage
+ * sessionStorage
+ * IndexedDB
+ *
+ * 關閉網頁後自然消失。
+ */
+let cloudPublisherSession = {
+    accessToken: '',
+    refreshToken: '',
+    expiresAt: 0
+};
+
+
+/*
+ * Cloud Publisher 登入 Modal
+ * 非同步等待登入時使用。
+ */
+let cloudPublisherLoginResolver = null;
+
+
+/*
+ * Cloud Publisher 帳號清單快取。
+ *
+ * 只存在目前頁面記憶體，
+ * 用於判斷：
+ *
+ * user001 ～ user006
+ *
+ * 哪些帳號尚未建立。
+ */
+let cloudPublisherAccountsCache = [];
+
+/*
+ * 清除 Cloud Publisher 登入狀態。
+ */
+function clearCloudPublisherSession() {
+    cloudPublisherSession = {
+        accessToken: '',
+        refreshToken: '',
+        expiresAt: 0
+    };
+}
+
+
+/*
+ * 儲存 Supabase Auth 回傳的登入資訊。
+ */
+function setCloudPublisherSession(data) {
+    const expiresIn =
+        Number(data?.expires_in) || 3600;
+
+    cloudPublisherSession = {
+        accessToken:
+            String(data?.access_token || ''),
+
+        refreshToken:
+            String(data?.refresh_token || ''),
+
+        /*
+         * 提前 60 秒視為到期，
+         * 避免剛送出 API 時 Token 正好失效。
+         */
+        expiresAt:
+            Date.now() +
+            Math.max(
+                0,
+                expiresIn - 60
+            ) * 1000
+    };
+}
+
+
+/*
+ * 將使用者看到的簡易帳號
+ * 轉換成 Supabase Auth 使用的 Email。
+ *
+ * 對外登入：
+ * admin
+ * user001 ～ user006
+ *
+ * Supabase Auth：
+ * osai.core.cloud+帳號@gmail.com
+ */
+function getCloudPublisherEmailFromAccount(
+    value
+) {
+    const account =
+        String(
+            value || ''
+        )
+            .trim()
+            .toLowerCase();
+
+
+    /*
+     * Cloud Admin。
+     */
+    if (
+        account ===
+        'admin'
+    ) {
+        return (
+            'osai.core.cloud+admin@gmail.com'
+        );
+    }
+
+
+    /*
+     * 預留六組 Publisher：
+     * user001 ～ user006。
+     *
+     * 尚未於 Supabase 建立的帳號
+     * 即使格式正確也無法登入。
+     */
+    if (
+        /^user00[1-6]$/
+            .test(
+                account
+            )
+    ) {
+        return (
+            `osai.core.cloud+${account}@gmail.com`
+        );
+    }
+
+
+    return '';
+}
+
+
+/*
+ * 使用 Supabase Auth 的 Email / Password 登入。
+ *
+ * Email 不由使用者直接輸入，
+ * 而是由簡易帳號自動轉換。
+ */
+async function loginCloudPublisher(
+    email,
+    password
+) {
+    const response =
+        await fetch(
+            `${OSH_CLOUD_PROJECT_URL}/auth/v1/token?grant_type=password`,
+            {
+                method: 'POST',
+
+                headers: {
+                    apikey:
+                        OSH_CLOUD_PUBLISHABLE_KEY,
+
+                    'Content-Type':
+                        'application/json'
+                },
+
+                body: JSON.stringify({
+                    email,
+                    password
+                })
+            }
+        );
+
+    let data = {};
+
+    try {
+        data =
+            await response.json();
+    } catch (_) {}
+
+    if (
+        !response.ok ||
+        !data?.access_token
+    ) {
+        throw new Error(
+            data?.msg ||
+            data?.message ||
+            data?.error ||
+            'CLOUD_LOGIN_FAILED'
+        );
+    }
+
+    setCloudPublisherSession(
+        data
+    );
+
+    return (
+        cloudPublisherSession
+            .accessToken
+    );
+}
+
+
+/*
+ * Access Token 到期後，
+ * 使用 Refresh Token 自動更新。
+ */
+async function refreshCloudPublisherSession() {
+    const refreshToken =
+        cloudPublisherSession
+            .refreshToken;
+
+    if (!refreshToken) {
+        return false;
+    }
+
+    try {
+        const response =
+            await fetch(
+                `${OSH_CLOUD_PROJECT_URL}/auth/v1/token?grant_type=refresh_token`,
+                {
+                    method: 'POST',
+
+                    headers: {
+                        apikey:
+                            OSH_CLOUD_PUBLISHABLE_KEY,
+
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    body: JSON.stringify({
+                        refresh_token:
+                            refreshToken
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (
+            !response.ok ||
+            !data?.access_token
+        ) {
+            clearCloudPublisherSession();
+            return false;
+        }
+
+        setCloudPublisherSession(
+            data
+        );
+
+        return true;
+
+    } catch (error) {
+        console.error(
+            'Cloud Publisher Token 更新失敗：',
+            error
+        );
+
+        clearCloudPublisherSession();
+
+        return false;
+    }
+}
+
+
+/*
+ * 確認目前是否已有可用的
+ * Cloud Publisher Access Token。
+ */
+async function ensureCloudPublisherAccessToken() {
+    if (
+        cloudPublisherSession
+            .accessToken &&
+        cloudPublisherSession
+            .expiresAt >
+            Date.now()
+    ) {
+        return (
+            cloudPublisherSession
+                .accessToken
+        );
+    }
+
+    const refreshed =
+        await refreshCloudPublisherSession();
+
+    if (refreshed) {
+        return (
+            cloudPublisherSession
+                .accessToken
+        );
+    }
+
+    /*
+     * 尚未登入時，
+     * 開啟正式的 Cloud Publisher 登入視窗。
+     *
+     * openCloudPublisherLoginModal()
+     * 會在後續 Cloud Center UI 階段加入。
+     */
+    return new Promise(
+        (resolve, reject) => {
+            cloudPublisherLoginResolver = {
+                resolve,
+                reject
+            };
+
+            openCloudPublisherLoginModal();
+        }
+    );
+}
+
+
+/*
+ * 呼叫 Cloud Preview 管理端 Edge Function。
+ */
+async function cloudAdminRequest(
+    requestBody
+) {
+    const accessToken =
+        await ensureCloudPublisherAccessToken();
+
+    const response =
+        await fetch(
+            OSH_CLOUD_ADMIN_FUNCTION,
+            {
+                method: 'POST',
+
+                headers: {
+                    apikey:
+                        OSH_CLOUD_PUBLISHABLE_KEY,
+
+                    Authorization:
+                        `Bearer ${accessToken}`,
+
+                    'Content-Type':
+                        'application/json'
+                },
+
+                body:
+                    JSON.stringify(
+                        requestBody
+                    )
+            }
+        );
+
+    let data = {};
+
+    try {
+        data =
+            await response.json();
+    } catch (_) {}
+
+    /*
+     * JWT 若真的失效，
+     * 清掉目前工作階段，
+     * 下次再自動要求登入。
+     */
+    if (response.status === 401) {
+        clearCloudPublisherSession();
+    }
+
+    if (
+        !response.ok ||
+        data?.ok !== true
+    ) {
+        const error =
+            new Error(
+                data?.error ||
+                `HTTP_${response.status}`
+            );
+
+        error.status =
+            response.status;
+
+        error.data =
+            data;
+
+        throw error;
+    }
+
+    return data;
+}
+
+
+/*
+ * =========================================================
+ * 呼叫 Cloud Workspace Edge Function。
+ *
+ * 沿用既有 Cloud Publisher：
+ * admin / user001～user006
+ * 的 Supabase Auth Access Token。
+ * =========================================================
+ */
+async function cloudWorkspaceRequest(
+    requestBody
+) {
+    const accessToken =
+        await ensureCloudPublisherAccessToken();
+
+
+    const response =
+        await fetch(
+            OSH_CLOUD_WORKSPACE_FUNCTION,
+            {
+                method: 'POST',
+
+                headers: {
+                    apikey:
+                        OSH_CLOUD_PUBLISHABLE_KEY,
+
+                    Authorization:
+                        `Bearer ${accessToken}`,
+
+                    'Content-Type':
+                        'application/json'
+                },
+
+                body:
+                    JSON.stringify(
+                        requestBody
+                    )
+            }
+        );
+
+
+    let data = {};
+
+
+    try {
+        data =
+            await response.json();
+
+    } catch (_) {}
+
+
+    if (
+        response.status ===
+        401
+    ) {
+        clearCloudPublisherSession();
+    }
+
+
+    if (
+        !response.ok ||
+        data?.ok !== true
+    ) {
+        const error =
+            new Error(
+                data?.error ||
+                `HTTP_${response.status}`
+            );
+
+
+        error.status =
+            response.status;
+
+
+        error.data =
+            data;
+
+
+        throw error;
+    }
+
+
+    return data;
+}
+
+/* =========================================================
+   Cloud Workspace：暫時性錯誤重試工具
+
+   注意：
+   不可以拿來包住所有 API。
+   只用於經確認可以安全重試的操作。
+========================================================= */
+
+function waitCloudWorkspaceRetry(
+    milliseconds
+) {
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                milliseconds
+            )
+    );
+}
+
+
+function isRetryableCloudWorkspaceError(
+    error
+) {
+    const code =
+        String(
+            error?.message ||
+            ''
+        );
+
+
+    const status =
+        Number(
+            error?.status ||
+            0
+        );
+
+
+    /*
+     * HTTP 暫時性錯誤。
+     */
+    if (
+        status === 408 ||
+        status === 425 ||
+        status === 429 ||
+        status === 500 ||
+        status === 502 ||
+        status === 503 ||
+        status === 504
+    ) {
+        return true;
+    }
+
+
+    /*
+     * Edge Function / Supabase
+     * 暫時性查詢錯誤。
+     */
+    const retryableCodes =
+        new Set([
+            'PUBLISHER_LOOKUP_FAILED',
+            'WORKSPACE_LOOKUP_FAILED',
+            'WORKSPACE_FILE_LOOKUP_FAILED',
+            'WORKSPACE_SIGNED_UPLOAD_FAILED',
+            'WORKSPACE_STORAGE_UPLOAD_FAILED',
+            'WORKSPACE_FILE_REGISTER_FAILED'
+        ]);
+
+
+    return retryableCodes.has(
+        code
+    );
+}
+
+
+async function runCloudWorkspaceWithRetry(
+    operation,
+    options = {}
+) {
+    const maxAttempts =
+        Number(
+            options.maxAttempts
+        ) || 3;
+
+
+    const delays =
+        [
+            1000,
+            2000,
+            4000
+        ];
+
+
+    let lastError =
+        null;
+
+
+    for (
+        let attempt = 1;
+        attempt <= maxAttempts;
+        attempt++
+    ) {
+
+        try {
+
+            return await operation(
+                attempt
+            );
+
+
+        } catch (error) {
+
+            lastError =
+                error;
+
+
+            const retryable =
+                isRetryableCloudWorkspaceError(
+                    error
+                );
+
+
+            if (
+                !retryable ||
+                attempt >= maxAttempts
+            ) {
+                throw error;
+            }
+
+
+            /*
+             * 如果呼叫端提供狀態更新，
+             * 顯示目前正在自動重試。
+             */
+            if (
+                typeof options.onRetry ===
+                'function'
+            ) {
+
+                options.onRetry(
+                    attempt + 1,
+                    maxAttempts,
+                    error
+                );
+            }
+
+
+            const delay =
+                delays[
+                    Math.min(
+                        attempt - 1,
+                        delays.length - 1
+                    )
+                ];
+
+
+            await waitCloudWorkspaceRetry(
+                delay
+            );
+        }
+    }
+
+
+    throw lastError ||
+        new Error(
+            'WORKSPACE_RETRY_FAILED'
+        );
+}
+
+/* =========================================================
+   雲端預覽中心介面
+========================================================= */
+
+/*
+ * =========================================================
+ * 雲端中心主 Header。
+ *
+ * 第一層：
+ * 雲端中心 / CLOUD CENTER
+ *
+ * 第二層：
+ * 依目前功能切換標題、圖示與識別色。
+ * =========================================================
+ */
+function setCloudCenterHeader(
+    mode = 'home'
+) {
+    const icon =
+        document.getElementById(
+            'cloud-center-header-icon'
+        );
+
+    const title =
+        document.getElementById(
+            'cloud-center-header-title'
+        );
+
+    const subtitle =
+        document.getElementById(
+            'cloud-center-header-subtitle'
+        );
+
+    const backButton =
+        document.getElementById(
+            'cloud-center-header-back-btn'
+        );
+
+    const refreshButton =
+        document.getElementById(
+            'cloud-center-header-refresh-btn'
+        );
+
+
+    if (
+        !icon ||
+        !title ||
+        !subtitle
+    ) {
+        return;
+    }
+
+
+    const configs = {
+
+        home: {
+            icon: 'cloudy',
+            title: '雲端中心',
+            subtitle: 'CLOUD CENTER',
+            color: 'text-sky-300'
+        },
+
+        workspace: {
+            icon: 'cloud',
+            title: '雲端工作資料',
+            subtitle: 'CLOUD WORKSPACE',
+            color: 'text-emerald-300'
+        },
+
+        publish: {
+            icon: 'cloud-upload',
+            title: '發布新預覽',
+            subtitle: 'PUBLISH PREVIEW',
+            color: 'text-sky-300'
+        },
+
+        manage: {
+            icon: 'cloud-cog',
+
+            title:
+                getCurrentRole() === 'admin'
+                    ? '管理雲端預覽'
+                    : '我的發布預覽',
+
+            subtitle:
+                getCurrentRole() === 'admin'
+                    ? 'MANAGE PREVIEWS'
+                    : 'MY PREVIEWS',
+
+            color: 'text-indigo-300'
+        },
+
+        accounts: {
+            icon: 'users',
+            title: '管理發布帳號',
+            subtitle: 'PUBLISHER ACCOUNTS',
+            color: 'text-violet-300'
+        }
+
+    };
+
+
+    const config =
+        configs[mode] ||
+        configs.home;
+
+
+    /*
+     * 第一層：
+     * 只有關閉。
+     *
+     * 第二層：
+     * 顯示返回。
+     */
+    const isSecondLevel =
+        mode !== 'home';
+
+
+    if (backButton) {
+
+        backButton.classList.toggle(
+            'hidden',
+            !isSecondLevel
+        );
+
+        backButton.classList.toggle(
+            'flex',
+            isSecondLevel
+        );
+    }
+
+
+    /*
+     * 只有需要重新讀取清單的頁面
+     * 才顯示重新整理。
+     */
+    const canRefresh =
+        mode === 'workspace' ||
+        mode === 'manage' ||
+        mode === 'accounts';
+
+
+    if (refreshButton) {
+
+        refreshButton.classList.toggle(
+            'hidden',
+            !canRefresh
+        );
+
+        refreshButton.classList.toggle(
+            'flex',
+            canRefresh
+        );
+
+
+        refreshButton.onclick =
+            null;
+
+
+        if (
+            mode === 'workspace'
+        ) {
+
+            refreshButton.onclick =
+                () =>
+                    loadCloudWorkspaceList();
+
+        } else if (
+            mode === 'manage'
+        ) {
+
+            refreshButton.onclick =
+                () =>
+                    loadCloudPreviewManageList();
+
+        } else if (
+            mode === 'accounts'
+        ) {
+
+            refreshButton.onclick =
+                () =>
+                    loadCloudPublisherAccountsList();
+        }
+    }
+
+
+    icon.setAttribute(
+        'data-lucide',
+        config.icon
+    );
+
+
+    icon.className =
+        `w-5 h-5 ${config.color}`;
+
+
+    title.textContent =
+        config.title;
+
+
+    subtitle.textContent =
+        config.subtitle;
+
+
+    subtitle.className =
+        `mt-1
+         text-[10px]
+         ${config.color}
+         tracking-[0.14em]
+         font-semibold`;
+
+
+    lucide.createIcons();
+}
+
+function openCloudPreviewModal() {
+
+setCloudCenterHeader(
+    'home'
+);    
+
+document
+    .getElementById(
+        'cloud-preview-manage-view'
+    )
+    ?.classList
+    .add('hidden');
+
+document
+    .getElementById(
+        'cloud-publisher-accounts-view'
+    )
+    ?.classList
+    .add('hidden');    
+
+document
+    .getElementById(
+        'cloud-preview-publish-view'
+    )
+    ?.classList
+    .add('hidden');
+
+
+/*
+ * 每次重新開啟雲端中心，
+ * 一律先顯示雲端中心首頁。
+ *
+ * 目前已載入的 Workspace 身分與 Revision
+ * 不會因此清除。
+ */
+document
+    .getElementById(
+        'cloud-workspace-view'
+    )
+    ?.classList
+    .add('hidden');
+
+
+updateCloudPreviewModalHome();
+
+    document
+        .getElementById(
+            'cloud-preview-modal'
+        )
+        ?.classList
+        .remove(
+            'hidden'
+        );
+
+    lucide.createIcons();
+}
+
+
+function closeCloudPreviewModal() {
+    document
+        .getElementById(
+            'cloud-preview-modal'
+        )
+        ?.classList
+        .add(
+            'hidden'
+        );
+
+    if (
+        typeof closeCloudPreviewEditModal ===
+        'function'
+    ) {
+        closeCloudPreviewEditModal();
+    }
+
+
+    if (
+        typeof closeCloudPreviewPasswordResetModal ===
+        'function'
+    ) {
+        closeCloudPreviewPasswordResetModal();
+    }
+
+
+    if (
+        typeof closeCloudPublisherCreateModal ===
+        'function'
+    ) {
+        closeCloudPublisherCreateModal();
+    }
+
+
+    if (
+        typeof closeCloudPublisherPasswordModal ===
+        'function'
+    ) {
+        closeCloudPublisherPasswordModal();
+    }
+}
+
+
+function closeCloudPreviewModalOutside(
+    event
+) {
+    if (
+        event.target ===
+        event.currentTarget
+    ) {
+        closeCloudPreviewModal();
+    }
+}
+
+
+function updateCloudPreviewModalHome() {
+    const role =
+        getCurrentRole();
+
+    const viewerHome =
+        document.getElementById(
+            'cloud-preview-viewer-home'
+        );
+
+    const publisherHome =
+        document.getElementById(
+            'cloud-preview-publisher-home'
+        );
+
+    const manageCard =
+        document.getElementById(
+            'cloud-preview-manage-card'
+        );
+
+
+    const manageCardTitle =
+        document.getElementById(
+            'cloud-preview-manage-card-title'
+        );
+
+
+    const manageCardSubtitle =
+        document.getElementById(
+            'cloud-preview-manage-card-subtitle'
+        );
+
+
+const accountsCard =
+    document.getElementById(
+        'cloud-publisher-accounts-card'
+    );
+
+    const roleLabel =
+        document.getElementById(
+            'cloud-preview-role-label'
+        );
+
+    const roleIcon =
+        document.getElementById(
+            'cloud-preview-role-icon'
+        );
+
+    /*
+     * Viewer
+     */
+    if (role === 'viewer') {
+        viewerHome?.classList.remove(
+            'hidden'
+        );
+
+        publisherHome?.classList.add(
+            'hidden'
+        );
+
+        if (roleLabel) {
+            roleLabel.textContent =
+                '預覽者模式';
+
+            roleLabel.className =
+                'shrink-0 px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-200 text-slate-600';
+        }
+
+        if (roleIcon) {
+            roleIcon.setAttribute(
+                'data-lucide',
+                'eye'
+            );
+
+            roleIcon.className =
+                'w-4 h-4 text-slate-500 shrink-0';
+        }
+
+        lucide.createIcons();
+        return;
+    }
+
+
+    /*
+     * 管理者 / 使用者共用發布區
+     */
+    viewerHome?.classList.add(
+        'hidden'
+    );
+
+    publisherHome?.classList.remove(
+        'hidden'
+    );
+
+
+    if (role === 'admin') {
+        if (roleLabel) {
+            roleLabel.textContent =
+                '管理者模式';
+
+            roleLabel.className =
+                'shrink-0 px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-100 text-amber-700';
+        }
+
+        if (roleIcon) {
+            roleIcon.setAttribute(
+                'data-lucide',
+                'shield-check'
+            );
+
+roleIcon.className =
+    'w-4 h-4 text-indigo-600 shrink-0';
+        }
+
+        if (manageCard) {
+            manageCard.classList.remove(
+                'hidden'
+            );
+
+            manageCard.classList.add(
+                'flex'
+            );
+        }
+
+
+        if (manageCardTitle) {
+            manageCardTitle.textContent =
+                '管理雲端預覽';
+        }
+
+
+        if (manageCardSubtitle) {
+            manageCardSubtitle.textContent =
+                'MANAGE PREVIEWS';
+        }
+
+if (accountsCard) {
+    accountsCard.classList.remove(
+        'hidden'
+    );
+
+    accountsCard.classList.add(
+        'flex'
+    );
+}
+
+    } else {
+        /*
+         * Editor
+         */
+        if (roleLabel) {
+            roleLabel.textContent =
+                '使用者模式';
+
+            roleLabel.className =
+                'shrink-0 px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-700';
+        }
+
+        if (roleIcon) {
+            roleIcon.setAttribute(
+                'data-lucide',
+                'user-check'
+            );
+
+roleIcon.className =
+    'w-4 h-4 text-indigo-500 shrink-0';
+        }
+
+        if (manageCard) {
+            manageCard.classList.remove(
+                'hidden'
+            );
+
+            manageCard.classList.add(
+                'flex'
+            );
+        }
+
+
+        if (manageCardTitle) {
+            manageCardTitle.textContent =
+                '我的發布預覽';
+        }
+
+
+        if (manageCardSubtitle) {
+            manageCardSubtitle.textContent =
+                'MY PREVIEWS';
+        }
+
+if (accountsCard) {
+    accountsCard.classList.add(
+        'hidden'
+    );
+
+    accountsCard.classList.remove(
+        'flex'
+    );
+}
+
+    }
+
+    lucide.createIcons();
+}
+
+function openCloudPublisherLoginModal() {
+    const modal =
+        document.getElementById(
+            'cloud-publisher-login-modal'
+        );
+
+const account =
+    document.getElementById(
+        'cloud-publisher-account'
+    );
+
+    const password =
+        document.getElementById(
+            'cloud-publisher-password'
+        );
+
+    const error =
+        document.getElementById(
+            'cloud-publisher-login-error'
+        );
+
+    if (password) {
+        password.value = '';
+    }
+
+    if (error) {
+        error.innerText =
+            '雲端發布帳號驗證失敗';
+
+        error.classList.add(
+            'hidden'
+        );
+    }
+
+    modal?.classList.remove(
+        'hidden'
+    );
+
+    lucide.createIcons();
+
+setTimeout(() => {
+    if (
+        account &&
+        !account.value
+    ) {
+        account.focus();
+    } else {
+        password?.focus();
+    }
+}, 50);
+}
+
+
+function closeCloudPublisherLoginModal(
+    cancelled = true
+) {
+    document
+        .getElementById(
+            'cloud-publisher-login-modal'
+        )
+        ?.classList
+        .add(
+            'hidden'
+        );
+
+    document
+        .getElementById(
+            'cloud-publisher-password'
+        ).value = '';
+
+    if (
+        cancelled &&
+        cloudPublisherLoginResolver
+    ) {
+        cloudPublisherLoginResolver
+            .reject(
+                new Error(
+                    'CLOUD_LOGIN_CANCELLED'
+                )
+            );
+
+        cloudPublisherLoginResolver =
+            null;
+    }
+}
+
+
+function closeCloudPublisherLoginModalOutside(
+    event
+) {
+    if (
+        event.target ===
+        event.currentTarget
+    ) {
+        closeCloudPublisherLoginModal();
+    }
+}
+
+
+async function submitCloudPublisherLogin() {
+const accountInput =
+    document.getElementById(
+        'cloud-publisher-account'
+    );
+
+    const passwordInput =
+        document.getElementById(
+            'cloud-publisher-password'
+        );
+
+    const errorBox =
+        document.getElementById(
+            'cloud-publisher-login-error'
+        );
+
+    const button =
+        document.getElementById(
+            'cloud-publisher-login-btn'
+        );
+
+const account =
+    String(
+        accountInput?.value || ''
+    )
+        .trim()
+        .toLowerCase();
+
+
+const password =
+    String(
+        passwordInput?.value || ''
+    );
+
+
+const email =
+    getCloudPublisherEmailFromAccount(
+        account
+    );
+
+if (
+    !account ||
+    !password
+) {
+    if (errorBox) {
+        errorBox.innerText =
+            '請輸入帳號與密碼';
+
+        errorBox.classList.remove(
+            'hidden'
+        );
+    }
+
+    return;
+}
+
+
+/*
+ * 帳號只接受：
+ * admin
+ * user001 ～ user006
+ */
+if (!email) {
+
+    if (errorBox) {
+        errorBox.innerText =
+            '帳號格式錯誤，請輸入 admin 或 user001～user006。';
+
+        errorBox.classList.remove(
+            'hidden'
+        );
+    }
+
+
+    accountInput?.focus();
+    accountInput?.select();
+
+    return;
+}
+
+    if (errorBox) {
+        errorBox.classList.add(
+            'hidden'
+        );
+    }
+
+    if (button) {
+        button.disabled = true;
+        button.innerText =
+            '驗證中...';
+    }
+
+    try {
+        const accessToken =
+            await loginCloudPublisher(
+                email,
+                password
+            );
+
+        const resolver =
+            cloudPublisherLoginResolver;
+
+        cloudPublisherLoginResolver =
+            null;
+
+        closeCloudPublisherLoginModal(
+            false
+        );
+
+        resolver?.resolve(
+            accessToken
+        );
+
+    } catch (error) {
+        console.error(
+            'Cloud Publisher 登入失敗：',
+            error
+        );
+
+        if (errorBox) {
+errorBox.innerText =
+    '帳號或密碼錯誤，或此帳號尚未啟用。';
+
+            errorBox.classList.remove(
+                'hidden'
+            );
+        }
+
+        passwordInput?.select();
+
+    } finally {
+        if (button) {
+            button.disabled = false;
+
+            button.innerHTML = `
+                <i data-lucide="log-in"
+                   class="w-4 h-4"></i>
+                登入雲端發布
+            `;
+
+            lucide.createIcons();
+        }
+    }
+}
+
+/* =========================================================
+   Certificate Cloud Data Adapter
+   證照系統雲端資料轉換層
+========================================================= */
+
+/*
+ * 建立目前證照系統正式 unified-data 結構。
+ *
+ * 與正式「匯出資料」維持相同格式。
+ */
+function buildCertificateExportData() {
+    return {
+        version:
+            'certificate-system-json-v2',
+
+        exportType:
+            'unified-data',
+
+        exportedAt:
+            new Date().toISOString(),
+
+        records:
+            records,
+
+        config: {
+            compliance_settings:
+                complianceSettings,
+
+            compliance_basis_files:
+                complianceBasisFiles,
+
+            budget_records:
+                budgetRecords,
+
+            budget_fee_defaults:
+                budgetFeeDefaults,
+
+            manual_budget_rows:
+                manualBudgetRows
+        }
+    };
+}
+
+
+/*
+ * 取得證照附件目前真正的 DataURL。
+ *
+ * 證照系統原始附件主要使用 file.url，
+ * 但同時接受 file.data，
+ * 方便後續與 Cloud 共用。
+ *
+ * Signed URL 不會被視為新的本機附件。
+ */
+function getCertificateCloudAttachmentDataUrl(
+    file
+) {
+    if (
+        !file ||
+        typeof file !== 'object' ||
+        Array.isArray(file)
+    ) {
+        return '';
+    }
+
+
+    const data =
+        String(
+            file.data || ''
+        );
+
+    if (
+        data.startsWith(
+            'data:'
+        )
+    ) {
+        return data;
+    }
+
+
+    const url =
+        String(
+            file.url || ''
+        );
+
+    if (
+        url.startsWith(
+            'data:'
+        )
+    ) {
+        return url;
+    }
+
+
+    return '';
+}
+
+
+/*
+ * 取得附件真正 MIME Type。
+ *
+ * 優先順序：
+ * 1. DataURL
+ * 2. mime
+ * 3. type / 副檔名
+ */
+function getCertificateCloudAttachmentMimeType(
+    file
+) {
+    const dataUrl =
+        getCertificateCloudAttachmentDataUrl(
+            file
+        );
+
+
+    const dataUrlMatch =
+        dataUrl.match(
+            /^data:([^;,]+)[;,]/i
+        );
+
+
+    if (
+        dataUrlMatch?.[1]
+    ) {
+        const mime =
+            String(
+                dataUrlMatch[1]
+            )
+                .toLowerCase()
+                .trim();
+
+        return (
+            mime === 'image/jpg'
+                ? 'image/jpeg'
+                : mime
+        );
+    }
+
+
+    const explicitMime =
+        String(
+            file?.mime || ''
+        )
+            .toLowerCase()
+            .trim();
+
+
+    if (explicitMime) {
+        return (
+            explicitMime ===
+                'image/jpg'
+                ? 'image/jpeg'
+                : explicitMime
+        );
+    }
+
+
+    const rawType =
+        String(
+            file?.type || ''
+        )
+            .toLowerCase()
+            .trim();
+
+
+    const name =
+        String(
+            file?.name || ''
+        )
+            .toLowerCase();
+
+
+    if (
+        rawType === 'pdf' ||
+        rawType.includes('pdf') ||
+        name.endsWith('.pdf')
+    ) {
+        return 'application/pdf';
+    }
+
+
+    if (
+        name.endsWith('.png')
+    ) {
+        return 'image/png';
+    }
+
+
+    if (
+        name.endsWith('.jpg') ||
+        name.endsWith('.jpeg')
+    ) {
+        return 'image/jpeg';
+    }
+
+
+    if (
+        rawType === 'image'
+    ) {
+        return 'image/jpeg';
+    }
+
+
+    if (
+        rawType.startsWith(
+            'image/'
+        )
+    ) {
+        return (
+            rawType === 'image/jpg'
+                ? 'image/jpeg'
+                : rawType
+        );
+    }
+
+
+    return 'application/octet-stream';
+}
+
+
+/*
+ * 判斷目前物件是不是
+ * 尚未上傳 Cloud 的本機證照附件。
+ */
+function isCertificateLocalCloudAttachment(
+    value
+) {
+    return (
+        value &&
+        typeof value === 'object' &&
+        !Array.isArray(value) &&
+        typeof value.name === 'string' &&
+        !!getCertificateCloudAttachmentDataUrl(
+            value
+        )
+    );
+}
+
+
+/*
+ * 掃描整份證照資料，
+ * 找出所有尚未上傳 Cloud 的 DataURL 附件。
+ *
+ * 使用 DataURL 去重，
+ * 相同附件只會上傳一次。
+ */
+function collectUniqueCertificateCloudAttachments(
+    value,
+    map = new Map()
+) {
+    if (
+        isCertificateLocalCloudAttachment(
+            value
+        )
+    ) {
+        const dataUrl =
+            getCertificateCloudAttachmentDataUrl(
+                value
+            );
+
+
+        if (
+            !map.has(
+                dataUrl
+            )
+        ) {
+            map.set(
+                dataUrl,
+                {
+                    name:
+                        value.name ||
+                        'attachment',
+
+                    /*
+                     * Cloud 上傳流程的 type
+                     * 一律使用真正 MIME Type。
+                     */
+                    type:
+                        getCertificateCloudAttachmentMimeType(
+                            value
+                        ),
+
+                    size:
+                        Number(
+                            value.size
+                        ) || 0,
+
+                    data:
+                        dataUrl
+                }
+            );
+        }
+
+
+        return map;
+    }
+
+
+    if (
+        Array.isArray(
+            value
+        )
+    ) {
+        value.forEach(
+            item =>
+                collectUniqueCertificateCloudAttachments(
+                    item,
+                    map
+                )
+        );
+
+        return map;
+    }
+
+
+    if (
+        value &&
+        typeof value === 'object'
+    ) {
+        Object.values(
+            value
+        ).forEach(
+            item =>
+                collectUniqueCertificateCloudAttachments(
+                    item,
+                    map
+                )
+        );
+    }
+
+
+    return map;
+}
+
+
+/*
+ * 第一次建立 Cloud Workspace / Preview 時：
+ *
+ * DataURL
+ * ↓
+ * cloud_file_id
+ *
+ * 同時保留證照系統自己的：
+ * type / mime / lastModified / uploadedAt。
+ */
+function buildCertificateCloudPayload(
+    value,
+    cloudFileIdMap
+) {
+    if (
+        isCertificateLocalCloudAttachment(
+            value
+        )
+    ) {
+        const dataUrl =
+            getCertificateCloudAttachmentDataUrl(
+                value
+            );
+
+
+        const cloudFileId =
+            cloudFileIdMap.get(
+                dataUrl
+            );
+
+
+        if (!cloudFileId) {
+            throw new Error(
+                'CLOUD_FILE_ID_MISSING'
+            );
+        }
+
+
+        const {
+            url,
+            data,
+            ...metadata
+        } = value;
+
+
+        return {
+            ...metadata,
+
+            mime:
+                getCertificateCloudAttachmentMimeType(
+                    value
+                ),
+
+            cloud_file_id:
+                cloudFileId
+        };
+    }
+
+
+    if (
+        Array.isArray(
+            value
+        )
+    ) {
+        return value.map(
+            item =>
+                buildCertificateCloudPayload(
+                    item,
+                    cloudFileIdMap
+                )
+        );
+    }
+
+
+    if (
+        value &&
+        typeof value === 'object'
+    ) {
+        const output = {};
+
+
+        Object.entries(
+            value
+        ).forEach(
+            ([key, child]) => {
+                output[key] =
+                    buildCertificateCloudPayload(
+                        child,
+                        cloudFileIdMap
+                    );
+            }
+        );
+
+
+        return output;
+    }
+
+
+    return value;
+}
+
+
+/*
+ * 已載入 Workspace 後再次儲存。
+ *
+ * 新附件：
+ * DataURL → 新 cloud_file_id
+ *
+ * 原有雲端附件：
+ * 保留原 cloud_file_id
+ *
+ * Signed URL 絕對不寫回正式 Payload。
+ */
+function buildCertificateWorkspaceSavePayload(
+    value,
+    newCloudFileIdMap
+) {
+    if (
+        isCertificateLocalCloudAttachment(
+            value
+        )
+    ) {
+        return buildCertificateCloudPayload(
+            value,
+            newCloudFileIdMap
+        );
+    }
+
+
+    if (
+        value &&
+        typeof value === 'object' &&
+        !Array.isArray(value) &&
+        value.cloud_file_id
+    ) {
+        const {
+            url,
+            data,
+            signed_url,
+            is_cloud_file,
+            ...metadata
+        } = value;
+
+
+        return {
+            ...metadata,
+
+            cloud_file_id:
+                String(
+                    value.cloud_file_id
+                )
+        };
+    }
+
+
+    if (
+        Array.isArray(
+            value
+        )
+    ) {
+        return value.map(
+            item =>
+                buildCertificateWorkspaceSavePayload(
+                    item,
+                    newCloudFileIdMap
+                )
+        );
+    }
+
+
+    if (
+        value &&
+        typeof value === 'object'
+    ) {
+        const output = {};
+
+
+        Object.entries(
+            value
+        ).forEach(
+            ([key, child]) => {
+                output[key] =
+                    buildCertificateWorkspaceSavePayload(
+                        child,
+                        newCloudFileIdMap
+                    );
+            }
+        );
+
+
+        return output;
+    }
+
+
+    return value;
+}
+
+
+/*
+ * Workspace / Cloud Preview 載入時，
+ * 將 cloud_file_id 換成短效 Signed URL。
+ *
+ * 證照系統原本附件使用 file.url，
+ * 所以 Signed URL 也放回 url。
+ */
+function hydrateCertificateCloudPayload(
+    value,
+    cloudFileMap
+) {
+    if (
+        value &&
+        typeof value === 'object' &&
+        !Array.isArray(value) &&
+        value.cloud_file_id
+    ) {
+        const cloudFileId =
+            String(
+                value.cloud_file_id
+            );
+
+
+        const cloudFile =
+            cloudFileMap.get(
+                cloudFileId
+            );
+
+
+        if (
+            !cloudFile ||
+            !cloudFile.signed_url
+        ) {
+            throw new Error(
+                'CLOUD_VIEW_ATTACHMENT_MISSING'
+            );
+        }
+
+
+        return {
+            ...value,
+
+            name:
+                value.name ||
+                cloudFile.file_name ||
+                '附件',
+
+            mime:
+                value.mime ||
+                cloudFile.mime_type ||
+                '',
+
+            size:
+                Number(
+                    value.size ||
+                    cloudFile.file_size ||
+                    0
+                ),
+
+            /*
+             * 不下載附件本體。
+             * 只把 Private Storage
+             * Signed URL 放入既有 url 欄位。
+             */
+            url:
+                cloudFile.signed_url,
+
+            cloud_file_id:
+                cloudFileId,
+
+            is_cloud_file:
+                true
+        };
+    }
+
+
+    if (
+        Array.isArray(
+            value
+        )
+    ) {
+        return value.map(
+            item =>
+                hydrateCertificateCloudPayload(
+                    item,
+                    cloudFileMap
+                )
+        );
+    }
+
+
+    if (
+        value &&
+        typeof value === 'object'
+    ) {
+        const output = {};
+
+
+        Object.entries(
+            value
+        ).forEach(
+            ([key, child]) => {
+                output[key] =
+                    hydrateCertificateCloudPayload(
+                        child,
+                        cloudFileMap
+                    );
+            }
+        );
+
+
+        return output;
+    }
+
+
+    return value;
+}
+
+function updateActiveCloudWorkspaceUI() {
+
+    const actions =
+        document.getElementById(
+            'cloud-workspace-active-actions'
+        );
+
+    const name =
+        document.getElementById(
+            'cloud-workspace-active-name'
+        );
+
+    const revision =
+        document.getElementById(
+            'cloud-workspace-active-revision'
+        );
+
+
+    const active =
+        !!activeCloudWorkspaceId &&
+        activeCloudWorkspaceRevision > 0;
+
+
+    actions
+        ?.classList
+        .toggle(
+            'hidden',
+            !active
+        );
+
+
+    if (!active) {
+        return;
+    }
+
+
+    if (name) {
+        name.textContent =
+            activeCloudWorkspaceName ||
+            '雲端工作資料';
+    }
+
+
+    if (revision) {
+        revision.textContent =
+            `Revision ${activeCloudWorkspaceRevision}`;
+    }
+
+
+    lucide.createIcons();
+}
+
+function clearActiveCloudWorkspace() {
+
+    activeCloudWorkspaceId =
+        '';
+
+    activeCloudWorkspaceName =
+        '';
+
+    activeCloudWorkspaceRevision =
+        0;
+
+
+    updateActiveCloudWorkspaceUI();
+}
+
+function escapeCloudPreviewHtml(
+    value
+) {
+    return String(
+        value ?? ''
+    )
+        .replace(
+            /&/g,
+            '&amp;'
+        )
+        .replace(
+            /</g,
+            '&lt;'
+        )
+        .replace(
+            />/g,
+            '&gt;'
+        )
+        .replace(
+            /"/g,
+            '&quot;'
+        )
+        .replace(
+            /'/g,
+            '&#039;'
+        );
+}
+
+/* =========================================================
+   Cloud Workspace
+   雲端工作資料
+========================================================= */
+
+function showCloudWorkspaceView() {
+
+setCloudCenterHeader(
+    'workspace'
+);
+
+    document
+        .getElementById(
+            'cloud-preview-viewer-home'
+        )
+        ?.classList
+        .add('hidden');
+
+
+    document
+        .getElementById(
+            'cloud-preview-publisher-home'
+        )
+        ?.classList
+        .add('hidden');
+
+
+    document
+        .getElementById(
+            'cloud-preview-publish-view'
+        )
+        ?.classList
+        .add('hidden');
+
+
+    document
+        .getElementById(
+            'cloud-preview-manage-view'
+        )
+        ?.classList
+        .add('hidden');
+
+
+    document
+        .getElementById(
+            'cloud-publisher-accounts-view'
+        )
+        ?.classList
+        .add('hidden');
+
+
+    document
+        .getElementById(
+            'cloud-workspace-view'
+        )
+        ?.classList
+        .remove('hidden');
+
+
+    lucide.createIcons();
+}
+
+function setCloudWorkspaceStatus(
+    message,
+    type = 'info'
+) {
+    const box =
+        document.getElementById(
+            'cloud-workspace-status'
+        );
+
+
+    if (!box) {
+        return;
+    }
+
+
+    if (!message) {
+
+        box.classList.add(
+            'hidden'
+        );
+
+        box.textContent =
+            '';
+
+        return;
+    }
+
+
+    box.classList.remove(
+        'hidden'
+    );
+
+
+    if (type === 'error') {
+
+        box.className =
+            'mb-3 rounded-xl border border-red-100 bg-red-50 px-3 py-2.5 text-[11px] font-bold text-red-600';
+
+    } else if (
+        type === 'success'
+    ) {
+
+        box.className =
+            'mb-3 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2.5 text-[11px] font-bold text-emerald-700';
+
+    } else {
+
+        box.className =
+            'mb-3 rounded-xl border border-sky-100 bg-sky-50 px-3 py-2.5 text-[11px] font-bold text-sky-700';
+    }
+
+
+    box.textContent =
+        message;
+}
+
+function showToast(
+    msg,
+    type = 'success'
+) {
+    const toast =
+        document.getElementById(
+            'toast'
+        );
+
+    const icon =
+        document.getElementById(
+            'toast-icon'
+        );
+
+    const message =
+        document.getElementById(
+            'toast-msg'
+        );
+
+
+    /*
+     * 證照系統目前沒有獨立 Toast HTML。
+     *
+     * 因此找不到 Toast 元件時，
+     * 直接使用既有 alert，
+     * 不另外新增畫面元件。
+     */
+    if (
+        !toast ||
+        !icon ||
+        !message
+    ) {
+        alert(
+            msg
+        );
+
+        return;
+    }
+
+
+    message.innerText =
+        msg;
+
+
+    icon.innerText =
+        type === 'success'
+            ? '✓'
+            : '✕';
+
+
+    icon.className =
+        type === 'success'
+            ? 'text-green-500'
+            : 'text-red-500';
+
+
+    toast.classList.remove(
+        'translate-y-20',
+        'opacity-0'
+    );
+
+
+    clearTimeout(
+        window.__certificateToastTimer
+    );
+
+
+    window.__certificateToastTimer =
+        setTimeout(
+            () => {
+                toast.classList.add(
+                    'translate-y-20',
+                    'opacity-0'
+                );
+            },
+            3000
+        );
+}
+
+function setCloudWorkspaceCreateBusy(
+    busy,
+    text = ''
+) {
+    const button =
+        document.getElementById(
+            'cloud-workspace-create-btn'
+        );
+
+
+    if (!button) {
+        return;
+    }
+
+
+    button.disabled =
+        !!busy;
+
+
+    if (busy) {
+
+        button.className =
+            `w-full h-10
+             rounded-xl
+             border border-emerald-200
+             bg-emerald-500
+             text-white
+             text-xs font-black
+             flex items-center
+             justify-center gap-2
+             cursor-wait
+             opacity-80
+             transition
+             shadow-sm`;
+
+
+        button.innerHTML = `
+            <span class="
+                w-4 h-4
+                rounded-full
+                border-2
+                border-white/40
+                border-t-white
+                animate-spin
+            "></span>
+
+            <span>
+                ${text || '正在建立...'}
+            </span>
+        `;
+
+    } else {
+
+        button.className =
+            `w-full h-10
+             rounded-xl
+             border border-emerald-200
+             bg-emerald-600
+             hover:bg-emerald-700
+             text-white
+             text-xs font-black
+             flex items-center
+             justify-center gap-2
+             transition
+             shadow-sm`;
+
+
+        button.innerHTML = `
+            <i data-lucide="plus"
+               class="w-4 h-4"></i>
+
+            <span>
+                建立雲端工作資料
+            </span>
+        `;
+
+
+        lucide.createIcons();
+    }
+}
+
+/* =========================================================
+   Cloud Workspace：編輯名稱
+========================================================= */
+
+function setCloudWorkspaceRenameStatus(
+    message,
+    type = 'info'
+) {
+    const box =
+        document.getElementById(
+            'cloud-workspace-rename-status'
+        );
+
+
+    if (!box) {
+        return;
+    }
+
+
+    if (!message) {
+
+        box.classList.add(
+            'hidden'
+        );
+
+        box.textContent =
+            '';
+
+        return;
+    }
+
+
+    box.classList.remove(
+        'hidden'
+    );
+
+
+    if (type === 'error') {
+
+        box.className =
+            'mt-3 rounded-xl border border-red-100 bg-red-50 px-3 py-2.5 text-[11px] font-bold text-red-600';
+
+    } else if (
+        type === 'success'
+    ) {
+
+        box.className =
+            'mt-3 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2.5 text-[11px] font-bold text-emerald-700';
+
+    } else {
+
+        box.className =
+            'mt-3 rounded-xl border border-sky-100 bg-sky-50 px-3 py-2.5 text-[11px] font-bold text-sky-700';
+    }
+
+
+    box.textContent =
+        message;
+}
+
+
+function openCloudWorkspaceRenameModalFromButton(
+    button
+) {
+    const role =
+        getCurrentRole();
+
+
+    if (
+        role !== 'admin' &&
+        role !== 'editor'
+    ) {
+        showToast(
+            '目前權限無法編輯雲端工作資料。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    const workspaceId =
+        String(
+            button?.dataset?.workspaceId ||
+            ''
+        ).trim();
+
+
+    const workspaceName =
+        String(
+            button?.dataset?.workspaceName ||
+            ''
+        ).trim();
+
+
+    if (!workspaceId) {
+
+        setCloudWorkspaceStatus(
+            '找不到要編輯的雲端工作資料。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    const modal =
+        document.getElementById(
+            'cloud-workspace-rename-modal'
+        );
+
+
+    const input =
+        document.getElementById(
+            'cloud-workspace-rename-name'
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    modal.dataset.workspaceId =
+        workspaceId;
+
+    modal.dataset.originalName =
+        workspaceName;
+
+
+    if (input) {
+        input.value =
+            workspaceName;
+    }
+
+
+    setCloudWorkspaceRenameStatus(
+        ''
+    );
+
+
+    modal.classList.remove(
+        'hidden'
+    );
+
+
+    lucide.createIcons();
+
+
+    setTimeout(
+        () => {
+            input?.focus();
+            input?.select();
+        },
+        50
+    );
+}
+
+
+function closeCloudWorkspaceRenameModal() {
+
+    const modal =
+        document.getElementById(
+            'cloud-workspace-rename-modal'
+        );
+
+
+    modal?.classList.add(
+        'hidden'
+    );
+
+
+    if (modal) {
+
+        modal.dataset.workspaceId =
+            '';
+
+        modal.dataset.originalName =
+            '';
+    }
+
+
+    setCloudWorkspaceRenameStatus(
+        ''
+    );
+}
+
+
+function closeCloudWorkspaceRenameModalOutside(
+    event
+) {
+    if (
+        event?.target?.id ===
+        'cloud-workspace-rename-modal'
+    ) {
+        closeCloudWorkspaceRenameModal();
+    }
+}
+
+
+async function submitCloudWorkspaceRename() {
+
+    const role =
+        getCurrentRole();
+
+
+    if (
+        role !== 'admin' &&
+        role !== 'editor'
+    ) {
+        setCloudWorkspaceRenameStatus(
+            '目前權限無法編輯雲端工作資料。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    const modal =
+        document.getElementById(
+            'cloud-workspace-rename-modal'
+        );
+
+
+    const input =
+        document.getElementById(
+            'cloud-workspace-rename-name'
+        );
+
+
+    const button =
+        document.getElementById(
+            'cloud-workspace-rename-save-btn'
+        );
+
+
+    const workspaceId =
+        String(
+            modal?.dataset?.workspaceId ||
+            ''
+        ).trim();
+
+
+    const originalName =
+        String(
+            modal?.dataset?.originalName ||
+            ''
+        ).trim();
+
+
+    const workspaceName =
+        String(
+            input?.value ||
+            ''
+        ).trim();
+
+
+    if (!workspaceId) {
+
+        setCloudWorkspaceRenameStatus(
+            '找不到要編輯的雲端工作資料。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    if (!workspaceName) {
+
+        setCloudWorkspaceRenameStatus(
+            '請輸入工作資料名稱。',
+            'error'
+        );
+
+        input?.focus();
+
+        return;
+    }
+
+
+    if (
+        workspaceName.length >
+        100
+    ) {
+
+        setCloudWorkspaceRenameStatus(
+            '工作資料名稱不可超過 100 個字元。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    if (
+        workspaceName ===
+        originalName
+    ) {
+        closeCloudWorkspaceRenameModal();
+        return;
+    }
+
+
+    const originalHtml =
+        button?.innerHTML || '';
+
+
+    try {
+
+        if (button) {
+
+            button.disabled =
+                true;
+
+            button.classList.add(
+                'opacity-70',
+                'cursor-wait'
+            );
+
+
+            button.innerHTML = `
+                <span class="
+                    w-4 h-4
+                    rounded-full
+                    border-2
+                    border-white/40
+                    border-t-white
+                    animate-spin
+                "></span>
+            `;
+        }
+
+
+        setCloudWorkspaceRenameStatus(
+            '正在儲存名稱...',
+            'info'
+        );
+
+
+        const result =
+            await cloudWorkspaceRequest({
+
+                action:
+                    'rename',
+
+                system_type:
+                    OSH_CLOUD_SYSTEM_TYPE,
+
+                workspace_id:
+                    workspaceId,
+
+                workspace_name:
+                    workspaceName
+            });
+
+
+        const renamed =
+            result?.workspace;
+
+
+        if (!renamed?.id) {
+            throw new Error(
+                'WORKSPACE_RENAME_INVALID'
+            );
+        }
+
+
+        /*
+         * 如果改名的是目前已載入 Workspace，
+         * 同步更新上方目前工作資料名稱。
+         */
+        if (
+            String(
+                activeCloudWorkspaceId
+            ) ===
+            String(
+                workspaceId
+            )
+        ) {
+
+            activeCloudWorkspaceName =
+                renamed.workspace_name ||
+                workspaceName;
+
+
+            updateActiveCloudWorkspaceUI();
+        }
+
+
+        closeCloudWorkspaceRenameModal();
+
+
+        await loadCloudWorkspaceList();
+
+
+        setCloudWorkspaceStatus(
+            `已將工作資料名稱更新為「${workspaceName}」。`,
+            'success'
+        );
+
+
+        showToast(
+            '雲端工作資料名稱已更新'
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            'Cloud Workspace 名稱修改失敗：',
+            error
+        );
+
+
+        const code =
+            String(
+                error?.message ||
+                ''
+            );
+
+
+        const messages = {
+
+            WORKSPACE_NOT_FOUND:
+                '找不到這份雲端工作資料。',    
+
+            WORKSPACE_NAME_INVALID:
+                '工作資料名稱格式不正確。',
+
+            WORKSPACE_SYSTEM_MISMATCH:
+                '這份工作資料不屬於目前系統。',
+
+            WORKSPACE_RENAME_FAILED:
+                '雲端工作資料名稱更新失敗。',
+
+            WORKSPACE_RENAME_INVALID:
+                '伺服器回傳的更新結果不完整。',
+
+            ADMIN_REQUIRED:
+                '目前帳號沒有此操作權限。'
+        };
+
+
+        setCloudWorkspaceRenameStatus(
+            messages[code] ||
+            '修改工作資料名稱失敗，請稍後再試。',
+            'error'
+        );
+
+
+    } finally {
+
+        if (
+            button &&
+            button.isConnected
+        ) {
+
+            button.disabled =
+                false;
+
+
+            button.classList.remove(
+                'opacity-70',
+                'cursor-wait'
+            );
+
+
+            button.innerHTML =
+                originalHtml;
+
+
+            lucide.createIcons();
+        }
+    }
+}
+
+/* =========================================================
+   Cloud Workspace：停用 / 重新啟用
+========================================================= */
+
+async function toggleCloudWorkspaceEnabledFromButton(
+    button
+) {
+    if (
+        getCurrentRole() !==
+        'admin'
+    ) {
+
+        showToast(
+            '僅管理者可變更雲端工作資料狀態。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    const workspaceId =
+        String(
+            button?.dataset?.workspaceId ||
+            ''
+        ).trim();
+
+
+    const workspaceName =
+        String(
+            button?.dataset?.workspaceName ||
+            '未命名工作資料'
+        ).trim();
+
+
+    const currentlyEnabled =
+        button?.dataset?.workspaceEnabled ===
+        'true';
+
+
+    const nextEnabled =
+        !currentlyEnabled;
+
+
+    if (!workspaceId) {
+
+        setCloudWorkspaceStatus(
+            '找不到要變更的雲端工作資料。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            currentlyEnabled
+                ? `確定要停用「${workspaceName}」？\n\n停用後將無法載入、儲存或讀取附件；資料與附件不會刪除，之後仍可重新啟用。`
+                : `確定要重新啟用「${workspaceName}」？`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const originalHtml =
+        button.innerHTML;
+
+
+    try {
+
+        button.disabled =
+            true;
+
+
+        button.classList.add(
+            'opacity-60',
+            'cursor-wait'
+        );
+
+
+        button.innerHTML = `
+            <span class="
+                w-3.5 h-3.5
+                rounded-full
+                border-2
+                border-current/30
+                border-t-current
+                animate-spin
+            "></span>
+        `;
+
+
+        setCloudWorkspaceStatus(
+
+            nextEnabled
+                ? `正在重新啟用「${workspaceName}」...`
+                : `正在停用「${workspaceName}」...`,
+
+            'info'
+        );
+
+
+        await cloudWorkspaceRequest({
+
+            action:
+                'set-enabled',
+
+            system_type:
+                OSH_CLOUD_SYSTEM_TYPE,
+
+            workspace_id:
+                workspaceId,
+
+            enabled:
+                nextEnabled
+        });
+
+
+        /*
+         * 如果停用的是目前正在使用的 Workspace，
+         * 解除目前雲端工作階段關聯。
+         *
+         * 畫面資料本身不刪除，
+         * 只是不能再以這份 Workspace 儲存至雲端。
+         */
+if (
+    !nextEnabled &&
+    String(
+        activeCloudWorkspaceId
+    ) ===
+    String(
+        workspaceId
+    )
+) {
+
+    clearActiveCloudWorkspace();
+}
+
+
+        await loadCloudWorkspaceList();
+
+
+        setCloudWorkspaceStatus(
+
+            nextEnabled
+                ? `「${workspaceName}」已重新啟用。`
+                : `「${workspaceName}」已停用。`,
+
+            'success'
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            'Cloud Workspace 狀態修改失敗：',
+            error
+        );
+
+
+        const code =
+            String(
+                error?.message ||
+                ''
+            );
+
+
+        const messages = {
+
+            ADMIN_REQUIRED:
+                '僅管理者可變更工作資料狀態。',
+
+            WORKSPACE_NOT_FOUND:
+                '找不到這份雲端工作資料。',
+
+            WORKSPACE_SYSTEM_MISMATCH:
+                '這份工作資料不屬於目前系統。',
+
+            WORKSPACE_ENABLED_INVALID:
+                '工作資料狀態設定無效。',
+
+            WORKSPACE_SET_ENABLED_FAILED:
+                '工作資料狀態更新失敗。'
+        };
+
+
+        setCloudWorkspaceStatus(
+            messages[code] ||
+            '變更工作資料狀態失敗，請稍後再試。',
+            'error'
+        );
+
+
+    } finally {
+
+        if (
+            button &&
+            button.isConnected
+        ) {
+
+            button.disabled =
+                false;
+
+
+            button.classList.remove(
+                'opacity-60',
+                'cursor-wait'
+            );
+
+
+            button.innerHTML =
+                originalHtml;
+
+
+            lucide.createIcons();
+        }
+    }
+}
+
+/* =========================================================
+   Cloud Workspace：永久刪除
+========================================================= */
+
+async function deleteCloudWorkspaceFromButton(
+    button
+) {
+    if (
+        getCurrentRole() !==
+        'admin'
+    ) {
+
+        showToast(
+            '僅管理者可刪除雲端工作資料。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    const workspaceId =
+        String(
+            button?.dataset?.workspaceId ||
+            ''
+        ).trim();
+
+
+    const workspaceName =
+        String(
+            button?.dataset?.workspaceName ||
+            '未命名工作資料'
+        ).trim();
+
+
+    if (!workspaceId) {
+
+        setCloudWorkspaceStatus(
+            '找不到要刪除的雲端工作資料。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    const firstConfirmed =
+        confirm(
+            `確定要刪除「${workspaceName}」？`
+        );
+
+
+    if (!firstConfirmed) {
+        return;
+    }
+
+
+    const secondConfirmed =
+        confirm(
+            '此操作將永久刪除這份雲端工作資料及其所有雲端附件，刪除後無法復原。\n\n確定要繼續嗎？'
+        );
+
+
+    if (!secondConfirmed) {
+        return;
+    }
+
+
+    const originalHtml =
+        button.innerHTML;
+
+
+    try {
+
+        button.disabled =
+            true;
+
+
+        button.classList.add(
+            'opacity-60',
+            'cursor-wait'
+        );
+
+
+        button.innerHTML = `
+            <span class="
+                w-3.5 h-3.5
+                rounded-full
+                border-2
+                border-red-200
+                border-t-red-500
+                animate-spin
+            "></span>
+        `;
+
+
+        setCloudWorkspaceStatus(
+            `正在永久刪除「${workspaceName}」...`,
+            'info'
+        );
+
+
+        await cloudWorkspaceRequest({
+
+            action:
+                'delete',
+
+            system_type:
+                OSH_CLOUD_SYSTEM_TYPE,
+
+            workspace_id:
+                workspaceId
+        });
+
+
+        /*
+         * 如果刪掉的是目前已載入 Workspace，
+         * 解除目前雲端工作階段。
+         *
+         * 現在畫面中的本機資料不直接清除。
+         */
+if (
+    String(
+        activeCloudWorkspaceId
+    ) ===
+    String(
+        workspaceId
+    )
+) {
+
+    clearActiveCloudWorkspace();
+}
+
+
+        await loadCloudWorkspaceList();
+
+
+        setCloudWorkspaceStatus(
+            `「${workspaceName}」已永久刪除。`,
+            'success'
+        );
+
+
+        showToast(
+            '雲端工作資料已刪除'
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            'Cloud Workspace 刪除失敗：',
+            error
+        );
+
+
+        const code =
+            String(
+                error?.message ||
+                ''
+            );
+
+
+        const messages = {
+
+            ADMIN_REQUIRED:
+                '僅管理者可刪除雲端工作資料。',
+
+            WORKSPACE_NOT_FOUND:
+                '找不到這份雲端工作資料。',
+
+            WORKSPACE_SYSTEM_MISMATCH:
+                '這份工作資料不屬於目前系統。',
+
+            WORKSPACE_FILES_LOOKUP_FAILED:
+                '無法取得工作資料附件清單。',
+
+            WORKSPACE_STORAGE_PATH_MISMATCH:
+                '附件資料狀態異常，為避免誤刪資料，系統已停止刪除。',
+
+            WORKSPACE_STORAGE_DELETE_FAILED:
+                '雲端附件刪除失敗，工作資料尚未刪除。',
+
+            WORKSPACE_DELETE_FAILED:
+                '雲端工作資料刪除失敗。'
+        };
+
+
+        setCloudWorkspaceStatus(
+            messages[code] ||
+            '刪除雲端工作資料失敗，請稍後再試。',
+            'error'
+        );
+
+
+    } finally {
+
+        if (
+            button &&
+            button.isConnected
+        ) {
+
+            button.disabled =
+                false;
+
+
+            button.classList.remove(
+                'opacity-60',
+                'cursor-wait'
+            );
+
+
+            button.innerHTML =
+                originalHtml;
+
+
+            lucide.createIcons();
+        }
+    }
+}
+
+function renderCloudWorkspaceList(
+    workspaces
+) {
+    const container =
+        document.getElementById(
+            'cloud-workspace-list'
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    if (
+        !Array.isArray(
+            workspaces
+        ) ||
+        workspaces.length === 0
+    ) {
+
+        container.innerHTML = `
+            <div class="
+                rounded-xl
+                border border-dashed
+                border-slate-200
+                bg-slate-50
+                px-4 py-8
+                text-center
+            ">
+
+                <i data-lucide="cloud"
+                   class="
+                       w-7 h-7
+                       text-slate-300
+                       mx-auto mb-2
+                   "></i>
+
+                <p class="
+                    text-xs
+                    font-black
+                    text-slate-500
+                ">
+                    尚未建立雲端工作資料
+                </p>
+
+                <p class="
+                    mt-1
+                    text-[10px]
+                    leading-relaxed
+                    text-slate-400
+                ">
+                    下一階段完成附件雲端同步後，
+                    即可建立第一份工作資料。
+                </p>
+
+            </div>
+        `;
+
+
+        lucide.createIcons();
+
+        return;
+    }
+
+
+    container.innerHTML =
+        workspaces
+            .map(
+                workspace => {
+
+                    const name =
+                        escapeCloudPreviewHtml(
+                            workspace
+                                ?.workspace_name ||
+                            '未命名工作資料'
+                        );
+
+
+                    const id =
+                        escapeCloudPreviewHtml(
+                            workspace?.id ||
+                            ''
+                        );
+
+
+                    const revision =
+                        Number(
+                            workspace?.revision
+                        ) || 1;
+
+                    const enabled =
+    workspace?.enabled !==
+    false;
+    
+const toggleEnabledIcon =
+    enabled
+        ? 'pause'
+        : 'play';
+
+
+const toggleEnabledTitle =
+    enabled
+        ? '停用'
+        : '重新啟用';
+
+
+const toggleEnabledClass =
+    enabled
+        ? 'border-amber-100 bg-amber-50 text-amber-700 hover:bg-amber-100'
+        : 'border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100';    
+
+const isSameWorkspace =
+    !!activeCloudWorkspaceId &&
+    String(
+        workspace?.id || ''
+    ) ===
+    String(
+        activeCloudWorkspaceId
+    );
+
+
+const isCurrentWorkspace =
+    isSameWorkspace &&
+    Number(
+        activeCloudWorkspaceRevision
+    ) ===
+    Number(
+        revision
+    );
+
+
+const hasNewerWorkspaceRevision =
+    isSameWorkspace &&
+    Number(
+        revision
+    ) >
+    Number(
+        activeCloudWorkspaceRevision
+    );   
+
+
+                    const updatedAtRaw =
+                        workspace?.updated_at;
+
+
+                    let updatedText =
+                        '';
+
+
+                    try {
+
+                        if (
+                            updatedAtRaw
+                        ) {
+
+                            updatedText =
+                                new Date(
+                                    updatedAtRaw
+                                )
+                                    .toLocaleString(
+                                        'zh-TW'
+                                    );
+                        }
+
+                    } catch (_) {}
+
+
+                    return `
+                        <div class="
+                            rounded-xl
+                            border border-slate-200
+                            bg-white
+                            px-3.5 py-3
+                            shadow-sm
+                        ">
+
+                            <div class="
+                                flex
+                                items-start
+                                gap-2
+                            ">
+
+<i data-lucide="cloud"
+   class="
+       w-4 h-4
+       text-emerald-600
+       shrink-0
+       mt-1
+   "></i>
+
+
+                                <div class="
+                                    min-w-0
+                                    flex-1
+                                ">
+
+<div class="
+    flex
+    items-center
+    gap-2
+    min-w-0
+">
+
+    <!-- 工作資料名稱 -->
+    <p class="
+        min-w-0
+        flex-1
+        text-sm
+        font-black
+        text-slate-800
+        truncate
+    ">
+        ${name}
+    </p>
+
+
+    <!-- 管理操作 -->
+    <div class="
+        shrink-0
+        flex
+        items-center
+        gap-1
+    ">
+
+        <!-- 編輯名稱 -->
+        <button
+            type="button"
+            data-workspace-id="${id}"
+            data-workspace-name="${name}"
+            onclick="openCloudWorkspaceRenameModalFromButton(this)"
+            class="
+                cloud-tooltip-btn
+                w-7 h-7
+                rounded-lg
+border border-indigo-100
+bg-indigo-50
+text-sky-600
+hover:bg-indigo-100
+hover:border-indigo-200
+                transition
+                flex
+                items-center
+                justify-center
+            "
+            data-tooltip="編輯"
+            aria-label="編輯">
+
+            <i data-lucide="square-pen"
+               class="w-3.5 h-3.5"></i>
+
+        </button>
+
+
+        ${
+            isAdmin
+                ? `
+                    <!-- 停用 / 重新啟用 -->
+                    <button
+                        type="button"
+                        data-workspace-id="${id}"
+                        data-workspace-name="${name}"
+                        data-workspace-enabled="${enabled ? 'true' : 'false'}"
+                        onclick="toggleCloudWorkspaceEnabledFromButton(this)"
+                        class="
+                            cloud-tooltip-btn
+                            w-7 h-7
+                            rounded-lg
+                            border
+                            ${toggleEnabledClass}
+                            transition
+                            flex
+                            items-center
+                            justify-center
+                        "
+                        data-tooltip="${toggleEnabledTitle}"
+                        aria-label="${toggleEnabledTitle}">
+
+                        <i data-lucide="${toggleEnabledIcon}"
+                           class="w-3.5 h-3.5"></i>
+
+                    </button>
+
+
+                    <!-- 永久刪除 -->
+                    <button
+                        type="button"
+                        data-workspace-id="${id}"
+                        data-workspace-name="${name}"
+                        onclick="deleteCloudWorkspaceFromButton(this)"
+                        class="
+                            cloud-tooltip-btn
+                            w-7 h-7
+                            rounded-lg
+                            border border-red-100
+                            bg-red-50
+                            text-red-500
+                            hover:bg-red-100
+                            hover:border-red-200
+                            hover:text-red-600
+                            transition
+                            flex
+                            items-center
+                            justify-center
+                        "
+                        data-tooltip="刪除"
+                        aria-label="刪除">
+
+                        <span class="
+                            attachment-symbol
+                            attachment-trash-symbol
+                        "
+                              aria-hidden="true">
+
+                            <svg viewBox="0 0 24 24"
+                                 focusable="false">
+
+                                <path fill="currentColor"
+                                      d="M9 3.5h6l.8 1.7H20a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2h4.2L9 3.5Z"/>
+
+                                <path fill="currentColor"
+                                      d="M6.2 8.7h11.6l-.8 10.1A2.5 2.5 0 0 1 14.5 21h-5a2.5 2.5 0 0 1-2.5-2.2L6.2 8.7Zm3.2 2.2a.8.8 0 0 0-.8.8l.3 5.6a.8.8 0 0 0 1.6-.1l-.3-5.6a.8.8 0 0 0-.8-.7Zm5.2 0a.8.8 0 0 0-.8.7l-.3 5.6a.8.8 0 1 0 1.6.1l.3-5.6a.8.8 0 0 0-.8-.8Z"/>
+
+                            </svg>
+
+                        </span>
+
+                    </button>
+                `
+                : ''
+        }
+
+    </div>
+
+</div>
+
+
+<div class="
+    mt-1.5
+    flex
+    items-center
+    justify-between
+    gap-2
+    min-w-0
+">
+
+    ${
+        updatedText
+            ? `
+                <p class="
+                    min-w-0
+                    truncate
+                    text-[10px]
+                    text-slate-400
+                ">
+                    最近更新：
+                    ${escapeCloudPreviewHtml(
+                        updatedText
+                    )}
+                </p>
+            `
+            : `
+                <span></span>
+            `
+    }
+
+
+    <span class="
+        shrink-0
+        px-2 py-0.5
+        rounded-full
+        bg-emerald-100
+        text-emerald-700
+        text-[9px]
+        font-black
+        whitespace-nowrap
+    ">
+        Revision ${revision}
+    </span>
+
+</div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="
+                                mt-3 pt-2.5
+                                border-t
+                                border-slate-100
+                            ">
+
+${
+    !enabled
+        ? `
+            <button type="button"
+                    disabled
+                    class="
+                        w-full h-8
+                        rounded-lg
+                        bg-slate-50
+                        text-slate-400
+                        border border-slate-200
+                        text-[10px]
+                        font-bold
+                        cursor-not-allowed
+                        flex
+                        items-center
+                        justify-center
+                        gap-1.5
+                    ">
+
+                <i data-lucide="pause-circle"
+                   class="w-3.5 h-3.5"></i>
+
+                <span>
+                    已停用
+                </span>
+
+            </button>
+        `
+        : hasNewerWorkspaceRevision
+            ? `
+                <button type="button"
+                        data-workspace-id="${id}"
+                        onclick="loadCloudWorkspaceIntoSystem('${id}')"
+                        class="
+                            w-full h-8
+                            rounded-lg
+                            bg-amber-50
+                            text-amber-700
+                            border border-amber-200
+                            hover:bg-amber-100
+                            text-[10px]
+                            font-bold
+                            cursor-pointer
+                            flex
+                            items-center
+                            justify-center
+                            gap-1.5
+                            transition
+                        ">
+
+                    <i data-lucide="refresh-cw"
+                       class="w-3.5 h-3.5"></i>
+
+                    <span>
+                        有新版本，重新載入
+                    </span>
+
+                </button>
+            `
+
+
+        : isCurrentWorkspace
+            ? `
+                <button type="button"
+                        disabled
+                        class="
+                            w-full h-8
+                            rounded-lg
+                            bg-blue-50
+                            text-blue-600
+                            border border-blue-100
+                            text-[10px]
+                            font-bold
+                            cursor-default
+                            flex
+                            items-center
+                            justify-center
+                            gap-1.5
+                        ">
+
+                    <i data-lucide="circle-check"
+                       class="w-3.5 h-3.5"></i>
+
+                    <span>
+                        目前已載入
+                    </span>
+
+                </button>
+            `
+
+            : `
+                <button type="button"
+                        data-workspace-id="${id}"
+                        onclick="loadCloudWorkspaceIntoSystem('${id}')"
+                        class="
+                            w-full h-8
+                            rounded-lg
+                            bg-emerald-50
+                            text-emerald-700
+                            border border-emerald-100
+                            hover:bg-emerald-100
+                            text-[10px]
+                            font-bold
+                            cursor-pointer
+                            flex
+                            items-center
+                            justify-center
+                            gap-1.5
+                            transition
+                        ">
+
+                    <i data-lucide="cloud-download"
+                       class="w-3.5 h-3.5"></i>
+
+                    <span>
+                        載入工作資料
+                    </span>
+
+                </button>
+            `
+}
+
+                            </div>
+
+                        </div>
+                    `;
+                }
+            )
+            .join(
+                ''
+            );
+
+
+    lucide.createIcons();
+}
+
+async function loadCloudWorkspaceList() {
+
+    const container =
+        document.getElementById(
+            'cloud-workspace-list'
+        );
+
+
+    if (container) {
+
+        container.innerHTML = `
+            <div class="
+                py-8
+                flex flex-col
+                items-center
+                justify-center
+                text-center
+            ">
+
+                <span class="
+                    w-6 h-6
+                    rounded-full
+                    border-2
+                    border-emerald-200
+                    border-t-emerald-600
+                    animate-spin
+                "></span>
+
+                <span class="
+                    mt-2
+                    text-[11px]
+                    font-bold
+                    text-slate-500
+                ">
+                    正在讀取雲端工作資料...
+                </span>
+
+            </div>
+        `;
+    }
+
+
+    setCloudWorkspaceStatus(
+        ''
+    );
+
+
+    try {
+
+        const result =
+            await cloudWorkspaceRequest({
+                action:
+                    'list',
+
+                system_type:
+                    OSH_CLOUD_SYSTEM_TYPE
+            });
+
+
+        renderCloudWorkspaceList(
+            result?.workspaces ||
+            []
+        );
+
+
+        setCloudWorkspaceStatus(
+            '已成功連線雲端工作資料服務。',
+            'success'
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            '讀取雲端工作資料失敗：',
+            error
+        );
+
+
+        if (
+            error?.message ===
+            'CLOUD_LOGIN_CANCELLED'
+        ) {
+
+            backToCloudPreviewHome();
+
+            return;
+        }
+
+
+        let message =
+            '無法讀取雲端工作資料，請稍後再試。';
+
+
+        if (
+            error?.status ===
+            401
+        ) {
+
+            clearCloudPublisherSession();
+
+            message =
+                'Cloud Publisher 登入已失效，請重新登入。';
+
+        } else if (
+            error?.status ===
+            403
+        ) {
+
+            clearCloudPublisherSession();
+
+            message =
+                '此帳號目前沒有雲端工作資料使用權限。';
+        }
+
+
+        if (container) {
+            container.innerHTML =
+                '';
+        }
+
+
+        setCloudWorkspaceStatus(
+            message,
+            'error'
+        );
+    }
+}
+
+/*
+ * DataURL → Blob
+ */
+function cloudPreviewAttachmentToBlob(
+    file
+) {
+    const bytes =
+        dataUrlToUint8Array(
+            file.data
+        );
+
+    return new Blob(
+        [bytes],
+        {
+            type:
+                file.type ||
+                'application/octet-stream'
+        }
+    );
+}
+
+/*
+ * =========================================================
+ * 上傳 Cloud Workspace 單一附件。
+ *
+ * 流程：
+ * create-file-upload
+ * → Storage
+ * → register-file
+ * =========================================================
+ */
+async function uploadCloudWorkspaceAttachment(
+    workspaceId,
+    file
+) {
+    const allowedMimeTypes =
+        new Set([
+            'application/pdf',
+            'image/png',
+            'image/jpeg',
+            'image/jpg'
+        ]);
+
+
+    let mimeType =
+        String(
+            file.type || ''
+        )
+            .toLowerCase()
+            .trim();
+
+
+    if (
+        mimeType ===
+        'image/jpg'
+    ) {
+        mimeType =
+            'image/jpeg';
+    }
+
+
+    if (
+        !allowedMimeTypes.has(
+            mimeType
+        )
+    ) {
+        throw new Error(
+            'WORKSPACE_FILE_TYPE_NOT_ALLOWED'
+        );
+    }
+
+
+    const blob =
+        cloudPreviewAttachmentToBlob(
+            file
+        );
+
+
+    if (
+        blob.size < 1 ||
+        blob.size >
+            10 * 1024 * 1024
+    ) {
+        throw new Error(
+            'WORKSPACE_FILE_SIZE_INVALID'
+        );
+    }
+
+
+    /*
+     * 取得 Signed Upload Token。
+     */
+const uploadResult =
+    await runCloudWorkspaceWithRetry(
+        () =>
+            cloudWorkspaceRequest({
+                action:
+                    'create-file-upload',
+
+                system_type:
+                    OSH_CLOUD_SYSTEM_TYPE,
+
+                workspace_id:
+                    workspaceId,
+
+                file_name:
+                    file.name,
+
+                mime_type:
+                    mimeType,
+
+                file_size:
+                    blob.size
+            }),
+
+        {
+            maxAttempts:
+                3,
+
+            onRetry: (
+                attempt,
+                maxAttempts
+            ) => {
+
+                setCloudWorkspaceStatus(
+                    `雲端連線暫時不穩定，正在重新取得附件上傳權限 ${attempt} / ${maxAttempts}...`,
+                    'info'
+                );
+            }
+        }
+    );
+
+
+    const upload =
+        uploadResult?.upload;
+
+
+    if (
+        !upload?.bucket ||
+        !upload?.storage_path ||
+        !upload?.token
+    ) {
+        throw new Error(
+            'WORKSPACE_SIGNED_UPLOAD_INVALID'
+        );
+    }
+
+
+    /*
+     * 建立 Signed Upload URL。
+     */
+    const fullObjectPath =
+        `${upload.bucket}/${upload.storage_path}`;
+
+
+    const encodedObjectPath =
+        fullObjectPath
+            .split('/')
+            .map(
+                segment =>
+                    encodeURIComponent(
+                        segment
+                    )
+            )
+            .join('/');
+
+
+    const uploadUrl =
+        `${OSH_CLOUD_PROJECT_URL}` +
+        `/storage/v1/object/upload/sign/` +
+        `${encodedObjectPath}` +
+        `?token=` +
+        `${encodeURIComponent(upload.token)}`;
+
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        'cacheControl',
+        '3600'
+    );
+
+
+    formData.append(
+        '',
+        blob,
+        file.name ||
+            'attachment'
+    );
+
+
+    const accessToken =
+        await ensureCloudPublisherAccessToken();
+
+
+try {
+
+    await runCloudWorkspaceWithRetry(
+
+        async () => {
+
+            let storageResponse;
+
+
+            try {
+
+                storageResponse =
+                    await fetch(
+                        uploadUrl,
+                        {
+                            method:
+                                'PUT',
+
+                            headers: {
+                                apikey:
+                                    OSH_CLOUD_PUBLISHABLE_KEY,
+
+                                Authorization:
+                                    `Bearer ${accessToken}`
+                            },
+
+                            body:
+                                formData
+                        }
+                    );
+
+
+            } catch (
+                networkError
+            ) {
+
+                /*
+                 * fetch 本身失敗，
+                 * 例如網路瞬斷。
+                 */
+                const error =
+                    new Error(
+                        'WORKSPACE_STORAGE_UPLOAD_FAILED'
+                    );
+
+
+                error.status =
+                    503;
+
+
+                throw error;
+            }
+
+
+            /*
+             * 2xx：
+             * 正常完成。
+             */
+            if (
+                storageResponse.ok
+            ) {
+                return true;
+            }
+
+
+            /*
+             * 409：
+             *
+             * 這個 storage_path
+             * 是本次 create-file-upload
+             * 所產生的唯一位置。
+             *
+             * 如果第一次 PUT 已成功，
+             * 但成功 response 遺失，
+             * 第二次 PUT 可能回 409。
+             *
+             * 此時不要重新建立第二份附件，
+             * 直接進入 register-file，
+             * 後端會再確認附件登記。
+             */
+            if (
+                storageResponse.status ===
+                409
+            ) {
+
+                return true;
+            }
+
+
+            let errorText =
+                '';
+
+
+            try {
+
+                errorText =
+                    await storageResponse
+                        .text();
+
+            } catch (_) {}
+
+
+            console.error(
+                'Workspace 附件上傳失敗：',
+                storageResponse.status,
+                errorText
+            );
+
+
+            const error =
+                new Error(
+                    'WORKSPACE_STORAGE_UPLOAD_FAILED'
+                );
+
+
+            error.status =
+                storageResponse.status;
+
+
+            throw error;
+        },
+
+        {
+            maxAttempts:
+                3,
+
+            onRetry: (
+                attempt,
+                maxAttempts
+            ) => {
+
+                setCloudWorkspaceStatus(
+                    `附件傳輸暫時中斷，正在自動重試 ${attempt} / ${maxAttempts}...`,
+                    'info'
+                );
+            }
+        }
+    );
+
+
+} catch (
+    storageError
+) {
+
+    /*
+     * Storage 連續重試後仍失敗。
+     *
+     * 因為無法完全確定最後一次請求
+     * 是否其實已寫入 Storage，
+     * 所以一定先嘗試清掉
+     * 這一次尚未 register 的 storage_path。
+     */
+    try {
+
+        await runCloudWorkspaceWithRetry(
+            () =>
+                cloudWorkspaceRequest({
+                    action:
+                        'rollback-upload',
+
+                    system_type:
+                        OSH_CLOUD_SYSTEM_TYPE,
+
+                    workspace_id:
+                        workspaceId,
+
+                    storage_path:
+                        upload.storage_path
+                }),
+
+            {
+                maxAttempts:
+                    3
+            }
+        );
+
+
+    } catch (
+        rollbackError
+    ) {
+
+        console.error(
+            'Cloud Workspace Storage rollback 未完成：',
+            rollbackError
+        );
+    }
+
+
+    throw storageError;
+}
+
+
+    /*
+     * Storage 完成後正式登記附件。
+     */
+let registerResult;
+
+
+try {
+
+registerResult =
+    await runCloudWorkspaceWithRetry(
+        () =>
+            cloudWorkspaceRequest({
+                action:
+                    'register-file',
+
+                system_type:
+                    OSH_CLOUD_SYSTEM_TYPE,
+
+                workspace_id:
+                    workspaceId,
+
+                storage_path:
+                    upload.storage_path,
+
+                file_name:
+                    file.name,
+
+                mime_type:
+                    mimeType,
+
+                file_size:
+                    blob.size
+            }),
+
+        {
+            maxAttempts:
+                3,
+
+            onRetry: (
+                attempt,
+                maxAttempts
+            ) => {
+
+                setCloudWorkspaceStatus(
+                    `附件登記暫時未完成，正在自動重試 ${attempt} / ${maxAttempts}...`,
+                    'info'
+                );
+            }
+        }
+    );
+
+
+    if (
+        !registerResult?.file?.id
+    ) {
+
+        throw new Error(
+            'WORKSPACE_FILE_REGISTER_FAILED'
+        );
+    }
+
+
+} catch (registerError) {
+
+    /*
+     * Storage 已完成，
+     * 但 register-file 沒有完成。
+     *
+     * 嘗試清除這次尚未登記的
+     * Storage 實體附件。
+     */
+try {
+
+    await runCloudWorkspaceWithRetry(
+        () =>
+            cloudWorkspaceRequest({
+                action:
+                    'rollback-upload',
+
+                system_type:
+                    OSH_CLOUD_SYSTEM_TYPE,
+
+                workspace_id:
+                    workspaceId,
+
+                storage_path:
+                    upload.storage_path
+            }),
+
+        {
+            maxAttempts:
+                3
+        }
+    );
+
+
+} catch (
+    rollbackError
+) {
+
+    console.error(
+        'Cloud Workspace 未登記附件 rollback 未完成：',
+        rollbackError
+    );
+}
+
+
+    throw registerError;
+}
+
+
+return registerResult.file;
+}
+
+/*
+ * =========================================================
+ * Workspace 附件穩定上傳。
+ *
+ * 大量附件以穩定性優先，
+ * 同時間最多處理 2 個附件。
+ * =========================================================
+ */
+const CLOUD_WORKSPACE_UPLOAD_CONCURRENCY =
+    2;
+
+
+async function uploadCloudWorkspaceAttachmentsWithConcurrency(
+    workspaceId,
+    uniqueAttachments,
+    cloudFileIdMap
+) {
+    const total =
+        uniqueAttachments.length;
+
+
+    if (
+        total ===
+        0
+    ) {
+        return;
+    }
+
+
+    let nextIndex =
+        0;
+
+    let completed =
+        0;
+
+    let firstError =
+        null;
+
+
+    async function worker() {
+
+        while (true) {
+
+            if (
+                firstError
+            ) {
+                return;
+            }
+
+
+            const index =
+                nextIndex++;
+
+
+            if (
+                index >= total
+            ) {
+                return;
+            }
+
+
+            const file =
+                uniqueAttachments[
+                    index
+                ];
+
+
+            try {
+
+                const registeredFile =
+                    await uploadCloudWorkspaceAttachment(
+                        workspaceId,
+                        file
+                    );
+
+
+                cloudFileIdMap.set(
+                    file.data,
+                    registeredFile.id
+                );
+
+
+completed++;
+
+
+const percent =
+    Math.round(
+        (
+            completed /
+            total
+        ) * 100
+    );
+
+
+setCloudWorkspaceStatus(
+    `正在上傳附件 ${completed} / ${total}（${percent}%）`,
+    'info'
+);
+
+
+setCloudWorkspaceCreateBusy(
+    true,
+    `上傳 ${percent}%`
+);
+
+
+            } catch (error) {
+
+                if (
+                    !firstError
+                ) {
+                    firstError =
+                        error;
+                }
+
+
+                return;
+            }
+        }
+    }
+
+
+    const workerCount =
+        Math.min(
+            CLOUD_WORKSPACE_UPLOAD_CONCURRENCY,
+            total
+        );
+
+
+    const workers =
+        Array.from(
+            {
+                length:
+                    workerCount
+            },
+            () =>
+                worker()
+        );
+
+
+    /*
+     * 等所有已啟動的 worker
+     * 完全停止後才 rollback。
+     */
+    await Promise.allSettled(
+        workers
+    );
+
+
+    if (
+        firstError
+    ) {
+        throw firstError;
+    }
+}
+
+/*
+ * =========================================================
+ * 已載入 Workspace 儲存時：
+ * 新附件最多兩筆並行上傳。
+ *
+ * 除了建立 cloud_file_id 對照，
+ * 同時記錄本次新增的 file id，
+ * 保留後續版本衝突／失敗清理用途。
+ * =========================================================
+ */
+async function uploadCloudWorkspaceSaveAttachmentsWithConcurrency(
+    workspaceId,
+    uniqueAttachments,
+    cloudFileIdMap,
+    newlyRegisteredFiles
+) {
+    const total =
+        uniqueAttachments.length;
+
+
+    if (
+        total ===
+        0
+    ) {
+        return;
+    }
+
+
+    let nextIndex =
+        0;
+
+    let completed =
+        0;
+
+    let firstError =
+        null;
+
+
+    async function worker() {
+
+        while (true) {
+
+            if (
+                firstError
+            ) {
+                return;
+            }
+
+
+            const index =
+                nextIndex++;
+
+
+            if (
+                index >= total
+            ) {
+                return;
+            }
+
+
+            const file =
+                uniqueAttachments[
+                    index
+                ];
+
+
+            try {
+
+                const registeredFile =
+                    await uploadCloudWorkspaceAttachment(
+                        workspaceId,
+                        file
+                    );
+
+
+                cloudFileIdMap.set(
+                    file.data,
+                    registeredFile.id
+                );
+
+
+                newlyRegisteredFiles.push(
+                    registeredFile.id
+                );
+
+
+                completed++;
+
+                const percent =
+    Math.round(
+        (
+            completed /
+            total
+        ) * 100
+    );
+
+
+setCloudWorkspaceStatus(
+    `正在上傳附件 ${completed} / ${total}（${percent}%）`,
+    'info'
+);
+
+
+            } catch (error) {
+
+                if (
+                    !firstError
+                ) {
+                    firstError =
+                        error;
+                }
+
+
+                return;
+            }
+        }
+    }
+
+
+    const workerCount =
+        Math.min(
+            CLOUD_WORKSPACE_UPLOAD_CONCURRENCY,
+            total
+        );
+
+
+    const workers =
+        Array.from(
+            {
+                length:
+                    workerCount
+            },
+            () =>
+                worker()
+        );
+
+
+    /*
+     * 等已啟動的 worker
+     * 全部停止後再進入後續處理。
+     */
+    await Promise.allSettled(
+        workers
+    );
+
+
+    if (
+        firstError
+    ) {
+        throw firstError;
+    }
+}
+
+/*
+ * =========================================================
+ * 從目前正式證照資料
+ * 建立新的 Cloud Workspace。
+ * =========================================================
+ */
+async function createCloudWorkspaceFromCurrentData() {
+
+    const role =
+        getCurrentRole();
+
+
+    if (
+        role !== 'admin' &&
+        role !== 'editor'
+    ) {
+        setCloudWorkspaceStatus(
+            '目前權限無法建立雲端工作資料。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    if (
+        isPreviewDataMode
+    ) {
+        setCloudWorkspaceStatus(
+            '預覽資料不可建立雲端工作資料。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    let workspaceId =
+        '';
+
+
+    let creationCompleted =
+        false;
+
+
+    try {
+
+        setCloudWorkspaceStatus(
+            '正在整理目前證照資料...',
+            'info'
+        );
+
+
+        setCloudWorkspaceCreateBusy(
+            true,
+            '正在準備...'
+        );
+
+
+        /*
+         * 先同步目前仍在輸入中的欄位。
+         */
+        await persistCurrentSystemData();
+
+
+        /*
+         * 建立證照系統正式 unified-data。
+         */
+        const localPayload =
+            buildCertificateExportData();
+
+
+        /*
+         * 掃描所有尚未上傳 Cloud
+         * 的不重複附件。
+         */
+        const attachmentMap =
+            collectUniqueCertificateCloudAttachments(
+                localPayload
+            );
+
+
+        const uniqueAttachments =
+            Array.from(
+                attachmentMap.values()
+            );
+
+
+        /*
+         * 自動使用目前西元年度。
+         *
+         * 例如：
+         * 2026年度證照工作資料
+         */
+        const currentYear =
+            new Date()
+                .getFullYear();
+
+
+        const workspaceName =
+            `${currentYear}年度證照工作資料`;
+
+
+        /*
+         * =====================================================
+         * 第一步：
+         * 建立 Workspace 初始化容器。
+         * =====================================================
+         */
+        setCloudWorkspaceStatus(
+            '正在建立雲端工作資料...',
+            'info'
+        );
+
+
+        const createResult =
+            await cloudWorkspaceRequest({
+                action:
+                    'create',
+
+                system_type:
+                    OSH_CLOUD_SYSTEM_TYPE,
+
+                workspace_name:
+                    workspaceName,
+
+                payload: {
+                    version:
+                        'certificate-system-json-v2',
+
+                    exportType:
+                        'workspace-initializing',
+
+                    createdAt:
+                        new Date()
+                            .toISOString()
+                }
+            });
+
+
+        const createdWorkspace =
+            createResult?.workspace;
+
+
+        if (
+            !createdWorkspace?.id
+        ) {
+            throw new Error(
+                'WORKSPACE_CREATE_INVALID'
+            );
+        }
+
+
+        workspaceId =
+            String(
+                createdWorkspace.id
+            );
+
+
+        /*
+         * =====================================================
+         * 第二步：
+         * 上傳附件至 Private Storage。
+         * =====================================================
+         */
+        const cloudFileIdMap =
+            new Map();
+
+
+        if (
+            uniqueAttachments.length >
+            0
+        ) {
+
+            setCloudWorkspaceStatus(
+                `準備上傳 ${uniqueAttachments.length} 個附件...`,
+                'info'
+            );
+
+
+            await uploadCloudWorkspaceAttachmentsWithConcurrency(
+                workspaceId,
+                uniqueAttachments,
+                cloudFileIdMap
+            );
+        }
+
+
+        /*
+         * =====================================================
+         * 第三步：
+         * DataURL → cloud_file_id。
+         * =====================================================
+         */
+        setCloudWorkspaceStatus(
+            '正在完成雲端工作資料...',
+            'info'
+        );
+
+
+        setCloudWorkspaceCreateBusy(
+            true,
+            '正在完成...'
+        );
+
+
+        const cloudPayload =
+            buildCertificateCloudPayload(
+                localPayload,
+                cloudFileIdMap
+            );
+
+
+        /*
+         * =====================================================
+         * 第四步：
+         * 儲存正式 Certificate Payload。
+         *
+         * 第一次正式 Save 仍維持 Revision 1。
+         * =====================================================
+         */
+        const saveResult =
+            await cloudWorkspaceRequest({
+                action:
+                    'save',
+
+                system_type:
+                    OSH_CLOUD_SYSTEM_TYPE,
+
+                workspace_id:
+                    workspaceId,
+
+                revision:
+                    Number(
+                        createdWorkspace.revision
+                    ) || 1,
+
+                payload:
+                    cloudPayload
+            });
+
+
+        if (
+            !saveResult
+                ?.workspace
+                ?.id
+        ) {
+            throw new Error(
+                'WORKSPACE_SAVE_INVALID'
+            );
+        }
+
+
+        creationCompleted =
+            true;
+
+
+        /*
+         * 建立完成後，
+         * 直接設為目前 Workspace。
+         */
+        const savedWorkspace =
+            saveResult.workspace;
+
+
+        activeCloudWorkspaceId =
+            String(
+                savedWorkspace.id ||
+                workspaceId
+            );
+
+
+        activeCloudWorkspaceName =
+            String(
+                savedWorkspace.workspace_name ||
+                workspaceName
+            );
+
+
+        activeCloudWorkspaceRevision =
+            Number(
+                savedWorkspace.revision
+            ) || 1;
+
+
+        updateActiveCloudWorkspaceUI();
+
+
+        /*
+         * 已完成本次雲端儲存。
+         */
+        certificateDirty =
+            false;
+
+
+        /*
+         * Cloud Workspace 不等於
+         * 本機 JSON 備份完成。
+         */
+        sessionNeedsExport =
+            true;
+
+
+        setCloudWorkspaceStatus(
+            `已建立「${activeCloudWorkspaceName}」Revision ${activeCloudWorkspaceRevision}。`,
+            'success'
+        );
+
+
+        await loadCloudWorkspaceList();
+
+
+    } catch (error) {
+
+        console.error(
+            '建立 Cloud Workspace 失敗：',
+            error
+        );
+
+
+        /*
+         * 已建立 Workspace，
+         * 但正式 Save 尚未確認完成時，
+         * 嘗試 rollback。
+         */
+        if (
+            workspaceId &&
+            !creationCompleted
+        ) {
+
+            try {
+
+                await runCloudWorkspaceWithRetry(
+                    () =>
+                        cloudWorkspaceRequest({
+                            action:
+                                'rollback-create',
+
+                            system_type:
+                                OSH_CLOUD_SYSTEM_TYPE,
+
+                            workspace_id:
+                                workspaceId
+                        }),
+                    {
+                        maxAttempts:
+                            3
+                    }
+                );
+
+
+            } catch (
+                rollbackError
+            ) {
+
+                console.error(
+                    'Workspace rollback 未完成：',
+                    rollbackError
+                );
+            }
+        }
+
+
+        const code =
+            String(
+                error?.message ||
+                ''
+            );
+
+
+        const messages = {
+
+            CLOUD_LOGIN_CANCELLED:
+                '已取消 Cloud Publisher 驗證。',
+
+            WORKSPACE_CREATE_FAILED:
+                '建立雲端工作資料失敗。',
+
+            WORKSPACE_CREATE_INVALID:
+                '雲端工作資料建立結果不完整。',
+
+            WORKSPACE_FILE_TYPE_NOT_ALLOWED:
+                '附件格式不支援。',
+
+            WORKSPACE_FILE_SIZE_INVALID:
+                '附件超過 10MB 上限。',
+
+            WORKSPACE_SIGNED_UPLOAD_FAILED:
+                '無法取得附件上傳權限。',
+
+            WORKSPACE_SIGNED_UPLOAD_INVALID:
+                '附件上傳資訊不完整。',
+
+            WORKSPACE_STORAGE_UPLOAD_FAILED:
+                '附件上傳失敗，請稍後重試。',
+
+            WORKSPACE_FILE_REGISTER_FAILED:
+                '附件上傳失敗，請稍後重試。',
+
+            CLOUD_FILE_ID_MISSING:
+                '附件雲端資料建立失敗。',
+
+            WORKSPACE_SAVE_FAILED:
+                '雲端工作資料儲存失敗。',
+
+            WORKSPACE_SAVE_INVALID:
+                '雲端工作資料儲存結果不完整。'
+        };
+
+
+        setCloudWorkspaceStatus(
+            messages[code] ||
+            code ||
+            '建立雲端工作資料失敗。',
+            'error'
+        );
+
+
+        /*
+         * 即使例外，
+         * 仍重新讀取 Workspace 清單。
+         */
+        try {
+
+            await loadCloudWorkspaceList();
+
+        } catch (_) {}
+
+
+    } finally {
+
+        setCloudWorkspaceCreateBusy(
+            false
+        );
+    }
+}
+
+/*
+ * =========================================================
+ * Cloud Workspace：
+ * 批次取得 Workspace 附件 Signed URL。
+ *
+ * 每批最多 50 個附件。
+ *
+ * 若雲端服務暫時回傳 HTTP 503，
+ * 自動等待後重試，最多 3 次。
+ *
+ * 這裡不下載附件實體內容，
+ * 只取得 Private Storage 的短效讀取網址。
+ * =========================================================
+ */
+async function loadCloudWorkspaceSignedFiles(
+    workspaceId,
+    files
+) {
+    const sourceFiles =
+        Array.isArray(files)
+            ? files
+            : [];
+
+
+    if (
+        sourceFiles.length ===
+        0
+    ) {
+        return new Map();
+    }
+
+
+    /*
+     * 只保留有合法附件 ID 的資料。
+     */
+    const validFiles =
+        sourceFiles.filter(
+            file =>
+                !!file?.id
+        );
+
+
+    if (
+        validFiles.length ===
+        0
+    ) {
+        return new Map();
+    }
+
+
+    const resultMap =
+        new Map();
+
+
+    /*
+     * 與 Edge Function
+     * signed-read-batch 上限一致。
+     */
+    const batchSize =
+        50;
+
+
+    const total =
+        validFiles.length;
+
+
+    let completed =
+        0;
+
+
+    /*
+     * HTTP 503：
+     *
+     * 第一次失敗 → 等待 0.8 秒
+     * 第二次失敗 → 等待 1.6 秒
+     * 第三次仍失敗 → 正式丟出錯誤
+     */
+    async function requestBatchWithRetry(
+        fileIds
+    ) {
+        const maxAttempts =
+            3;
+
+
+        for (
+            let attempt = 1;
+            attempt <= maxAttempts;
+            attempt++
+        ) {
+
+            try {
+
+                return await cloudWorkspaceRequest({
+                    action:
+                        'signed-read-batch',
+
+                    system_type:
+                        OSH_CLOUD_SYSTEM_TYPE,
+
+                    workspace_id:
+                        workspaceId,
+
+                    file_ids:
+                        fileIds
+                });
+
+
+            } catch (error) {
+
+                const status =
+                    Number(
+                        error?.status
+                    ) || 0;
+
+
+                /*
+                 * 只有 HTTP 503
+                 * 才屬於暫時性服務忙碌，
+                 * 可以自動重試。
+                 */
+                if (
+                    status !== 503 ||
+                    attempt >= maxAttempts
+                ) {
+                    throw error;
+                }
+
+
+                const delay =
+                    800 *
+                    Math.pow(
+                        2,
+                        attempt - 1
+                    );
+
+
+                await new Promise(
+                    resolve =>
+                        setTimeout(
+                            resolve,
+                            delay
+                        )
+                );
+            }
+        }
+
+
+        throw new Error(
+            'WORKSPACE_SIGNED_READ_FAILED'
+        );
+    }
+
+
+    /*
+     * 依序處理每一批。
+     *
+     * 165 個附件會變成：
+     *
+     * 50
+     * 50
+     * 50
+     * 15
+     *
+     * 共 4 次 Edge Function 呼叫。
+     */
+    for (
+        let startIndex = 0;
+        startIndex < total;
+        startIndex += batchSize
+    ) {
+
+        const batch =
+            validFiles.slice(
+                startIndex,
+                startIndex +
+                    batchSize
+            );
+
+
+        const fileIds =
+            batch.map(
+                file =>
+                    String(
+                        file.id
+                    )
+            );
+
+
+        const result =
+            await requestBatchWithRetry(
+                fileIds
+            );
+
+
+        const signedFiles =
+            Array.isArray(
+                result?.files
+            )
+                ? result.files
+                : [];
+
+
+        /*
+         * 後端必須完整回傳本批附件。
+         */
+        if (
+            signedFiles.length !==
+            fileIds.length
+        ) {
+            throw new Error(
+                'WORKSPACE_SIGNED_READ_INVALID'
+            );
+        }
+
+
+        for (
+            const signedFile
+            of signedFiles
+        ) {
+
+            if (
+                !signedFile?.id ||
+                !signedFile?.signed_url
+            ) {
+                throw new Error(
+                    'WORKSPACE_SIGNED_READ_INVALID'
+                );
+            }
+
+
+            resultMap.set(
+                String(
+                    signedFile.id
+                ),
+                signedFile
+            );
+        }
+
+
+        completed +=
+            batch.length;
+
+
+        const percent =
+            Math.min(
+                100,
+                Math.round(
+                    (
+                        completed /
+                        total
+                    ) *
+                    100
+                )
+            );
+
+
+        /*
+         * 直接使用既有 Workspace 狀態框，
+         * 不增加額外提示區塊或視窗高度。
+         */
+        setCloudWorkspaceStatus(
+            `正在準備雲端附件 ${completed} / ${total}（${percent}%）`,
+            'info'
+        );
+    }
+
+
+    return resultMap;
+}
+
+/*
+ * =========================================================
+ * 載入 Cloud Workspace 到正式證照工作區。
+ * =========================================================
+ */
+async function loadCloudWorkspaceIntoSystem(
+    workspaceId
+) {
+    const role =
+        getCurrentRole();
+
+
+    /*
+     * Viewer 永遠不能載入 Workspace。
+     */
+    if (
+        role !== 'admin' &&
+        role !== 'editor'
+    ) {
+        showToast(
+            '雲端工作資料僅供管理者與使用者使用。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    workspaceId =
+        String(
+            workspaceId || ''
+        ).trim();
+
+
+    if (!workspaceId) {
+        setCloudWorkspaceStatus(
+            '雲端工作資料識別碼無效。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    /*
+     * 載入 Workspace 會覆蓋
+     * 目前證照工作區。
+     */
+    const pendingWarning =
+        hasPendingSessionChanges()
+            ? (
+                '\n\n目前有尚未儲存或尚未匯出的工作成果，' +
+                '繼續後將被覆蓋。'
+            )
+            : '';
+
+
+    if (
+        !confirm(
+            '載入雲端工作資料將覆蓋目前工作區內容，確定要繼續嗎？' +
+            pendingWarning
+        )
+    ) {
+        return;
+    }
+
+
+    try {
+
+        setCloudWorkspaceStatus(
+            '正在讀取雲端工作資料...',
+            'info'
+        );
+
+
+        /*
+         * 取得 Workspace 本體。
+         */
+        const result =
+            await cloudWorkspaceRequest({
+                action:
+                    'load',
+
+                system_type:
+                    OSH_CLOUD_SYSTEM_TYPE,
+
+                workspace_id:
+                    workspaceId
+            });
+
+
+        const workspace =
+            result?.workspace;
+
+
+        if (
+            !workspace ||
+            typeof workspace !==
+                'object'
+        ) {
+            throw new Error(
+                'WORKSPACE_LOAD_INVALID'
+            );
+        }
+
+
+        /*
+         * 再確認這份 Workspace
+         * 確實屬於證照管理系統。
+         */
+        if (
+            String(
+                workspace.system_type ||
+                ''
+            ) !==
+            OSH_CLOUD_SYSTEM_TYPE
+        ) {
+            throw new Error(
+                'WORKSPACE_SYSTEM_MISMATCH'
+            );
+        }
+
+
+        const sourcePayload =
+            workspace.payload;
+
+
+        /*
+         * Certificate Workspace
+         * 必須維持正式 unified-data 格式。
+         */
+        if (
+            !sourcePayload ||
+            typeof sourcePayload !==
+                'object' ||
+            Array.isArray(
+                sourcePayload
+            ) ||
+            sourcePayload.version !==
+                'certificate-system-json-v2' ||
+            sourcePayload.exportType !==
+                'unified-data' ||
+            !Array.isArray(
+                sourcePayload.records
+            ) ||
+            !sourcePayload.config ||
+            typeof sourcePayload.config !==
+                'object' ||
+            Array.isArray(
+                sourcePayload.config
+            )
+        ) {
+            throw new Error(
+                'WORKSPACE_PAYLOAD_INVALID'
+            );
+        }
+
+
+        /*
+         * Workspace LOAD 回傳
+         * 已登錄的附件 Metadata。
+         */
+        const files =
+            Array.isArray(
+                workspace.files
+            )
+                ? workspace.files
+                : [];
+
+
+        let cloudFileMap =
+            new Map();
+
+
+        /*
+         * 有附件才取得 Signed URL。
+         *
+         * 不把附件本體預先下載進記憶體。
+         */
+        if (
+            files.length >
+            0
+        ) {
+
+            setCloudWorkspaceStatus(
+                `正在準備 ${files.length} 個雲端附件...`,
+                'info'
+            );
+
+
+            cloudFileMap =
+                await loadCloudWorkspaceSignedFiles(
+                    workspaceId,
+                    files
+                );
+        }
+
+
+        /*
+         * cloud_file_id
+         * ↓
+         * Signed URL
+         *
+         * 證照附件 Signed URL
+         * 會放回原本的 file.url。
+         */
+        const hydratedPayload =
+            hydrateCertificateCloudPayload(
+                sourcePayload,
+                cloudFileMap
+            );
+
+
+        const config =
+            hydratedPayload.config ||
+            {};
+
+
+        /*
+         * =====================================================
+         * 1. 還原證照清單。
+         * =====================================================
+         */
+        records =
+            hydratedPayload.records;
+
+
+        await persistAllRecords(
+            records
+        );
+
+
+        /*
+         * =====================================================
+         * 2. 還原法規配置設定。
+         * =====================================================
+         */
+        if (
+            config.compliance_settings &&
+            typeof config.compliance_settings ===
+                'object' &&
+            !Array.isArray(
+                config.compliance_settings
+            )
+        ) {
+
+            applyComplianceSettings(
+                config.compliance_settings
+            );
+
+        } else {
+
+            applyComplianceSettings(
+                DEFAULT_COMPLIANCE_SETTINGS
+            );
+        }
+
+
+        await setConfig(
+            'compliance_settings',
+            complianceSettings
+        );
+
+
+        /*
+         * =====================================================
+         * 3. 還原法定人員設置基準依據附件。
+         * =====================================================
+         */
+        complianceBasisFiles =
+            Array.isArray(
+                config.compliance_basis_files
+            )
+                ? config.compliance_basis_files
+                : [];
+
+
+        await setConfig(
+            'compliance_basis_files',
+            complianceBasisFiles
+        );
+
+
+        /*
+         * =====================================================
+         * 4. 還原外訓預算資料。
+         * =====================================================
+         */
+        budgetRecords =
+            config.budget_records &&
+            typeof config.budget_records ===
+                'object' &&
+            !Array.isArray(
+                config.budget_records
+            )
+                ? config.budget_records
+                : {};
+
+
+        await setConfig(
+            'budget_records',
+            budgetRecords
+        );
+
+
+        /*
+         * =====================================================
+         * 5. 還原預算費用預設。
+         * =====================================================
+         */
+        budgetFeeDefaults =
+            config.budget_fee_defaults &&
+            typeof config.budget_fee_defaults ===
+                'object' &&
+            !Array.isArray(
+                config.budget_fee_defaults
+            )
+                ? config.budget_fee_defaults
+                : {};
+
+
+        await setConfig(
+            'budget_fee_defaults',
+            budgetFeeDefaults
+        );
+
+
+        /*
+         * =====================================================
+         * 6. 還原手動新增的預算人員。
+         * =====================================================
+         */
+        manualBudgetRows =
+            Array.isArray(
+                config.manual_budget_rows
+            )
+                ? config.manual_budget_rows
+                : [];
+
+
+        normalizeBudgetManualRows();
+
+
+        await setConfig(
+            'manual_budget_rows',
+            manualBudgetRows
+        );
+
+
+        /*
+         * Workspace 是正式工作資料，
+         * 不是 Viewer 預覽資料。
+         */
+        isPreviewDataMode =
+            false;
+
+
+        /*
+         * 記住目前 Workspace 身分與 Revision。
+         */
+        activeCloudWorkspaceId =
+            String(
+                workspace.id ||
+                workspaceId
+            );
+
+
+        activeCloudWorkspaceName =
+            String(
+                workspace.workspace_name ||
+                '雲端工作資料'
+            );
+
+
+        activeCloudWorkspaceRevision =
+            Number(
+                workspace.revision
+            ) || 1;
+
+
+        /*
+         * 更新 Workspace 名稱及 Revision 區塊。
+         */
+        updateActiveCloudWorkspaceUI();
+
+
+        /*
+         * 此 Workspace 已經是一份
+         * 正式存在的工作成果，
+         * 載入後不視為尚未儲存／尚未匯出。
+         */
+        clearWorkProtectionState();
+
+
+        /*
+         * =====================================================
+         * 與證照正式 JSON 載入流程一致，
+         * 全面重新整理畫面。
+         * =====================================================
+         */
+        updateItemFilter();
+
+        updateYearFilter();
+
+        updateBudgetFilters();
+
+        renderReport();
+
+        renderBudgetReport();
+
+        renderComplianceDashboard();
+
+        updateComplianceBasisButton();
+
+        updateUIForRole();
+
+        initIcons();
+
+
+        /*
+         * 資料已正式載入完成，
+         * 關閉 Cloud Center。
+         */
+        closeCloudPreviewModal();
+
+
+        showToast(
+            `已載入「${activeCloudWorkspaceName}」Revision ${activeCloudWorkspaceRevision}`
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            '載入 Cloud Workspace 失敗：',
+            error
+        );
+
+
+        const code =
+            String(
+                error?.message ||
+                ''
+            );
+
+
+        /*
+         * 使用者自行取消 Cloud Publisher 登入，
+         * 不顯示成系統故障。
+         */
+        if (
+            code ===
+            'CLOUD_LOGIN_CANCELLED'
+        ) {
+            return;
+        }
+
+
+        const messages = {
+
+            WORKSPACE_NOT_FOUND:
+                '找不到這份雲端工作資料。',
+
+            WORKSPACE_DISABLED:
+                '這份雲端工作資料目前已停用，無法載入。',
+
+            WORKSPACE_LOAD_FAILED:
+                '讀取雲端工作資料失敗。',
+
+            WORKSPACE_FILES_FAILED:
+                '讀取雲端附件清單失敗。',
+
+            WORKSPACE_SYSTEM_MISMATCH:
+                '此雲端工作資料不屬於目前證照管理系統。',
+
+            WORKSPACE_PAYLOAD_INVALID:
+                '雲端工作資料格式不完整或不是有效的證照系統資料。',
+
+            WORKSPACE_SIGNED_READ_FAILED:
+                '無法取得雲端附件讀取權限。',
+
+            WORKSPACE_SIGNED_READ_INVALID:
+                '雲端附件讀取資訊不完整。',
+
+            CLOUD_VIEW_ATTACHMENT_MISSING:
+                '雲端工作資料中的附件資訊不完整。'
+        };
+
+
+        setCloudWorkspaceStatus(
+            messages[code] ||
+            code ||
+            '載入雲端工作資料失敗。',
+            'error'
+        );
+    }
+}
+
+/*
+ * =========================================================
+ * 儲存目前已載入的 Cloud Workspace。
+ *
+ * 流程：
+ * 目前證照資料同步
+ * → 新附件上傳
+ * → 建立正式 Cloud Payload
+ * → Revision Save
+ * → 失敗時清理本次新增附件
+ * =========================================================
+ */
+async function saveCurrentCloudWorkspace() {
+
+    const role =
+        getCurrentRole();
+
+
+    /*
+     * 只有管理者與使用者
+     * 可以儲存 Workspace。
+     */
+    if (
+        role !== 'admin' &&
+        role !== 'editor'
+    ) {
+        showToast(
+            '目前權限無法儲存雲端工作資料。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    /*
+     * 必須已經有目前 Workspace，
+     * 而且 Revision 必須有效。
+     */
+    if (
+        !activeCloudWorkspaceId ||
+        activeCloudWorkspaceRevision < 1
+    ) {
+        setCloudWorkspaceStatus(
+            '目前尚未載入任何雲端工作資料。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    /*
+     * Viewer 預覽資料
+     * 永遠不能寫回正式 Workspace。
+     */
+    if (
+        isPreviewDataMode
+    ) {
+        setCloudWorkspaceStatus(
+            '預覽資料不能儲存至雲端工作資料。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    const button =
+        document.getElementById(
+            'cloud-workspace-save-btn'
+        );
+
+
+    /*
+     * 本次 Save 新登記的附件。
+     *
+     * Save 失敗或 Revision 衝突時，
+     * 用於 rollback-save-files。
+     */
+    const newlyRegisteredFiles =
+        [];
+
+
+    try {
+
+        /*
+         * 儲存期間鎖定按鈕。
+         */
+        if (button) {
+
+            button.disabled =
+                true;
+
+            button.classList.add(
+                'opacity-70',
+                'cursor-wait'
+            );
+
+            button.innerHTML = `
+                <span class="
+                    w-4 h-4
+                    rounded-full
+                    border-2
+                    border-white/40
+                    border-t-white
+                    animate-spin
+                "></span>
+
+                <span>
+                    正在儲存...
+                </span>
+            `;
+        }
+
+
+        /*
+         * =====================================================
+         * 第一步：
+         * 先同步證照系統目前畫面。
+         *
+         * 這會先 blur 目前欄位，
+         * 再同步 records / budget。
+         * =====================================================
+         */
+        await persistCurrentSystemData();
+
+
+        /*
+         * 建立目前正式 Certificate unified-data。
+         */
+        const localPayload =
+            buildCertificateExportData();
+
+
+        /*
+         * =====================================================
+         * 第二步：
+         * 找出這次新加入、仍是 DataURL 的附件。
+         *
+         * 已經有 cloud_file_id 的舊附件
+         * 不會再次上傳。
+         * =====================================================
+         */
+        const attachmentMap =
+            collectUniqueCertificateCloudAttachments(
+                localPayload
+            );
+
+
+        const uniqueAttachments =
+            Array.from(
+                attachmentMap.values()
+            );
+
+
+        const newCloudFileIdMap =
+            new Map();
+
+
+        /*
+         * 有新附件才進行 Private Storage 上傳。
+         */
+        if (
+            uniqueAttachments.length >
+            0
+        ) {
+
+            setCloudWorkspaceStatus(
+                `準備上傳 ${uniqueAttachments.length} 個新附件...`,
+                'info'
+            );
+
+
+            await uploadCloudWorkspaceSaveAttachmentsWithConcurrency(
+                activeCloudWorkspaceId,
+                uniqueAttachments,
+                newCloudFileIdMap,
+                newlyRegisteredFiles
+            );
+        }
+
+
+        /*
+         * =====================================================
+         * 第三步：
+         * 建立正式 Workspace Save Payload。
+         *
+         * 新附件：
+         * DataURL → 新 cloud_file_id
+         *
+         * 舊雲端附件：
+         * 保留原 cloud_file_id
+         *
+         * Signed URL：
+         * 不寫回正式 Payload。
+         * =====================================================
+         */
+        const cloudPayload =
+            buildCertificateWorkspaceSavePayload(
+                localPayload,
+                newCloudFileIdMap
+            );
+
+
+        setCloudWorkspaceStatus(
+            `正在儲存 Revision ${activeCloudWorkspaceRevision}...`,
+            'info'
+        );
+
+
+        /*
+         * =====================================================
+         * 第四步：
+         * 以目前 Revision 作為版本鎖。
+         *
+         * 若另一個使用者已經先更新，
+         * Backend 會回：
+         *
+         * WORKSPACE_REVISION_CONFLICT
+         * =====================================================
+         */
+        const result =
+            await cloudWorkspaceRequest({
+                action:
+                    'save',
+
+                system_type:
+                    OSH_CLOUD_SYSTEM_TYPE,
+
+                workspace_id:
+                    activeCloudWorkspaceId,
+
+                revision:
+                    activeCloudWorkspaceRevision,
+
+                payload:
+                    cloudPayload
+            });
+
+
+        const savedWorkspace =
+            result?.workspace;
+
+
+        if (
+            !savedWorkspace?.id
+        ) {
+            throw new Error(
+                'WORKSPACE_SAVE_INVALID'
+            );
+        }
+
+
+        /*
+         * =====================================================
+         * 第五步：
+         * Save 成功後更新目前 Revision。
+         * =====================================================
+         */
+        activeCloudWorkspaceRevision =
+            Number(
+                savedWorkspace.revision
+            ) ||
+            (
+                activeCloudWorkspaceRevision +
+                1
+            );
+
+
+        if (
+            savedWorkspace.workspace_name
+        ) {
+            activeCloudWorkspaceName =
+                savedWorkspace.workspace_name;
+        }
+
+
+        updateActiveCloudWorkspaceUI();
+
+
+        /*
+         * 雲端已完成本次正式儲存，
+         * 所以目前沒有尚未儲存修改。
+         */
+        certificateDirty =
+            false;
+
+
+        /*
+         * 但 Cloud Workspace
+         * 不等於本機 JSON 備份完成。
+         */
+        sessionNeedsExport =
+            true;
+
+
+        setCloudWorkspaceStatus(
+            `已儲存「${activeCloudWorkspaceName}」Revision ${activeCloudWorkspaceRevision}。`,
+            'success'
+        );
+
+
+        showToast(
+            `雲端工作資料已儲存為 Revision ${activeCloudWorkspaceRevision}`
+        );
+
+
+        /*
+         * 重新整理 Workspace 清單，
+         * 讓 Revision 立即更新。
+         */
+        await loadCloudWorkspaceList();
+
+
+    } catch (error) {
+
+        console.error(
+            'Cloud Workspace 儲存失敗：',
+            error
+        );
+
+
+        /*
+         * =====================================================
+         * Save 失敗：
+         *
+         * 清理「這一次 Save 新登記」
+         * 但尚未正式寫進 Payload 的附件。
+         *
+         * 後端 rollback-save-files
+         * 還會再次確認正式 Payload
+         * 是否已經引用這些 file_id，
+         * 避免誤刪其實已 Save 成功的附件。
+         * =====================================================
+         */
+        if (
+            activeCloudWorkspaceId &&
+            newlyRegisteredFiles.length >
+                0
+        ) {
+
+            try {
+
+                await runCloudWorkspaceWithRetry(
+                    () =>
+                        cloudWorkspaceRequest({
+                            action:
+                                'rollback-save-files',
+
+                            system_type:
+                                OSH_CLOUD_SYSTEM_TYPE,
+
+                            workspace_id:
+                                activeCloudWorkspaceId,
+
+                            file_ids:
+                                newlyRegisteredFiles
+                        }),
+                    {
+                        maxAttempts:
+                            3
+                    }
+                );
+
+
+            } catch (
+                rollbackError
+            ) {
+
+                /*
+                 * Rollback 本身失敗，
+                 * 不覆蓋原本真正 Save 錯誤。
+                 */
+                console.error(
+                    'Cloud Workspace Save 附件 rollback 未完成：',
+                    rollbackError
+                );
+            }
+        }
+
+
+        const code =
+            String(
+                error?.message ||
+                ''
+            );
+
+
+        /*
+         * 使用者自行取消 Cloud Publisher 驗證，
+         * 不顯示成資料損壞。
+         */
+        if (
+            code ===
+            'CLOUD_LOGIN_CANCELLED'
+        ) {
+            return;
+        }
+
+
+        const messages = {
+
+            WORKSPACE_NOT_FOUND:
+                '目前雲端工作資料已不存在。',
+
+            WORKSPACE_DISABLED:
+                '目前雲端工作資料已被停用，無法繼續儲存。',
+
+            WORKSPACE_SAVE_FAILED:
+                '雲端工作資料儲存失敗。',
+
+            WORKSPACE_SAVE_INVALID:
+                '雲端工作資料儲存結果不完整。',
+
+            WORKSPACE_REVISION_INVALID:
+                '雲端工作版本資訊無效。',
+
+            WORKSPACE_REVISION_CONFLICT:
+                '此雲端工作資料已被其他使用者更新，請重新載入最新版本後再繼續。',
+
+            WORKSPACE_FILE_TYPE_NOT_ALLOWED:
+                '新附件格式不支援。',
+
+            WORKSPACE_FILE_SIZE_INVALID:
+                '附件超過 10MB 上限。',
+
+            WORKSPACE_SIGNED_UPLOAD_FAILED:
+                '無法取得新附件上傳權限。',
+
+            WORKSPACE_SIGNED_UPLOAD_INVALID:
+                '新附件上傳資訊不完整。',
+
+            WORKSPACE_STORAGE_UPLOAD_FAILED:
+                '附件上傳失敗，請稍後重試。',
+
+            WORKSPACE_FILE_REGISTER_FAILED:
+                '附件上傳失敗，請稍後重試。'
+        };
+
+
+        setCloudWorkspaceStatus(
+            messages[code] ||
+            code ||
+            '雲端工作資料儲存失敗。',
+            'error'
+        );
+
+
+        /*
+         * Workspace 若已被其他裝置：
+         *
+         * 停用
+         * 或
+         * 永久刪除
+         *
+         * 本機就不再保留 active Workspace 關聯。
+         *
+         * 注意：
+         * 只解除雲端關聯，
+         * 不清除目前證照畫面的資料。
+         */
+        if (
+            code ===
+                'WORKSPACE_DISABLED' ||
+            code ===
+                'WORKSPACE_NOT_FOUND'
+        ) {
+
+            clearActiveCloudWorkspace();
+
+
+            /*
+             * 重新整理清單，
+             * 立即反映停用／刪除狀態。
+             */
+            try {
+
+                await loadCloudWorkspaceList();
+
+            } catch (_) {}
+
+
+            if (
+                code ===
+                'WORKSPACE_DISABLED'
+            ) {
+
+                showToast(
+                    '目前雲端工作資料已被停用'
+                );
+
+            } else {
+
+                showToast(
+                    '目前雲端工作資料已不存在'
+                );
+            }
+        }
+
+
+        /*
+         * Revision 衝突時，
+         * 絕對不覆蓋別人的新版。
+         *
+         * 本機目前修改仍保留，
+         * 使用者必須重新載入最新版後再處理。
+         */
+        if (
+            code ===
+            'WORKSPACE_REVISION_CONFLICT'
+        ) {
+
+            alert(
+                '雲端資料已有較新的版本。\n\n' +
+                '目前這份舊版本不會覆蓋其他人的修改。\n' +
+                '請重新載入最新雲端工作資料後，再進行編輯。'
+            );
+        }
+
+
+    } finally {
+
+        /*
+         * 無論成功或失敗，
+         * 都恢復「儲存至雲端」按鈕。
+         */
+        if (button) {
+
+            button.disabled =
+                false;
+
+            button.classList.remove(
+                'opacity-70',
+                'cursor-wait'
+            );
+
+            button.innerHTML = `
+                <i data-lucide="cloud-upload"
+                   class="w-4 h-4"></i>
+
+                <span>
+                    儲存至雲端
+                </span>
+            `;
+
+
+            lucide.createIcons();
+        }
+    }
+}
+
+async function openCloudWorkspaceView() {
+
+    const role =
+        getCurrentRole();
+
+
+    /*
+     * Viewer 不可使用 Workspace。
+     */
+    if (
+        role !== 'admin' &&
+        role !== 'editor'
+    ) {
+
+        showToast(
+            '雲端工作資料僅供管理者與使用者使用。',
+            'error'
+        );
+
+        return;
+    }
+
+
+    showCloudWorkspaceView();
+
+
+    await loadCloudWorkspaceList();
+}
+
+function backToCloudPreviewHome() {
+
+setCloudCenterHeader(
+    'home'
+);
+
+    document
+        .getElementById(
+            'cloud-preview-manage-view'
+        )
+        ?.classList
+        .add('hidden');        
+
+    document
+        .getElementById(
+            'cloud-preview-publish-view'
+        )
+        ?.classList
+        .add('hidden');
+
+    document
+        .getElementById(
+            'cloud-publisher-accounts-view'
+        )
+        ?.classList
+        .add('hidden');
+
+    document
+    .getElementById(
+        'cloud-workspace-view'
+    )
+    ?.classList
+    .add('hidden');    
+
+    updateCloudPreviewModalHome();
+
+    lucide.createIcons();
+}
 
 /* =========================================================
    工作階段防呆狀態
@@ -10165,8 +18936,33 @@ async function openPdfPreview(file) {
         const pdfjsLib = await ensurePdfJsLoaded();
         if (previewSerial !== filePreviewPdfRenderSerial || filePreviewMode !== 'pdf') return;
 
-        const pdfBytes = dataUrlToUint8Array(file.data);
-        const pdf = await pdfjsLib.getDocument({ data: pdfBytes }).promise;
+const pdfSource =
+    String(
+        file?.data || ''
+    ).trim();
+
+
+if (!pdfSource) {
+    throw new Error(
+        'PDF_SOURCE_MISSING'
+    );
+}
+
+
+const pdf =
+    pdfSource.startsWith(
+        'data:'
+    )
+        ? await pdfjsLib.getDocument({
+            data:
+                dataUrlToUint8Array(
+                    pdfSource
+                )
+        }).promise
+        : await pdfjsLib.getDocument({
+            url:
+                pdfSource
+        }).promise;
         if (previewSerial !== filePreviewPdfRenderSerial || filePreviewMode !== 'pdf') {
             if (pdf && typeof pdf.destroy === 'function') pdf.destroy();
             return;
@@ -10203,9 +18999,30 @@ await renderPdfPreviewPages();
 function openPdfPreviewFallback(file) {
     const { frame, image, pdfPages, toolbar } = getFilePreviewElements();
 
-    filePreviewMode = 'pdf-frame';
-    revokeCurrentPreviewObjectUrl();
-    filePreviewObjectUrl = dataUrlToBlobUrl(file.data);
+filePreviewMode = 'pdf-frame';
+
+const pdfSource =
+    String(
+        file?.data || ''
+    ).trim();
+
+
+revokeCurrentPreviewObjectUrl();
+
+
+if (
+    pdfSource.startsWith(
+        'data:'
+    )
+) {
+    filePreviewObjectUrl =
+        dataUrlToBlobUrl(
+            pdfSource
+        );
+} else {
+    filePreviewObjectUrl =
+        '';
+}
 
     if (pdfPages) {
         pdfPages.innerHTML = '';
@@ -10214,10 +19031,18 @@ function openPdfPreviewFallback(file) {
 
     if (image) image.classList.add('hidden');
 
-    if (frame) {
-        frame.src = filePreviewObjectUrl;
-        frame.classList.remove('hidden');
-    }
+if (frame) {
+    frame.src =
+        pdfSource.startsWith(
+            'data:'
+        )
+            ? filePreviewObjectUrl
+            : pdfSource;
+
+    frame.classList.remove(
+        'hidden'
+    );
+}
 
     filePreviewDefaultScale = 1;
     filePreviewScale = 1;
