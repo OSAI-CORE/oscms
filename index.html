@@ -18860,12 +18860,12 @@ async function uploadCloudPreviewAttachment(
         );
 
     /*
-     * 本證照系統仍維持原本單檔 10MB 限制。
+     * 本證照系統統一採用單檔 5MB 限制。
      */
     if (
         blob.size < 1 ||
         blob.size >
-            10 * 1024 * 1024
+            5 * 1024 * 1024
     ) {
         throw new Error(
             'CLOUD_FILE_SIZE_INVALID'
@@ -19421,7 +19421,7 @@ function getCloudPreviewPublishErrorMessage(
             '附件格式不支援。',
 
         CLOUD_FILE_SIZE_INVALID:
-            '附件超過 10MB 上限。',
+            '附件超過 5MB 上限。',
 
         CLOUD_FILE_ID_MISSING:
             '附件雲端資料建立失敗。',
@@ -20154,7 +20154,7 @@ async function uploadCloudWorkspaceAttachment(
     if (
         blob.size < 1 ||
         blob.size >
-            10 * 1024 * 1024
+            5 * 1024 * 1024
     ) {
         throw new Error(
             'WORKSPACE_FILE_SIZE_INVALID'
@@ -21270,7 +21270,7 @@ async function createCloudWorkspaceFromCurrentData() {
                 '附件格式不支援。',
 
             WORKSPACE_FILE_SIZE_INVALID:
-                '附件超過 10MB 上限。',
+                '附件超過 5MB 上限。',
 
             WORKSPACE_SIGNED_UPLOAD_FAILED:
                 '無法取得附件上傳權限。',
@@ -22515,7 +22515,7 @@ async function saveCurrentCloudWorkspace() {
                 '新附件格式不支援。',
 
             WORKSPACE_FILE_SIZE_INVALID:
-                '附件超過 10MB 上限。',
+                '附件超過 5MB 上限。',
 
             WORKSPACE_SIGNED_UPLOAD_FAILED:
                 '無法取得新附件上傳權限。',
@@ -23742,8 +23742,8 @@ files.forEach((file, index) => {
             alert('僅支援 PDF、PNG、JPG 檔案作為法定人員設置基準依據。');
             return false;
         }
-        if (file.size && file.size > 10 * 1024 * 1024) {
-            alert('單一依據檔案不可超過 10MB。');
+        if (file.size && file.size > 5 * 1024 * 1024) {
+            alert('單一依據檔案不可超過 5MB。');
             return false;
         }
         return true;
