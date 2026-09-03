@@ -1800,20 +1800,16 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
 }
 
 /*
- * 第二排：
- * 預覽者：權限登入
- * 使用者：儲存並登出
- * 管理者：儲存並登出
+ * 管理者模式第二排左側：權限設定。
  */
-.hero-section #login-toggle-btn {
+.hero-section #permission-settings-btn {
     order: 3;
 }
 
 /*
- * 管理者才顯示。
- * 管理者模式下排在「儲存並登出」右邊。
+ * 權限登入／登出固定放在第二排右側。
  */
-.hero-section #permission-settings-btn {
+.hero-section #login-toggle-btn {
     order: 4;
 }
 
@@ -3291,32 +3287,179 @@ body.print-certificate-report .text-slate-600 {
     }
 }
 
-/* 表頭登出按鈕：固定背景色，避免角色切換時 hover / focus 顏色閃動 */
-.header-logout-btn {
-    background: #64748b !important;
+/* =========================================================
+   表頭主要功能按鈕
+   初始顏色統一，互動時依功能顯示語意色
+========================================================= */
+
+.hero-section #export-btn,
+.hero-section #print-btn,
+.hero-section #permission-settings-btn,
+.hero-section #login-toggle-btn {
+    background: #475569 !important;
     color: #ffffff !important;
-    border: 1px solid #94a3b8 !important;
-    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
+    border: 1px solid #64748b !important;
+
+    box-shadow:
+        0 7px 16px
+        rgba(15, 23, 42, 0.18);
+
+    transform:
+        translateY(0);
+
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease !important;
 }
+
 
 /*
- * 滑入時維持相同背景色，
- * 僅稍微加深陰影，不再突然變成深灰色。
+ * 桌機／具有滑鼠的裝置才套用 Hover。
+ * 避免手機點擊後殘留 Hover 顏色。
  */
-.header-logout-btn:hover,
-.header-logout-btn:focus-visible {
-    background: #64748b !important;
-    color: #ffffff !important;
-    border-color: #cbd5e1 !important;
-    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.24);
-    transform: translateY(-1px);
+@media (hover: hover) and (pointer: fine) {
+
+    /*
+     * 匯出、列印：
+     * 維持中性專業灰藍，滑入時明顯加深。
+     */
+    .hero-section #export-btn:hover,
+    .hero-section #print-btn:hover {
+        background: #334155 !important;
+        border-color: #94a3b8 !important;
+
+        box-shadow:
+            0 10px 22px
+            rgba(15, 23, 42, 0.28);
+
+        transform:
+            translateY(-2px);
+    }
+
+
+    /*
+     * 權限設定：
+     * 滑入時使用證照系統的靛藍主色。
+     */
+    .hero-section #permission-settings-btn:hover {
+        background: #4338ca !important;
+        border-color: #818cf8 !important;
+
+        box-shadow:
+            0 10px 22px
+            rgba(67, 56, 202, 0.30);
+
+        transform:
+            translateY(-2px);
+    }
+
+
+    /*
+     * 尚未登入時的「權限登入」：
+     * 同樣使用靛藍色，表示權限相關功能。
+     */
+    body.role-viewer
+    .hero-section
+    #login-toggle-btn:not(.header-logout-btn):hover {
+        background: #4338ca !important;
+        border-color: #818cf8 !important;
+
+        box-shadow:
+            0 10px 22px
+            rgba(67, 56, 202, 0.30);
+
+        transform:
+            translateY(-2px);
+    }
+
+
+    /*
+     * 管理者／使用者登入後的「登出」：
+     * 滑入時改為低飽和酒紅色。
+     */
+    .hero-section
+    #login-toggle-btn.header-logout-btn:hover {
+        background: #9f1239 !important;
+        border-color: #fb7185 !important;
+
+        box-shadow:
+            0 10px 22px
+            rgba(159, 18, 57, 0.30);
+
+        transform:
+            translateY(-2px);
+    }
 }
 
-/* 只有實際按下時才稍微加深 */
-.header-logout-btn:active {
-    background: #475569 !important;
-    border-color: #94a3b8 !important;
-    transform: translateY(0);
+
+/*
+ * 鍵盤操作的焦點提示。
+ */
+.hero-section #export-btn:focus-visible,
+.hero-section #print-btn:focus-visible,
+.hero-section #permission-settings-btn:focus-visible,
+.hero-section #login-toggle-btn:focus-visible {
+    outline:
+        3px solid
+        rgba(129, 140, 248, 0.42);
+
+    outline-offset:
+        2px;
+}
+
+
+/*
+ * 桌機滑鼠點擊及手機觸控時，
+ * 以輕微縮小提供明確按壓回饋。
+ */
+.hero-section #export-btn:active,
+.hero-section #print-btn:active,
+.hero-section #permission-settings-btn:active,
+.hero-section #login-toggle-btn:active {
+    transform:
+        scale(0.97);
+
+    box-shadow:
+        0 4px 10px
+        rgba(15, 23, 42, 0.20);
+}
+
+
+/* 匯出／列印按下 */
+.hero-section #export-btn:active,
+.hero-section #print-btn:active {
+    background: #1e293b !important;
+}
+
+
+/* 權限設定／權限登入按下 */
+.hero-section #permission-settings-btn:active,
+body.role-viewer
+.hero-section
+#login-toggle-btn:not(.header-logout-btn):active {
+    background: #3730a3 !important;
+}
+
+
+/* 登出按下 */
+.hero-section
+#login-toggle-btn.header-logout-btn:active {
+    background: #881337 !important;
+}
+
+
+/*
+ * 登入後 JavaScript 會重新指定登出按鈕 class。
+ * 桌機版在此補回與其他按鈕相同的最小寬度。
+ */
+@media screen and (min-width: 951px) {
+    .hero-section
+    #login-toggle-btn.header-logout-btn {
+        min-width:
+            120px;
+    }
 }
 
 /* =========================================================
@@ -5679,18 +5822,18 @@ p[id^="budget-summary-"] {
     <span>列印報告</span>
 </button>
 
-<button id="login-toggle-btn"
-        onclick="openLoginModal()"
-        class="bg-slate-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-700 transition inline-flex items-center gap-2 min-w-[120px] justify-center shadow-lg">
-    <i data-lucide="lock-keyhole" class="w-4 h-4"></i>
-    <span>權限登入</span>
-</button>
-
 <button id="permission-settings-btn"
         onclick="openChangePasswordModal()"
         class="hidden bg-slate-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-700 transition inline-flex items-center gap-2 min-w-[120px] justify-center shadow-lg">
     <i data-lucide="settings" class="w-4 h-4"></i>
     <span>權限設定</span>
+</button>
+
+<button id="login-toggle-btn"
+        onclick="openLoginModal()"
+        class="bg-slate-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-700 transition inline-flex items-center gap-2 min-w-[120px] justify-center shadow-lg">
+    <i data-lucide="lock-keyhole" class="w-4 h-4"></i>
+    <span>權限登入</span>
 </button>
                     </div>
                     
