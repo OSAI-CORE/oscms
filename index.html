@@ -650,6 +650,70 @@ html.fa-icons-ready
 }
 
 /* =========================================================
+   OSAI 管理平台入口
+   尺寸沿用資料操作按鈕，顏色比照績效管理系統
+========================================================= */
+
+#osai-platform-btn {
+    background: #4f46e5;
+    color: #ffffff;
+
+    border: 0;
+
+    box-shadow:
+        0 4px 6px -1px
+        rgba(79, 70, 229, 0.30);
+}
+
+/* =========================================================
+   桌機版：資料操作列排序
+
+   預覽者：
+   載入預覽 → OSAI 平台
+
+   使用者：
+   匯出資料 → 載入資料 → OSAI 平台
+
+   管理者：
+   匯出資料 → 匯入資料 → OSAI 平台
+========================================================= */
+
+@media screen and (min-width: 951px) {
+
+    .hero-section #export-json-btn {
+        order: 1;
+    }
+
+    .hero-section #import-json-btn {
+        order: 2;
+    }
+
+    .hero-section #osai-platform-btn {
+        order: 3;
+    }
+
+}
+
+@media (hover: hover) and (pointer: fine) {
+
+    #osai-platform-btn:hover {
+        background: #4338ca;
+        color: #ffffff;
+
+        box-shadow:
+            0 7px 14px -3px
+            rgba(79, 70, 229, 0.38);
+
+        transform: translateY(-1px);
+    }
+}
+
+#osai-platform-btn:active {
+    background: #3730a3;
+    transform: scale(0.97);
+}
+
+/* =========================================================
    雲端中心固定框架與清單捲動機制
 
    表頭、目前權限與下方關閉按鈕固定；
@@ -2348,6 +2412,7 @@ button {
  * 仍保留各自原本的配色。
  */
 .hero-section #cloud-preview-entry-btn,
+.hero-section #osai-platform-btn,
 .hero-section #export-btn,
 .hero-section #print-btn,
 .hero-section #login-toggle-btn,
@@ -2507,10 +2572,121 @@ body.role-editor
 }
 
 /* =========================================================
+   預覽者模式
+
+   第一排：匯出總表／列印報告
+   第二排：權限登入／載入預覽
+   第三排：雲端中心／OSAI 平台
+========================================================= */
+
+body.role-viewer
+.hero-section
+#export-btn {
+    order: 1;
+    grid-column: auto;
+}
+
+body.role-viewer
+.hero-section
+#print-btn {
+    order: 2;
+    grid-column: auto;
+}
+
+body.role-viewer
+.hero-section
+#login-toggle-btn {
+    order: 3;
+    grid-column: auto;
+}
+
+body.role-viewer
+.hero-section
+#import-json-btn {
+    order: 4;
+    grid-column: auto;
+}
+
+body.role-viewer
+.hero-section
+#cloud-preview-entry-btn {
+    order: 5;
+    grid-column: auto;
+}
+
+body.role-viewer
+.hero-section
+#osai-platform-btn {
+    order: 6;
+    grid-column: auto;
+}
+
+
+/* =========================================================
+   使用者模式
+
+   第一排：匯出總表／列印報告
+   第二排：登出系統／OSAI 平台
+   第三排：雲端中心
+   第四排：匯出資料／載入資料
+========================================================= */
+
+body.role-editor
+.hero-section
+#export-btn {
+    order: 1;
+    grid-column: auto;
+}
+
+body.role-editor
+.hero-section
+#print-btn {
+    order: 2;
+    grid-column: auto;
+}
+
+body.role-editor
+.hero-section
+#login-toggle-btn {
+    order: 3;
+    grid-column: auto;
+}
+
+body.role-editor
+.hero-section
+#osai-platform-btn {
+    order: 4;
+    grid-column: auto;
+}
+
+body.role-editor
+.hero-section
+#cloud-preview-entry-btn {
+    order: 5;
+    grid-column: 1 / -1;
+}
+
+body.role-editor
+.hero-section
+#export-json-btn {
+    order: 6;
+    grid-column: auto;
+}
+
+body.role-editor
+.hero-section
+#import-json-btn {
+    order: 7;
+    grid-column: auto;
+}
+
+
+/* =========================================================
    管理者模式
+
    第一排：匯出總表／列印報告
    第二排：登出系統／權限設定
-   第三排：雲端中心
+   第三排：雲端中心／OSAI 平台
    第四排：匯出資料／匯入資料
 ========================================================= */
 
@@ -2530,14 +2706,14 @@ body.role-admin
 
 body.role-admin
 .hero-section
-#login-toggle-btn {
+#permission-settings-btn {
     order: 3;
     grid-column: auto;
 }
 
 body.role-admin
 .hero-section
-#permission-settings-btn {
+#login-toggle-btn {
     order: 4;
     grid-column: auto;
 }
@@ -2546,20 +2722,27 @@ body.role-admin
 .hero-section
 #cloud-preview-entry-btn {
     order: 5;
-    grid-column: 1 / -1;
+    grid-column: auto;
 }
 
 body.role-admin
 .hero-section
-#export-json-btn {
+#osai-platform-btn {
     order: 6;
     grid-column: auto;
 }
 
 body.role-admin
 .hero-section
-#import-json-btn {
+#export-json-btn {
     order: 7;
+    grid-column: auto;
+}
+
+body.role-admin
+.hero-section
+#import-json-btn {
+    order: 8;
     grid-column: auto;
 }
 
@@ -2567,6 +2750,7 @@ body.role-admin
  * Font Awesome 主功能圖示。
  */
 .hero-section #cloud-preview-entry-btn i,
+.hero-section #osai-platform-btn i,
 .hero-section #export-btn i,
 .hero-section #print-btn i,
 .hero-section #login-toggle-btn i,
@@ -6235,6 +6419,33 @@ p[id^="budget-summary-"] {
         inset;
 }
 
+/* =========================================================
+   桌機版 Header 主功能按鈕高度
+   統一比照 OSAI 平台按鈕
+
+   僅調整高度，不修改：
+   寬度 / 顏色 / 位置 / 字體 / 角色排列
+========================================================= */
+
+@media screen and (min-width: 951px) {
+
+    .hero-section #cloud-preview-entry-btn,
+    .hero-section #export-btn,
+    .hero-section #print-btn,
+    .hero-section #permission-settings-btn,
+    .hero-section #login-toggle-btn {
+        height: 32px !important;
+        min-height: 32px !important;
+        max-height: 32px !important;
+
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+
+        box-sizing: border-box;
+    }
+
+}
+
     </style>
 </head>
 <body>
@@ -6338,32 +6549,7 @@ p[id^="budget-summary-"] {
     <span>列印報告</span>
 </button>
 
-        <!-- 初始狀態：權限登入 -->
-<button id="login-toggle-btn"
-        type="button"
-        onclick="openLoginModal()"
-        class="
-            header-auth-btn
-            inline-flex items-center justify-center
-            w-full sm:w-40
-            gap-2 sm:gap-3
-            py-2 sm:py-2.5
-            bg-slate-600
-            hover:bg-slate-700
-            text-white
-            rounded-xl
-            text-xs sm:text-sm
-            font-bold
-            transition-colors
-        ">
-
-    <i class="fas fa-lock"
-       aria-hidden="true"></i>
-
-    <span>權限登入</span>
-</button>
-
-        <!-- 權限設定：僅管理者顯示 -->
+<!-- 權限設定：僅管理者顯示 -->
 <button id="permission-settings-btn"
         type="button"
         onclick="openChangePasswordModal()"
@@ -6392,6 +6578,31 @@ p[id^="budget-summary-"] {
     </span>
 </button>
 
+<!-- 初始狀態：權限登入／登入後切換為登出系統 -->
+<button id="login-toggle-btn"
+        type="button"
+        onclick="openLoginModal()"
+        class="
+            header-auth-btn
+            inline-flex items-center justify-center
+            w-full sm:w-40
+            gap-2 sm:gap-3
+            py-2 sm:py-2.5
+            bg-slate-600
+            hover:bg-slate-700
+            text-white
+            rounded-xl
+            text-xs sm:text-sm
+            font-bold
+            transition-colors
+        ">
+
+    <i class="fas fa-lock"
+       aria-hidden="true"></i>
+
+    <span>權限登入</span>
+</button>
+
     </div>
 
 <!-- 資料操作列 -->
@@ -6402,11 +6613,23 @@ p[id^="budget-summary-"] {
         onclick="openDataExportModal()"
         class="db-action-btn hidden">
 
-        <i class="fas fa-share-nodes"
-           aria-hidden="true"></i>
+    <i class="fas fa-share-nodes"
+       aria-hidden="true"></i>
 
-        <span>匯出資料</span>
-    </button>
+    <span>匯出資料</span>
+</button>
+
+<button id="osai-platform-btn"
+        type="button"
+        onclick="openOsaiPlatform()"
+        class="db-action-btn"
+        aria-label="切換至 OSAI 管理平台">
+
+    <i class="fas fa-layer-group"
+       aria-hidden="true"></i>
+
+    <span>OSAI 平台</span>
+</button>
 
 <button id="import-json-btn"
         type="button"
@@ -6913,13 +7136,29 @@ class="budget-save-btn system-tooltip-btn bg-emerald-600 text-white border borde
     <div onclick="event.stopPropagation()"
          class="bg-white w-full max-w-sm rounded-2xl shadow-2xl scale-in-center">
         <div class="p-5">
-            <div class="flex flex-col items-center text-center mb-3">
-                <div class="bg-yellow-50 p-2 rounded-full mb-2">
-                    <i data-lucide="key-round" class="w-6 h-6 text-yellow-600"></i>
-                </div>
-                <h2 class="text-lg font-black text-slate-800">權限與密碼設定</h2>
-                <p class="text-xs text-slate-500 mt-1">僅管理者可修改密碼與使用者權限</p>
-            </div>
+<div class="flex flex-col items-center text-center mb-3">
+
+    <div class="bg-yellow-50 p-2 rounded-full mb-1.5">
+        <i data-lucide="key-round"
+           class="w-6 h-6 text-yellow-600"></i>
+    </div>
+
+    <p class="
+        text-[11px]
+        text-slate-500
+        tracking-[0.14em]
+        font-semibold
+        leading-none
+        mb-1.5
+    ">
+        ACCESS SETTINGS
+    </p>
+
+    <h2 class="text-lg font-black text-slate-800">
+        權限與密碼設定
+    </h2>
+
+</div>
 
             <div class="space-y-2">
                 <div>
@@ -9669,6 +9908,21 @@ const STORE_CONFIG = 'config';
 const DEFAULT_ADMIN_PASSWORD = "admincore1098";
 const DEFAULT_EDITOR_PASSWORD = "teamuser001";
 const DEFAULT_EDITOR_ENABLED = true;
+
+const OSAI_PLATFORM_URL =
+    'https://osai-core.vercel.app/';
+
+const OSAI_PLATFORM_WINDOW_NAME =
+    'OSAI_PLATFORM';
+
+function openOsaiPlatform() {
+
+    window.open(
+        OSAI_PLATFORM_URL,
+        OSAI_PLATFORM_WINDOW_NAME,
+        'noopener,noreferrer'
+    );
+}
 
 const MASTER_RECOVERY_CODE = "SAM-SUN-CORE-RECOVERY";
 
