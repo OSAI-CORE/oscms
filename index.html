@@ -2107,23 +2107,30 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
     }
 
 /* =========================================================
-   手機橫式：預覽者資料操作順序
-   與桌機版一致
+   手機橫式：資料操作列固定順序
+   與桌機版完全一致
 
+   預覽者：
    載入預覽 → OSAI 平台
+
+   使用者：
+   匯出資料 → 載入資料 → OSAI 平台
+
+   管理者：
+   匯出資料 → 匯入資料 → OSAI 平台
 ========================================================= */
 
-body.role-viewer
-.hero-section
-#import-json-btn {
-    order: 1;
+.hero-section #export-json-btn {
+    order: 1 !important;
 }
 
-body.role-viewer
-.hero-section
-#osai-platform-btn {
-    order: 2;
-}    
+.hero-section #import-json-btn {
+    order: 2 !important;
+}
+
+.hero-section #osai-platform-btn {
+    order: 3 !important;
+}   
 
     .hero-section #cloud-preview-entry-btn i,
     .hero-section #export-btn i,
