@@ -2106,6 +2106,25 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
         white-space: nowrap;
     }
 
+/* =========================================================
+   手機橫式：預覽者資料操作順序
+   與桌機版一致
+
+   載入預覽 → OSAI 平台
+========================================================= */
+
+body.role-viewer
+.hero-section
+#import-json-btn {
+    order: 1;
+}
+
+body.role-viewer
+.hero-section
+#osai-platform-btn {
+    order: 2;
+}    
+
     .hero-section #cloud-preview-entry-btn i,
     .hero-section #export-btn i,
     .hero-section #print-btn i,
@@ -7206,7 +7225,13 @@ class="budget-save-btn system-tooltip-btn bg-emerald-600 text-white border borde
 
 <div class="flex gap-2 pt-1">
     <button onclick="closeChangePasswordModal()" class="flex-1 bg-slate-100 text-slate-600 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition text-xs">取消</button>
-    <button onclick="savePasswordSettings()" class="flex-1 bg-indigo-600 text-white py-1.5 rounded-lg font-bold hover:bg-indigo-700 transition text-xs">儲存設定</button>
+    <button onclick="savePasswordSettings()"
+        class="flex-1 bg-indigo-600 text-white py-1.5 rounded-lg font-bold hover:bg-indigo-700 transition text-xs flex items-center justify-center gap-1.5">
+
+    <i class="fa-solid fa-floppy-disk"></i>
+
+    <span>儲存設定</span>
+</button>
 </div>
             </div>
         </div>
