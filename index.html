@@ -97,18 +97,23 @@
 /* =========================================================
    Header 功能按鈕首次顯示最佳化
 
-   Font Awesome Solid 圖示尚未完成載入前，
-   保留 Header 功能區版面但暫不顯示，
-   避免按鈕文字先出現、圖示稍後補上的視覺斷層。
+   必須同時完成：
+   1. Font Awesome 圖示字型
+   2. 系統角色初始化
+   3. 網頁文字字型載入
+
+   才一次顯示 Header 功能區，
+   避免首次載入時產生字體、尺寸與配色跳動。
 ========================================================= */
+
 .hero-section .header-action-zone {
     visibility: hidden;
 }
 
-html.fa-icons-ready
+html.fa-icons-ready.header-ui-ready
 .hero-section .header-action-zone {
     visibility: visible;
-}        
+}       
 
 .hero-section {
     background-color: #333a45;
@@ -638,9 +643,6 @@ html.fa-icons-ready
         box-shadow:
             0 7px 14px -3px
             rgba(15, 23, 42, 0.38);
-
-        transform:
-            translateY(-1px);
     }
 }
 
@@ -703,8 +705,6 @@ html.fa-icons-ready
         box-shadow:
             0 7px 14px -3px
             rgba(79, 70, 229, 0.38);
-
-        transform: translateY(-1px);
     }
 }
 
@@ -2106,6 +2106,18 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
         white-space: nowrap;
     }
 
+/*
+ * 手機橫式：
+ * OSAI 平台字體比照第一排主功能按鈕，
+ * 並維持單排。
+ */
+.hero-section #osai-platform-btn,
+.hero-section #osai-platform-btn span {
+    font-size: 11px !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+}    
+
 /* =========================================================
    手機橫式：資料操作列固定順序
    與桌機版完全一致
@@ -3481,34 +3493,47 @@ body.role-admin
     transition: all 0.18s ease;
 }
 
-/* 管理者模式：沉穩琥珀金 */
+/* =========================================================
+   右下角登出系統角色配色
+
+   管理者：沉穩酒紅
+   使用者：沉穩古銅金
+========================================================= */
+
+
+/* 管理者模式：沉穩酒紅 */
 body.role-admin .admin-floating-logout-btn {
-    background: #b45309;
+    background: #9f1239;
     color: #ffffff;
-    border: 1px solid #d97706;
-    box-shadow: 0 8px 20px rgba(180, 83, 9, 0.26);
+    border: 1px solid #be123c;
+
+    box-shadow:
+        0 8px 20px
+        rgba(159, 18, 57, 0.26);
 }
 
 body.role-admin .admin-floating-logout-btn:hover {
-    background: #92400e;
+    background: #881337;
     color: #ffffff;
-    border-color: #b45309;
-    transform: translateY(-1px);
+    border-color: #9f1239;
 }
 
-/* 使用者模式：沉穩深青綠 */
+
+/* 使用者模式：沉穩古銅金 */
 body.role-editor .admin-floating-logout-btn {
-    background: #0f766e;
+    background: #a16207;
     color: #ffffff;
-    border: 1px solid #0d9488;
-    box-shadow: 0 8px 20px rgba(15, 118, 110, 0.24);
+    border: 1px solid #ca8a04;
+
+    box-shadow:
+        0 8px 20px
+        rgba(161, 98, 7, 0.24);
 }
 
 body.role-editor .admin-floating-logout-btn:hover {
-    background: #115e59;
+    background: #854d0e;
     color: #ffffff;
-    border-color: #0f766e;
-    transform: translateY(-1px);
+    border-color: #a16207;
 }
 
 @media screen and (max-width: 767px) {
@@ -6446,33 +6471,791 @@ p[id^="budget-summary-"] {
 }
 
 /* =========================================================
-   桌機版 Header 主功能按鈕高度
-   統一比照 OSAI 平台按鈕
-
-   僅調整高度，不修改：
-   寬度 / 顏色 / 位置 / 字體 / 角色排列
+   Header 最終按鈕配置
+   1. 桌機：比照手機橫式，文字型按鈕統一尺寸
+   2. OSAI 平台文字維持單排
+   3. 手機直式：所有功能改為純圖示單排
 ========================================================= */
 
+
+/* =========================================================
+   一、桌機版
+========================================================= */
 @media screen and (min-width: 951px) {
 
+    /*
+     * 整個右側功能區比照手機橫式：
+     * 上下兩排靠右、間距一致。
+     */
+    .hero-section .header-action-zone {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-end !important;
+
+        width: auto !important;
+        gap: 7px !important;
+    }
+
+    /*
+     * 第一排主功能
+     * 第二排資料功能
+     * 都維持單排。
+     */
+    .hero-section .header-action-buttons,
+    .hero-section
+    .header-action-zone
+    > .flex.justify-end.gap-2 {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+
+        align-items: center !important;
+        justify-content: flex-end !important;
+
+        width: auto !important;
+
+        gap: 7px !important;
+        margin: 0 !important;
+    }
+
+
+    /*
+     * 所有「文字型」Header 按鈕統一為 116 × 32。
+     *
+     * 包含：
+     * 雲端中心
+     * 匯出總表
+     * 列印報告
+     * 登入／登出
+     * OSAI 平台
+     * 匯出資料
+     * 載入預覽／退出預覽
+     * 載入資料／匯入資料
+     */
     .hero-section #cloud-preview-entry-btn,
     .hero-section #export-btn,
     .hero-section #print-btn,
-    .hero-section #permission-settings-btn,
-    .hero-section #login-toggle-btn {
+    .hero-section #login-toggle-btn,
+    .hero-section #osai-platform-btn,
+    .hero-section #export-json-btn,
+    .hero-section #import-json-btn {
+        width: 116px !important;
+        min-width: 116px !important;
+        max-width: 116px !important;
+
         height: 32px !important;
         min-height: 32px !important;
         max-height: 32px !important;
 
+        box-sizing: border-box !important;
+
+        justify-content: center !important;
+
+        white-space: nowrap !important;
+    }
+
+
+    /*
+     * 主功能按鈕：
+     * 維持原本視覺，只統一上下高度。
+     */
+    .hero-section #cloud-preview-entry-btn,
+    .hero-section #export-btn,
+    .hero-section #print-btn,
+    .hero-section #login-toggle-btn {
         padding-top: 0 !important;
         padding-bottom: 0 !important;
+    }
 
-        box-sizing: border-box;
+
+    /*
+     * 資料操作列：
+     * 原本 .db-action-btn 左右 padding 較大，
+     * 改小後才能與主功能按鈕同尺寸，
+     * 又不造成文字換行。
+     */
+    .hero-section #osai-platform-btn,
+    .hero-section #export-json-btn,
+    .hero-section #import-json-btn {
+        padding:
+            0
+            12px !important;
+
+        gap: 6px !important;
+
+        border-radius: 12px !important;
+
+        font-size: 12px !important;
+        line-height: 1 !important;
+    }
+
+
+/*
+ * OSAI 平台：
+ * 字體盡量接近第一排主功能按鈕，
+ * 同時強制維持「OSAI 平台」單排顯示。
+ */
+.hero-section #osai-platform-btn span {
+    display: inline-block !important;
+
+    font-size: 13px !important;
+    line-height: 1 !important;
+
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+}
+
+
+    /*
+     * 權限設定比照手機橫式：
+     * 保留純齒輪方塊，不拉成文字型長按鈕。
+     */
+    .hero-section #permission-settings-btn {
+        width: 32px !important;
+        min-width: 32px !important;
+        max-width: 32px !important;
+
+        height: 32px !important;
+        min-height: 32px !important;
+        max-height: 32px !important;
+
+        padding: 0 !important;
+
+        justify-content: center !important;
+
+        box-sizing: border-box !important;
+    }
+}
+
+
+/* =========================================================
+   二、手機直式
+   所有 Header 功能改為「純圖示單排」
+========================================================= */
+@media screen and (orientation: portrait) and (max-width: 767px) {
+
+    /*
+     * Header 操作區改成單排 Grid。
+     *
+     * 34px × 34px：
+     * 即使管理者有 8 顆按鈕，
+     * 小尺寸手機仍能盡量維持單排。
+     */
+    .hero-section .header-action-zone {
+        width: 100% !important;
+
+        display: grid !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        gap: 2px !important;
+    }
+
+
+    /*
+     * 預覽者：6 顆
+     */
+    body.role-viewer
+    .hero-section
+    .header-action-zone {
+        grid-template-columns:
+            repeat(6, 34px) !important;
+    }
+
+
+    /*
+     * 使用者：7 顆
+     */
+    body.role-editor
+    .hero-section
+    .header-action-zone {
+        grid-template-columns:
+            repeat(7, 34px) !important;
+    }
+
+
+    /*
+     * 管理者：8 顆
+     */
+    body.role-admin
+    .hero-section
+    .header-action-zone {
+        grid-template-columns:
+            repeat(8, 34px) !important;
+    }
+
+
+    /*
+     * 拆除原本兩層容器，
+     * 讓全部按鈕可以直接參與同一排排序。
+     */
+    .hero-section .header-action-buttons,
+    .hero-section
+    .header-action-zone
+    > .flex.justify-end.gap-2 {
+        display: contents !important;
+    }
+
+
+    /*
+     * 所有 Header 功能按鈕：
+     * 統一 34 × 34 方塊。
+     *
+     * 完全不改原本背景顏色。
+     */
+    .hero-section #cloud-preview-entry-btn,
+    .hero-section #export-btn,
+    .hero-section #print-btn,
+    .hero-section #login-toggle-btn,
+    .hero-section #permission-settings-btn,
+    .hero-section #osai-platform-btn,
+    .hero-section #export-json-btn,
+    .hero-section #import-json-btn {
+        width: 34px !important;
+        min-width: 34px !important;
+        max-width: 34px !important;
+
+        height: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
+
+        padding: 0 !important;
+        margin: 0 !important;
+
+        justify-content: center !important;
+        align-items: center !important;
+
+        gap: 0 !important;
+
+        border-radius: 8px !important;
+
+        box-sizing: border-box !important;
+
+        white-space: nowrap !important;
+    }
+
+
+    /*
+     * 手機直式全部取消文字名稱。
+     *
+     * JS 仍可正常切換：
+     * 載入預覽／退出預覽／載入資料／匯入資料，
+     * 只是手機直式不顯示 span。
+     */
+    .hero-section #cloud-preview-entry-btn span,
+    .hero-section #export-btn span,
+    .hero-section #print-btn span,
+    .hero-section #login-toggle-btn span,
+    .hero-section #permission-settings-btn span,
+    .hero-section #osai-platform-btn span,
+    .hero-section #export-json-btn span,
+    .hero-section #import-json-btn span {
+        display: none !important;
+    }
+
+
+    /*
+     * 覆蓋舊版「管理者手機顯示權限設定文字」規則。
+     */
+    body.role-admin
+    .hero-section
+    #permission-settings-btn
+    span {
+        display: none !important;
+    }
+
+
+    /*
+     * 所有圖示統一大小。
+     */
+    .hero-section #cloud-preview-entry-btn i,
+    .hero-section #export-btn i,
+    .hero-section #print-btn i,
+    .hero-section #login-toggle-btn i,
+    .hero-section #permission-settings-btn i,
+    .hero-section #osai-platform-btn i,
+    .hero-section #export-json-btn i,
+    .hero-section #import-json-btn i {
+        display: inline-flex !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        width: 14px !important;
+        min-width: 14px !important;
+        height: 14px !important;
+
+        font-size: 14px !important;
+        line-height: 14px !important;
+
+        flex: 0 0 14px !important;
+
+        margin: 0 !important;
+    }
+
+
+    /* =====================================================
+       預覽者排列
+       權限登入 → 匯出總表 → 列印報告
+       → 雲端中心 → OSAI → 載入／退出預覽
+    ===================================================== */
+
+    body.role-viewer
+    .hero-section
+    #login-toggle-btn {
+        order: 1 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-viewer
+    .hero-section
+    #export-btn {
+        order: 2 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-viewer
+    .hero-section
+    #print-btn {
+        order: 3 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-viewer
+    .hero-section
+    #cloud-preview-entry-btn {
+        order: 4 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-viewer
+    .hero-section
+    #osai-platform-btn {
+        order: 5 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-viewer
+    .hero-section
+    #import-json-btn {
+        order: 6 !important;
+        grid-column: auto !important;
+    }
+
+
+    /* =====================================================
+       使用者排列
+       登出 → 匯出總表 → 列印報告
+       → 雲端中心 → OSAI → 匯出資料 → 載入資料
+    ===================================================== */
+
+    body.role-editor
+    .hero-section
+    #login-toggle-btn {
+        order: 1 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-editor
+    .hero-section
+    #export-btn {
+        order: 2 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-editor
+    .hero-section
+    #print-btn {
+        order: 3 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-editor
+    .hero-section
+    #cloud-preview-entry-btn {
+        order: 4 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-editor
+    .hero-section
+    #osai-platform-btn {
+        order: 5 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-editor
+    .hero-section
+    #export-json-btn {
+        order: 6 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-editor
+    .hero-section
+    #import-json-btn {
+        order: 7 !important;
+        grid-column: auto !important;
+    }
+
+
+    /* =====================================================
+       管理者排列
+       登出 → 權限設定 → 匯出總表 → 列印報告
+       → 雲端中心 → OSAI → 匯出資料 → 匯入資料
+    ===================================================== */
+
+    body.role-admin
+    .hero-section
+    #login-toggle-btn {
+        order: 1 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-admin
+    .hero-section
+    #permission-settings-btn {
+        order: 2 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-admin
+    .hero-section
+    #export-btn {
+        order: 3 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-admin
+    .hero-section
+    #print-btn {
+        order: 4 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-admin
+    .hero-section
+    #cloud-preview-entry-btn {
+        order: 5 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-admin
+    .hero-section
+    #osai-platform-btn {
+        order: 6 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-admin
+    .hero-section
+    #export-json-btn {
+        order: 7 !important;
+        grid-column: auto !important;
+    }
+
+    body.role-admin
+    .hero-section
+    #import-json-btn {
+        order: 8 !important;
+        grid-column: auto !important;
+    }
+}
+
+
+/* =========================================================
+   預覽者模式 Header 專屬配色
+
+   適用：
+   1. 桌機版
+   2. 手機橫式
+   3. 手機直式
+
+   匯出總表：沉穩青綠
+   權限登入：沉穩鋼藍
+
+   僅作用於 role-viewer，
+   不影響管理者／使用者模式。
+========================================================= */
+
+
+/* =========================================================
+   匯出總表：沉穩青綠色
+========================================================= */
+
+body.role-viewer
+.hero-section
+#export-btn,
+body.role-editor
+.hero-section
+#export-btn,
+body.role-admin
+.hero-section
+#export-btn {
+    background: #0f766e !important;
+    color: #ffffff !important;
+
+    border-color: transparent !important;
+
+    box-shadow:
+        0 4px 6px -1px
+        rgba(15, 118, 110, 0.28) !important;
+}
+
+
+/* =========================================================
+   權限登入：沉穩鋼藍色
+========================================================= */
+
+body.role-viewer
+.hero-section
+#login-toggle-btn {
+    background: #3f5f7a !important;
+    color: #ffffff !important;
+
+    border-color: transparent !important;
+
+    box-shadow:
+        0 4px 6px -1px
+        rgba(63, 95, 122, 0.30) !important;
+}
+
+
+/* =========================================================
+   桌機／具有滑鼠 Hover 的裝置
+========================================================= */
+
+@media (hover: hover) and (pointer: fine) {
+
+body.role-viewer
+.hero-section
+#export-btn:hover,
+body.role-editor
+.hero-section
+#export-btn:hover,
+body.role-admin
+.hero-section
+#export-btn:hover {
+    background: #115e59 !important;
+    color: #ffffff !important;
+
+    box-shadow:
+        0 7px 14px -3px
+        rgba(15, 118, 110, 0.34) !important;
+}
+
+
+body.role-viewer
+.hero-section
+#login-toggle-btn:hover {
+    background: #314b63 !important;
+    color: #ffffff !important;
+
+    box-shadow:
+        0 7px 14px -3px
+        rgba(63, 95, 122, 0.36) !important;
+}
+
+}
+
+
+/* =========================================================
+   點擊狀態
+========================================================= */
+
+body.role-viewer
+.hero-section
+#export-btn:active,
+body.role-editor
+.hero-section
+#export-btn:active,
+body.role-admin
+.hero-section
+#export-btn:active {
+    background: #134e4a !important;
+    color: #ffffff !important;
+}
+
+
+body.role-viewer
+.hero-section
+#login-toggle-btn:active {
+    background: #263b4f !important;
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   管理者：權限設定按鈕
+
+   配色比照預覽者「權限登入」：
+   一般   #3f5f7a
+   Hover  #314b63
+   Active #263b4f
+
+   桌機：
+   齒輪 + 權限設定
+   尺寸與其他文字型 Header 按鈕一致
+
+   手機橫式：
+   齒輪 + 權限設定
+   尺寸與其他橫式 Header 按鈕一致
+
+   手機直式：
+   延續既有設計，只顯示齒輪圖示，
+   維持 8 顆按鈕單排。
+========================================================= */
+
+
+/* =========================================================
+   共用配色
+========================================================= */
+
+body.role-admin
+.hero-section
+#permission-settings-btn {
+    background: #3f5f7a !important;
+    color: #ffffff !important;
+
+    border-color: transparent !important;
+
+    box-shadow:
+        0 4px 6px -1px
+        rgba(63, 95, 122, 0.30) !important;
+}
+
+
+/* =========================================================
+   桌機版
+========================================================= */
+
+@media screen and (min-width: 951px) {
+
+    body.role-admin
+    .hero-section
+    #permission-settings-btn {
+        width: 116px !important;
+        min-width: 116px !important;
+        max-width: 116px !important;
+
+        height: 32px !important;
+        min-height: 32px !important;
+        max-height: 32px !important;
+
+        padding:
+            0
+            12px !important;
+
+        gap: 6px !important;
+
+        justify-content: center !important;
+        align-items: center !important;
+
+        border-radius: 12px !important;
+
+        box-sizing: border-box !important;
+
+        white-space: nowrap !important;
+    }
+
+
+body.role-admin
+.hero-section
+#permission-settings-btn span {
+    display: inline-block !important;
+
+    font-size: 14px !important;
+    line-height: 1 !important;
+
+    white-space: nowrap !important;
+}
+
+}
+
+
+/* =========================================================
+   手機橫式
+========================================================= */
+
+@media screen and (orientation: landscape) and (max-width: 950px) {
+
+    body.role-admin
+    .hero-section
+    #permission-settings-btn {
+        width: auto !important;
+        min-width: 92px !important;
+        max-width: none !important;
+
+        height: auto !important;
+        min-height: 34px !important;
+        max-height: none !important;
+
+        padding:
+            7px
+            10px !important;
+
+        gap: 6px !important;
+
+        justify-content: center !important;
+        align-items: center !important;
+
+        border-radius: 11px !important;
+
+        font-size: 11px !important;
+
+        white-space: nowrap !important;
+    }
+
+
+    body.role-admin
+    .hero-section
+    #permission-settings-btn span {
+        display: inline-block !important;
+
+        font-size: 11px !important;
+        line-height: 1 !important;
+
+        white-space: nowrap !important;
     }
 
 }
 
-    </style>
+
+/* =========================================================
+   Hover：桌機滑鼠裝置
+========================================================= */
+
+@media (hover: hover) and (pointer: fine) {
+
+    body.role-admin
+    .hero-section
+    #permission-settings-btn:hover {
+        background: #314b63 !important;
+        color: #ffffff !important;
+
+        box-shadow:
+            0 7px 14px -3px
+            rgba(63, 95, 122, 0.36) !important;
+    }
+
+}
+
+
+/* =========================================================
+   點擊狀態
+========================================================= */
+
+body.role-admin
+.hero-section
+#permission-settings-btn:active {
+    background: #263b4f !important;
+    color: #ffffff !important;
+}
+
+
+
+</style>
 </head>
 <body>
 
@@ -6572,7 +7355,7 @@ p[id^="budget-summary-"] {
     <i class="fas fa-print"
        aria-hidden="true"></i>
 
-    <span>列印報告</span>
+    <span>列印 / PDF</span>
 </button>
 
 <!-- 權限設定：僅管理者顯示 -->
@@ -30691,8 +31474,149 @@ await clearPersistedSystemData();
             '無法載入本地數據庫，' +
             '請檢查瀏覽器隱私設定或嘗試清除快取。'
         );
+
+    } finally {
+
+        /*
+         * =====================================================
+         * Header 首次顯示防跳動
+         *
+         * 等待目前頁面使用中的字型全部完成載入，
+         * 再開放 Header 功能區顯示。
+         *
+         * 可避免：
+         * 1. Noto Sans TC 載入前後字體跳動
+         * 2. 按鈕文字寬度瞬間變化
+         * 3. 角色 CSS 尚未套用完成就先顯示舊配色
+         * =====================================================
+         */
+
+        try {
+
+            if (
+                document.fonts &&
+                document.fonts.ready
+            ) {
+
+                await document.fonts.ready;
+
+            }
+
+        } catch (fontError) {
+
+            console.warn(
+                'Header 字型等待失敗：',
+                fontError
+            );
+
+        }
+
+
+        /*
+         * 再等待一個瀏覽器繪製週期，
+         * 確保角色 class 與最終 CSS 都已完成計算。
+         */
+        requestAnimationFrame(() => {
+
+            document.documentElement.classList.add(
+                'header-ui-ready'
+            );
+
+        });
+
     }
 };
+
+/* =========================================================
+   桌機版 Header 主功能按鈕寬度
+   雲端中心／匯出總表／列印報告／登出系統
+   完全同步 OSAI 平台原始短版實際寬度
+
+   OSAI 平台本身不修改。
+   手機直式／橫式不受影響。
+========================================================= */
+function syncHeaderButtonWidthsToOsai() {
+
+    const osaiButton =
+        document.getElementById('osai-platform-btn');
+
+    if (!osaiButton) return;
+
+    const targetButtons = [
+        document.getElementById('cloud-preview-entry-btn'),
+        document.getElementById('export-btn'),
+        document.getElementById('print-btn'),
+        document.getElementById('login-toggle-btn')
+    ].filter(Boolean);
+
+    /*
+     * 手機版：
+     * 清除桌機同步寬度，
+     * 回復目前既有手機排版規則。
+     */
+    if (window.innerWidth <= 950) {
+
+        targetButtons.forEach(button => {
+            button.style.removeProperty('width');
+            button.style.removeProperty('min-width');
+            button.style.removeProperty('max-width');
+        });
+
+        return;
+    }
+
+    /*
+     * 桌機版：
+     * 直接取得 OSAI 平台原始短版
+     * 實際顯示寬度。
+     */
+    const osaiWidth =
+        osaiButton.getBoundingClientRect().width;
+
+    targetButtons.forEach(button => {
+
+        button.style.boxSizing = 'border-box';
+
+        button.style.width =
+            `${osaiWidth}px`;
+
+        button.style.minWidth =
+            `${osaiWidth}px`;
+
+        button.style.maxWidth =
+            `${osaiWidth}px`;
+    });
+}
+
+/*
+ * 第一次載入完成後同步。
+ */
+window.addEventListener(
+    'load',
+    syncHeaderButtonWidthsToOsai
+);
+
+/*
+ * 桌機／手機切換或改變視窗尺寸時重新同步。
+ */
+window.addEventListener(
+    'resize',
+    syncHeaderButtonWidthsToOsai
+);
+
+/*
+ * 等待字型載入完成後再校正一次，
+ * 避免字型載入前後產生 1～2px 差異。
+ */
+if (
+    document.fonts &&
+    document.fonts.ready
+) {
+    document.fonts.ready.then(
+        syncHeaderButtonWidthsToOsai
+    );
+}
+
 </script>
 </body>
 </html>
