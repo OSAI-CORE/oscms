@@ -6634,56 +6634,61 @@ p[id^="budget-summary-"] {
 ========================================================= */
 @media screen and (orientation: portrait) and (max-width: 767px) {
 
-    /*
-     * Header 操作區改成單排 Grid。
-     *
-     * 34px × 34px：
-     * 即使管理者有 8 顆按鈕，
-     * 小尺寸手機仍能盡量維持單排。
-     */
-    .hero-section .header-action-zone {
-        width: 100% !important;
+/*
+ * Header 操作區改成單排平均分配 Grid。
+ *
+ * 三種權限皆依實際按鈕數量，
+ * 平均分配整個可用寬度。
+ *
+ * 預覽者：6 顆
+ * 使用者：7 顆
+ * 管理者：8 顆
+ *
+ * 維持單排，不產生左右大量留白。
+ */
+.hero-section .header-action-zone {
+    width: 100% !important;
 
-        display: grid !important;
+    display: grid !important;
 
-        align-items: center !important;
-        justify-content: center !important;
+    align-items: center !important;
+    justify-content: stretch !important;
 
-        gap: 2px !important;
-    }
-
-
-    /*
-     * 預覽者：6 顆
-     */
-    body.role-viewer
-    .hero-section
-    .header-action-zone {
-        grid-template-columns:
-            repeat(6, 34px) !important;
-    }
+    gap: 4px !important;
+}
 
 
-    /*
-     * 使用者：7 顆
-     */
-    body.role-editor
-    .hero-section
-    .header-action-zone {
-        grid-template-columns:
-            repeat(7, 34px) !important;
-    }
+/*
+ * 預覽者：6 顆平均分配
+ */
+body.role-viewer
+.hero-section
+.header-action-zone {
+    grid-template-columns:
+        repeat(6, minmax(0, 1fr)) !important;
+}
 
 
-    /*
-     * 管理者：8 顆
-     */
-    body.role-admin
-    .hero-section
-    .header-action-zone {
-        grid-template-columns:
-            repeat(8, 34px) !important;
-    }
+/*
+ * 使用者：7 顆平均分配
+ */
+body.role-editor
+.hero-section
+.header-action-zone {
+    grid-template-columns:
+        repeat(7, minmax(0, 1fr)) !important;
+}
+
+
+/*
+ * 管理者：8 顆平均分配
+ */
+body.role-admin
+.hero-section
+.header-action-zone {
+    grid-template-columns:
+        repeat(8, minmax(0, 1fr)) !important;
+}
 
 
     /*
@@ -6698,42 +6703,43 @@ p[id^="budget-summary-"] {
     }
 
 
-    /*
-     * 所有 Header 功能按鈕：
-     * 統一 34 × 34 方塊。
-     *
-     * 完全不改原本背景顏色。
-     */
-    .hero-section #cloud-preview-entry-btn,
-    .hero-section #export-btn,
-    .hero-section #print-btn,
-    .hero-section #login-toggle-btn,
-    .hero-section #permission-settings-btn,
-    .hero-section #osai-platform-btn,
-    .hero-section #export-json-btn,
-    .hero-section #import-json-btn {
-        width: 34px !important;
-        min-width: 34px !important;
-        max-width: 34px !important;
+/*
+ * 所有 Header 功能按鈕：
+ * 寬度填滿各自平均分配的 Grid 欄位，
+ * 高度統一放大至 40px。
+ *
+ * 完全不修改原本各按鈕背景配色。
+ */
+.hero-section #cloud-preview-entry-btn,
+.hero-section #export-btn,
+.hero-section #print-btn,
+.hero-section #login-toggle-btn,
+.hero-section #permission-settings-btn,
+.hero-section #osai-platform-btn,
+.hero-section #export-json-btn,
+.hero-section #import-json-btn {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
 
-        height: 34px !important;
-        min-height: 34px !important;
-        max-height: 34px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
 
-        padding: 0 !important;
-        margin: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
 
-        justify-content: center !important;
-        align-items: center !important;
+    justify-content: center !important;
+    align-items: center !important;
 
-        gap: 0 !important;
+    gap: 0 !important;
 
-        border-radius: 8px !important;
+    border-radius: 10px !important;
 
-        box-sizing: border-box !important;
+    box-sizing: border-box !important;
 
-        white-space: nowrap !important;
-    }
+    white-space: nowrap !important;
+}
 
 
     /*
@@ -6766,33 +6772,34 @@ p[id^="budget-summary-"] {
     }
 
 
-    /*
-     * 所有圖示統一大小。
-     */
-    .hero-section #cloud-preview-entry-btn i,
-    .hero-section #export-btn i,
-    .hero-section #print-btn i,
-    .hero-section #login-toggle-btn i,
-    .hero-section #permission-settings-btn i,
-    .hero-section #osai-platform-btn i,
-    .hero-section #export-json-btn i,
-    .hero-section #import-json-btn i {
-        display: inline-flex !important;
+/*
+ * 所有圖示統一放大，
+ * 提升手機直式的辨識度與點擊視覺。
+ */
+.hero-section #cloud-preview-entry-btn i,
+.hero-section #export-btn i,
+.hero-section #print-btn i,
+.hero-section #login-toggle-btn i,
+.hero-section #permission-settings-btn i,
+.hero-section #osai-platform-btn i,
+.hero-section #export-json-btn i,
+.hero-section #import-json-btn i {
+    display: inline-flex !important;
 
-        align-items: center !important;
-        justify-content: center !important;
+    align-items: center !important;
+    justify-content: center !important;
 
-        width: 14px !important;
-        min-width: 14px !important;
-        height: 14px !important;
+    width: 16px !important;
+    min-width: 16px !important;
+    height: 16px !important;
 
-        font-size: 14px !important;
-        line-height: 14px !important;
+    font-size: 16px !important;
+    line-height: 16px !important;
 
-        flex: 0 0 14px !important;
+    flex: 0 0 16px !important;
 
-        margin: 0 !important;
-    }
+    margin: 0 !important;
+}
 
 
     /* =====================================================
