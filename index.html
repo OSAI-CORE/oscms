@@ -1077,6 +1077,107 @@ html.fa-icons-ready.header-ui-ready
     }
 }
 
+/* =========================================================
+   證照管理系統－管理者垃圾桶統一樣式
+
+   比照風險評估系統：
+   1. Font Awesome fa-trash
+   2. 平常 Slate 灰色
+   3. Hover 僅垃圾桶變紅
+   4. 無底色、無外框、無陰影
+========================================================= */
+
+.certificate-trash-btn {
+    padding: 0 !important;
+
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #94a3b8;
+
+    transition:
+        color 0.18s ease !important;
+}
+
+
+/* 有文字的刪除按鈕：
+   文字本身維持灰色，不跟著變紅 */
+.certificate-trash-text-btn {
+    border: 1px solid #cbd5e1 !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+
+    color: #64748b !important;
+
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease !important;
+}
+
+
+/* 所有垃圾桶統一 12px */
+.certificate-trash-btn .fa-trash,
+.certificate-trash-text-btn .fa-trash {
+    font-size: 12px !important;
+    line-height: 1 !important;
+
+    color: #94a3b8;
+
+    transition:
+        color 0.18s ease !important;
+}
+
+
+/* 桌機滑鼠：
+   只有垃圾桶本身變紅 */
+@media (hover: hover) and (pointer: fine) {
+
+    /*
+     * 純垃圾桶：
+     * 無外框、無背景，
+     * Hover 只讓垃圾桶變紅。
+     */
+    .certificate-trash-btn:hover {
+        border: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+
+        transform: none !important;
+    }
+
+
+    /*
+     * 編輯紀錄明細「移除」：
+     * 保留按鈕感，
+     * Hover 使用很淡的紅色提醒。
+     */
+    .certificate-trash-text-btn:hover {
+        border-color: #fecaca !important;
+        background: #fff7f7 !important;
+        box-shadow: none !important;
+
+        color: #64748b !important;
+
+        transform: none !important;
+    }
+
+
+    /*
+     * 不論哪一種，
+     * Hover 都只有垃圾桶本身變紅。
+     */
+    .certificate-trash-btn:hover .fa-trash,
+    .certificate-trash-text-btn:hover .fa-trash {
+        color: #dc2626 !important;
+    }
+}
+
         .link-icon-btn {
             transition: transform 0.1s;
         }
@@ -11080,16 +11181,10 @@ gap-1.5">
 <button type="button"
         id="remove-btn"
         onclick="confirmRemove()"
-        class="bg-red-50 text-red-500 px-6 py-3 rounded-xl font-bold hover:bg-red-100 transition flex items-center gap-2">
+        class="certificate-trash-text-btn px-6 py-3 rounded-xl font-bold transition flex items-center gap-2">
 
-    <span class="attachment-symbol attachment-trash-symbol" aria-hidden="true">
-        <svg viewBox="0 0 24 24" focusable="false">
-            <path fill="currentColor"
-                  d="M9 3.5h6l.8 1.7H20a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2h4.2L9 3.5Z"/>
-            <path fill="currentColor"
-                  d="M6.2 8.7h11.6l-.8 10.1A2.5 2.5 0 0 1 14.5 21h-5a2.5 2.5 0 0 1-2.5-2.2L6.2 8.7Zm3.2 2.2a.8.8 0 0 0-.8.8l.3 5.6a.8.8 0 0 0 1.6-.1l-.3-5.6a.8.8 0 0 0-.8-.7Zm5.2 0a.8.8 0 0 0-.8.7l-.3 5.6a.8.8 0 1 0 1.6.1l.3-5.6a.8.8 0 0 0-.8-.8Z"/>
-        </svg>
-    </span>
+    <i class="fa-solid fa-trash"
+       aria-hidden="true"></i>
 
     <span>移除</span>
 </button>
@@ -15689,40 +15784,28 @@ ${toggleEnabledIconHtml}
         </button>
 
 
-        <!-- 永久刪除 -->
-        <button type="button"
-                data-preview-id="${previewId}"
-                data-preview-name="${previewName}"
-                onclick="deleteCloudPreviewFromButton(this)"
-                class="
-                    cloud-tooltip-btn
-                    w-7 h-7
-                    rounded-lg
-                    border border-red-100
-                    bg-red-50
-                    text-red-500
-                    hover:bg-red-100
-                    hover:border-red-200
-                    hover:text-red-600
-                    transition
-                    flex items-center
-                    justify-center
-                "
-                data-tooltip="刪除"
-                aria-label="刪除">
+<!-- 永久刪除 -->
+<button type="button"
+        data-preview-id="${previewId}"
+        data-preview-name="${previewName}"
+        onclick="deleteCloudPreviewFromButton(this)"
+        class="
+            cloud-tooltip-btn
+            system-tooltip-btn
+            certificate-trash-btn
+            w-7 h-7
+            rounded-lg
+            transition
+            flex items-center
+            justify-center
+        "
+        data-tooltip="刪除"
+        aria-label="刪除">
 
-<svg viewBox="0 0 24 24"
-     class="w-[17px] h-[17px]"
-     aria-hidden="true">
+    <i class="fa-solid fa-trash"
+       aria-hidden="true"></i>
 
-    <path fill="currentColor"
-          d="M9 3.5h6l.8 1.7H20a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2h4.2L9 3.5Z"></path>
-
-    <path fill="currentColor"
-          d="M6.2 8.7h11.6l-.8 10.1A2.5 2.5 0 0 1 14.5 21h-5a2.5 2.5 0 0 1-2.5-2.2L6.2 8.7Zm3.2 2.2a.8.8 0 0 0-.8.8l.3 5.6a.8.8 0 0 0 1.6-.1l-.3-5.6a.8.8 0 0 0-.8-.7Zm5.2 0a.8.8 0 0 0-.8.7l-.3 5.6a.8.8 0 1 0 1.6.1l.3-5.6a.8.8 0 0 0-.8-.8Z"></path>
-</svg>
-
-        </button>
+</button>
 
     </div>
 
@@ -21430,38 +21513,30 @@ return `
                                 </button>
 
 
-                                <!-- 永久刪除 -->
-                                <button
-                                    type="button"
-                                    data-workspace-id="${id}"
-                                    data-workspace-name="${name}"
-                                    onclick="deleteCloudWorkspaceFromButton(this)"
-                                    class="
-                                        cloud-tooltip-btn
-                                        w-7 h-7
-                                        rounded-lg
-                                        text-red-500
-                                        hover:text-red-600
-                                        transition
-                                        flex
-                                        items-center
-                                        justify-center
-                                    "
-                                    data-tooltip="刪除"
-                                    aria-label="刪除">
+<!-- 永久刪除 -->
+<button
+    type="button"
+    data-workspace-id="${id}"
+    data-workspace-name="${name}"
+    onclick="deleteCloudWorkspaceFromButton(this)"
+    class="
+        cloud-tooltip-btn
+        system-tooltip-btn
+        certificate-trash-btn
+        w-7 h-7
+        rounded-lg
+        transition
+        flex
+        items-center
+        justify-center
+    "
+    data-tooltip="刪除"
+    aria-label="刪除">
 
-                                    <svg viewBox="0 0 24 24"
-                                         class="w-[17px] h-[17px]"
-                                         aria-hidden="true">
+    <i class="fa-solid fa-trash"
+       aria-hidden="true"></i>
 
-                                        <path fill="currentColor"
-                                              d="M9 3.5h6l.8 1.7H20a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2h4.2L9 3.5Z"></path>
-
-                                        <path fill="currentColor"
-                                              d="M6.2 8.7h11.6l-.8 10.1A2.5 2.5 0 0 1 14.5 21h-5a2.5 2.5 0 0 1-2.5-2.2L6.2 8.7Zm3.2 2.2a.8.8 0 0 0-.8.8l.3 5.6a.8.8 0 0 0 1.6-.1l-.3-5.6a.8.8 0 0 0-.8-.7Zm5.2 0a.8.8 0 0 0-.8.7l-.3 5.6a.8.8 0 1 0 1.6.1l.3-5.6a.8.8 0 0 0-.8-.8Z"></path>
-                                    </svg>
-
-                                </button>
+</button>
                             `
                             : ''
                     }
@@ -26756,19 +26831,16 @@ files.forEach((file, index) => {
             </svg>
         </span>`;
 
-    const removeButton = isAdmin ? `
-        <button type="button"
-                onclick="event.stopPropagation(); removeComplianceBasisFile(${index});"
-                class="w-8 h-8 rounded-lg bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition shrink-0"
-                title="移除此基準依據檔案"
-                aria-label="移除此基準依據檔案">
-            <span class="attachment-symbol attachment-trash-symbol" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false">
-                    <path fill="currentColor" d="M9 3.5h6l.8 1.7H20a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2h4.2L9 3.5Z"/>
-                    <path fill="currentColor" d="M6.2 8.7h11.6l-.8 10.1A2.5 2.5 0 0 1 14.5 21h-5a2.5 2.5 0 0 1-2.5-2.2L6.2 8.7Zm3.2 2.2a.8.8 0 0 0-.8.8l.3 5.6a.8.8 0 0 0 1.6-.1l-.3-5.6a.8.8 0 0 0-.8-.7Zm5.2 0a.8.8 0 0 0-.8.7l-.3 5.6a.8.8 0 1 0 1.6.1l.3-5.6a.8.8 0 0 0-.8-.8Z"/>
-                </svg>
-            </span>
-        </button>` : '';
+const removeButton = isAdmin ? `
+    <button type="button"
+            onclick="event.stopPropagation(); removeComplianceBasisFile(${index});"
+            class="certificate-trash-btn w-8 h-8 rounded-lg flex items-center justify-center transition shrink-0"
+            aria-label="移除此基準依據檔案">
+
+        <i class="fa-solid fa-trash"
+           aria-hidden="true"></i>
+
+    </button>` : '';
 
     item.innerHTML = `
         <div class="min-w-0 flex items-center gap-3">
@@ -28041,21 +28113,15 @@ return `
         <span class="budget-index-number">${index + 1}</span>
         ${row.sourceType === 'manual' && isAdmin ? `
     <span class="budget-index-actions">
-        <button type="button"
-                onclick="removeBudgetManualRow('${escapeJSString(row.recordId)}')"
-                class="w-8 h-8 rounded-lg bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition shrink-0"
-                title="移除"
-                aria-label="移除預算人員">
+<button type="button"
+        onclick="removeBudgetManualRow('${escapeJSString(row.recordId)}')"
+        class="certificate-trash-btn w-8 h-8 rounded-lg flex items-center justify-center transition shrink-0"
+        aria-label="移除預算人員">
 
-            <span class="attachment-symbol attachment-trash-symbol" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false">
-                    <path fill="currentColor"
-                          d="M9 3.5h6l.8 1.7H20a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2h4.2L9 3.5Z"/>
-                    <path fill="currentColor"
-                          d="M6.2 8.7h11.6l-.8 10.1A2.5 2.5 0 0 1 14.5 21h-5a2.5 2.5 0 0 1-2.5-2.2L6.2 8.7Zm3.2 2.2a.8.8 0 0 0-.8.8l.3 5.6a.8.8 0 0 0 1.6-.1l-.3-5.6a.8.8 0 0 0-.8-.7Zm5.2 0a.8.8 0 0 0-.8.7l-.3 5.6a.8.8 0 1 0 1.6.1l.3-5.6a.8.8 0 0 0-.8-.8Z"/>
-                </svg>
-            </span>
-        </button>
+    <i class="fa-solid fa-trash"
+       aria-hidden="true"></i>
+
+</button>
     </span>` : ''}
     </div>
 </td>
@@ -28491,15 +28557,12 @@ function renderAttachmentList(previewOnly = false) {
 const removeButton = (!isAdmin || previewOnly) ? '' : `
     <button type="button"
             onclick="event.stopPropagation(); removeAttachment(${index});"
-            class="w-8 h-8 rounded-lg bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition shrink-0"
-            title="移除附件"
+            class="certificate-trash-btn w-8 h-8 rounded-lg flex items-center justify-center transition shrink-0"
             aria-label="移除附件">
-        <span class="attachment-symbol attachment-trash-symbol" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false">
-                <path fill="currentColor" d="M9 3.5h6l.8 1.7H20a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2h4.2L9 3.5Z"/>
-                <path fill="currentColor" d="M6.2 8.7h11.6l-.8 10.1A2.5 2.5 0 0 1 14.5 21h-5a2.5 2.5 0 0 1-2.5-2.2L6.2 8.7Zm3.2 2.2a.8.8 0 0 0-.8.8l.3 5.6a.8.8 0 0 0 1.6-.1l-.3-5.6a.8.8 0 0 0-.8-.7Zm5.2 0a.8.8 0 0 0-.8.7l-.3 5.6a.8.8 0 1 0 1.6.1l.3-5.6a.8.8 0 0 0-.8-.8Z"/>
-            </svg>
-        </span>
+
+        <i class="fa-solid fa-trash"
+           aria-hidden="true"></i>
+
     </button>`;
 
         const fileIcon = isPdf ? `
