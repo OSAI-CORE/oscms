@@ -2052,24 +2052,26 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
         margin-top: 0;
     }
 
-    .hero-section #cloud-preview-entry-btn,
-    .hero-section #export-btn,
-    .hero-section #print-btn,
-    .hero-section #login-toggle-btn {
-        width: auto !important;
-        min-width: 92px;
-        min-height: 34px;
+.hero-section #cloud-preview-entry-btn,
+.hero-section #export-btn,
+.hero-section #print-btn,
+.hero-section #login-toggle-btn {
+    width: auto !important;
+    min-width: 92px;
+    min-height: 34px;
 
-        padding: 7px 10px;
+    padding: 7px 10px;
 
-        justify-content: center;
+    justify-content: center;
 
-        border-radius: 11px;
+    border-radius: 11px;
 
-        font-size: 11px;
+    font-size: 11px;
 
-        white-space: nowrap;
-    }
+    gap: 6px !important;
+
+    white-space: nowrap;
+}
 
     .hero-section #permission-settings-btn {
         width: 38px !important;
@@ -2090,21 +2092,23 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
         display: none !important;
     }
 
-    .hero-section .db-action-btn {
-        width: auto !important;
-        min-width: 92px;
-        min-height: 32px;
+.hero-section .db-action-btn {
+    width: auto !important;
+    min-width: 92px;
+    min-height: 32px;
 
-        padding: 7px 10px;
+    padding: 7px 10px;
 
-        justify-content: center;
+    justify-content: center;
 
-        border-radius: 10px;
+    border-radius: 10px;
 
-        font-size: 10.5px;
+    font-size: 11px;
 
-        white-space: nowrap;
-    }
+    gap: 6px !important;
+
+    white-space: nowrap;
+}
 
 /*
  * 手機橫式：
@@ -4074,6 +4078,26 @@ body.print-certificate-report .text-slate-600 {
 
     align-items: center !important;
     justify-content: center !important;
+}
+
+/*
+ * 管理者／使用者：
+ * 證照清單與年度外訓預算表
+ * 新增人員／儲存資料純圖示按鈕，
+ * 外框圓角比照 Header 權限設定齒輪。
+ *
+ * 僅調整外框形狀；
+ * 原本 36 × 36px 尺寸完全不變。
+ */
+body.role-admin #certificate-panel #add-person-btn,
+body.role-admin #certificate-panel #save-certificate-btn,
+body.role-editor #certificate-panel #add-person-btn,
+body.role-editor #certificate-panel #save-certificate-btn,
+body.role-admin #budget-panel .budget-add-person-btn,
+body.role-admin #budget-panel .budget-save-btn,
+body.role-editor #budget-panel .budget-add-person-btn,
+body.role-editor #budget-panel .budget-save-btn {
+    border-radius: 12px !important;
 }
 
 /* 預算表：新增與儲存 */
@@ -6555,17 +6579,20 @@ p[id^="budget-summary-"] {
     }
 
 
-    /*
-     * 主功能按鈕：
-     * 維持原本視覺，只統一上下高度。
-     */
-    .hero-section #cloud-preview-entry-btn,
-    .hero-section #export-btn,
-    .hero-section #print-btn,
-    .hero-section #login-toggle-btn {
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-    }
+/*
+ * 主功能按鈕：
+ * 維持原本視覺，只統一上下高度，
+ * 圖示與文字間距比照 OSAI 平台。
+ */
+.hero-section #cloud-preview-entry-btn,
+.hero-section #export-btn,
+.hero-section #print-btn,
+.hero-section #login-toggle-btn {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+
+    gap: 6px !important;
+}
 
 
     /*
@@ -6574,20 +6601,20 @@ p[id^="budget-summary-"] {
      * 改小後才能與主功能按鈕同尺寸，
      * 又不造成文字換行。
      */
-    .hero-section #osai-platform-btn,
-    .hero-section #export-json-btn,
-    .hero-section #import-json-btn {
-        padding:
-            0
-            12px !important;
+.hero-section #osai-platform-btn,
+.hero-section #export-json-btn,
+.hero-section #import-json-btn {
+    padding:
+        0
+        12px !important;
 
-        gap: 6px !important;
+    gap: 6px !important;
 
-        border-radius: 12px !important;
+    border-radius: 12px !important;
 
-        font-size: 12px !important;
-        line-height: 1 !important;
-    }
+    font-size: 13px !important;
+    line-height: 1 !important;
+}
 
 
 /*
@@ -7139,22 +7166,24 @@ body.role-admin
 
 @media screen and (min-width: 951px) {
 
+    /*
+     * 管理者權限設定：
+     * 只保留齒輪圖示，
+     * 固定放在登出系統右側。
+     */
     body.role-admin
     .hero-section
     #permission-settings-btn {
-        width: 116px !important;
-        min-width: 116px !important;
-        max-width: 116px !important;
+        width: 32px !important;
+        min-width: 32px !important;
+        max-width: 32px !important;
 
         height: 32px !important;
         min-height: 32px !important;
         max-height: 32px !important;
 
-        padding:
-            0
-            12px !important;
-
-        gap: 6px !important;
+        padding: 0 !important;
+        gap: 0 !important;
 
         justify-content: center !important;
         align-items: center !important;
@@ -7162,21 +7191,29 @@ body.role-admin
         border-radius: 12px !important;
 
         box-sizing: border-box !important;
-
-        white-space: nowrap !important;
     }
 
 
-body.role-admin
-.hero-section
-#permission-settings-btn span {
-    display: inline-block !important;
+    body.role-admin
+    .hero-section
+    #permission-settings-btn span {
+        display: none !important;
+    }
 
-    font-size: 14px !important;
-    line-height: 1 !important;
 
-    white-space: nowrap !important;
-}
+    /*
+     * Admin 第二排右側預留：
+     * 齒輪 32px + 第一排間距 7px。
+     *
+     * 因此匯入資料會正好對齊登出系統，
+     * 匯出資料會正好對齊 OSAI 平台。
+     */
+    body.role-admin
+    .hero-section
+    .header-action-zone
+    > .flex.justify-end.gap-2 {
+        margin-right: 39px !important;
+    }
 
 }
 
@@ -7185,45 +7222,68 @@ body.role-admin
    手機橫式
 ========================================================= */
 
-@media screen and (orientation: landscape) and (max-width: 950px) {
+@media screen
+and (orientation: landscape)
+and (max-width: 950px) {
 
+    /*
+     * 手機橫式：
+     * 權限設定只保留齒輪，
+     * 高度與第一排其他主功能一致。
+     */
     body.role-admin
     .hero-section
     #permission-settings-btn {
-        width: auto !important;
-        min-width: 92px !important;
-        max-width: none !important;
+        width: 34px !important;
+        min-width: 34px !important;
+        max-width: 34px !important;
 
-        height: auto !important;
+        height: 34px !important;
         min-height: 34px !important;
-        max-height: none !important;
+        max-height: 34px !important;
 
-        padding:
-            7px
-            10px !important;
-
-        gap: 6px !important;
+        padding: 0 !important;
+        gap: 0 !important;
 
         justify-content: center !important;
         align-items: center !important;
 
         border-radius: 11px !important;
 
-        font-size: 11px !important;
-
-        white-space: nowrap !important;
+        box-sizing: border-box !important;
     }
 
 
     body.role-admin
     .hero-section
     #permission-settings-btn span {
-        display: inline-block !important;
+        display: none !important;
+    }
 
-        font-size: 11px !important;
-        line-height: 1 !important;
 
-        white-space: nowrap !important;
+    /*
+     * OSAI 已移至第一排，
+     * 高度與登出系統一致。
+     */
+    .hero-section
+    #osai-platform-btn {
+        min-height: 34px !important;
+        height: 34px !important;
+        max-height: 34px !important;
+
+        border-radius: 11px !important;
+    }
+
+
+    /*
+     * Admin 第二排往左避開：
+     * 34px 齒輪 + 7px gap。
+     */
+    body.role-admin
+    .hero-section
+    .header-action-zone
+    > .flex.justify-end.gap-2 {
+        margin-right: 41px !important;
     }
 
 }
@@ -7261,6 +7321,324 @@ body.role-admin
 }
 
 
+/* =========================================================
+   Header 桌機／手機橫式角色最終排列
+
+   Viewer：
+   OSAI → 權限登入
+   載入／退出預覽對齊權限登入
+
+   Editor：
+   OSAI → 登出
+   匯出資料對齊 OSAI
+   載入資料對齊登出
+
+   Admin：
+   第一排維持 OSAI → 登出
+   第二排：
+   權限設定 → 匯出資料 → 匯入資料
+
+   權限設定左緣對齊第一排列印按鈕左緣
+   匯出資料對齊 OSAI
+   匯入資料對齊登出
+
+   手機直式完全不受影響
+========================================================= */
+
+
+/* =========================================================
+   一、桌機版
+========================================================= */
+
+@media screen and (min-width: 951px) {
+
+    /* -----------------------------------------
+       Viewer
+
+       第一排最後兩顆：
+       OSAI → 權限登入
+    ----------------------------------------- */
+
+    body.role-viewer
+    .hero-section
+    #osai-platform-btn {
+        order: 1 !important;
+    }
+
+    body.role-viewer
+    .hero-section
+    #login-toggle-btn {
+        order: 2 !important;
+    }
+
+
+    /*
+     * Viewer 第二排只有
+     * 載入預覽／退出預覽。
+     *
+     * 不再向左位移，
+     * 因此正好對齊最右側的權限登入。
+     */
+    body.role-viewer
+    .hero-section
+    .header-action-zone
+    > .flex.justify-end.gap-2 {
+        margin-right: 0 !important;
+    }
+
+
+    /* -----------------------------------------
+       Editor
+
+       第一排：
+       OSAI → 登出
+    ----------------------------------------- */
+
+    body.role-editor
+    .hero-section
+    #osai-platform-btn {
+        order: 1 !important;
+    }
+
+    body.role-editor
+    .hero-section
+    #login-toggle-btn {
+        order: 2 !important;
+    }
+
+
+    /*
+     * 第二排：
+     * 匯出資料 → 載入資料
+     *
+     * 匯出資料在 OSAI 下方
+     * 載入資料在登出下方
+     */
+    body.role-editor
+    .hero-section
+    #export-json-btn {
+        order: 1 !important;
+    }
+
+    body.role-editor
+    .hero-section
+    #import-json-btn {
+        order: 2 !important;
+    }
+
+
+    body.role-editor
+    .hero-section
+    .header-action-zone
+    > .flex.justify-end.gap-2 {
+        margin-right: 0 !important;
+    }
+
+
+    /* -----------------------------------------
+       Admin
+
+       第一排：
+       OSAI → 登出
+
+       權限設定已移至第二排。
+    ----------------------------------------- */
+
+    body.role-admin
+    .hero-section
+    #osai-platform-btn {
+        order: 1 !important;
+    }
+
+    body.role-admin
+    .hero-section
+    #login-toggle-btn {
+        order: 2 !important;
+    }
+
+
+    /*
+     * 第二排：
+     * 齒輪 → 匯出資料 → 匯入資料
+     */
+body.role-admin
+.hero-section
+#permission-settings-btn {
+    order: 1 !important;
+
+    margin-left: 84px !important;
+    margin-right: 0 !important;
+}
+
+    body.role-admin
+    .hero-section
+    #export-json-btn {
+        order: 2 !important;
+    }
+
+    body.role-admin
+    .hero-section
+    #import-json-btn {
+        order: 3 !important;
+    }
+
+
+    /*
+     * 齒輪現在已經進入第二排，
+     * 不再需要以前避開右側齒輪的 39px。
+     */
+    body.role-admin
+    .hero-section
+    .header-action-zone
+    > .flex.justify-end.gap-2 {
+        margin-right: 0 !important;
+    }
+
+}
+
+
+/* =========================================================
+   二、手機橫式
+========================================================= */
+
+@media screen
+and (orientation: landscape)
+and (max-width: 950px) {
+
+    /* -----------------------------------------
+       Viewer
+
+       OSAI → 權限登入
+    ----------------------------------------- */
+
+    body.role-viewer
+    .hero-section
+    #osai-platform-btn {
+        order: 1 !important;
+    }
+
+    body.role-viewer
+    .hero-section
+    #login-toggle-btn {
+        order: 2 !important;
+    }
+
+
+    /*
+     * 載入／退出預覽
+     * 正好位於最右側權限登入下方。
+     */
+    body.role-viewer
+    .hero-section
+    .header-action-zone
+    > .flex.justify-end.gap-2 {
+        margin-right: 0 !important;
+    }
+
+
+    /* -----------------------------------------
+       Editor
+
+       OSAI → 登出
+    ----------------------------------------- */
+
+    body.role-editor
+    .hero-section
+    #osai-platform-btn {
+        order: 1 !important;
+    }
+
+    body.role-editor
+    .hero-section
+    #login-toggle-btn {
+        order: 2 !important;
+    }
+
+
+    /*
+     * 第二排：
+     * 匯出資料 → 載入資料
+     */
+    body.role-editor
+    .hero-section
+    #export-json-btn {
+        order: 1 !important;
+    }
+
+    body.role-editor
+    .hero-section
+    #import-json-btn {
+        order: 2 !important;
+    }
+
+
+    body.role-editor
+    .hero-section
+    .header-action-zone
+    > .flex.justify-end.gap-2 {
+        margin-right: 0 !important;
+    }
+
+
+    /* -----------------------------------------
+       Admin
+
+       第一排：
+       OSAI → 登出
+
+       齒輪移至第二排。
+    ----------------------------------------- */
+
+    body.role-admin
+    .hero-section
+    #osai-platform-btn {
+        order: 1 !important;
+    }
+
+    body.role-admin
+    .hero-section
+    #login-toggle-btn {
+        order: 2 !important;
+    }
+
+
+    /*
+     * 第二排：
+     * 齒輪 → 匯出資料 → 匯入資料
+     */
+body.role-admin
+.hero-section
+#permission-settings-btn {
+    order: 1 !important;
+
+    margin-left: 58px !important;
+    margin-right: 0 !important;
+}
+
+    body.role-admin
+    .hero-section
+    #export-json-btn {
+        order: 2 !important;
+    }
+
+    body.role-admin
+    .hero-section
+    #import-json-btn {
+        order: 3 !important;
+    }
+
+
+    /*
+     * 不再保留原本避開第一排齒輪的 41px。
+     */
+    body.role-admin
+    .hero-section
+    .header-action-zone
+    > .flex.justify-end.gap-2 {
+        margin-right: 0 !important;
+    }
+
+}
 
 </style>
 </head>
@@ -7365,33 +7743,16 @@ body.role-admin
     <span>列印 / PDF</span>
 </button>
 
-<!-- 權限設定：僅管理者顯示 -->
-<button id="permission-settings-btn"
+<button id="osai-platform-btn"
         type="button"
-        onclick="openChangePasswordModal()"
-        class="
-            header-settings-btn
-            hidden inline-flex
-            items-center justify-center
-            w-full sm:w-12
-            gap-2 sm:gap-0
-            py-2 sm:py-2.5
-            bg-slate-600
-            hover:bg-slate-700
-            text-white
-            rounded-xl
-            text-xs sm:text-sm
-            font-bold
-            transition-colors
-        "
-        aria-label="權限與密碼設定">
+        onclick="openOsaiPlatform()"
+        class="db-action-btn"
+        aria-label="切換至 OSAI 管理平台">
 
-    <i class="fas fa-gear"
+    <i class="fas fa-layer-group"
        aria-hidden="true"></i>
 
-    <span class="sm:hidden">
-        權限設定
-    </span>
+    <span>OSAI 平台</span>
 </button>
 
 <!-- 初始狀態：權限登入／登入後切換為登出系統 -->
@@ -7424,6 +7785,35 @@ body.role-admin
 <!-- 資料操作列 -->
 <div class="flex justify-end gap-2">
 
+<!-- 權限設定：僅管理者顯示 -->
+<button id="permission-settings-btn"
+        type="button"
+        onclick="openChangePasswordModal()"
+        class="
+            header-settings-btn
+            hidden inline-flex
+            items-center justify-center
+            w-full sm:w-12
+            gap-2 sm:gap-0
+            py-2 sm:py-2.5
+            bg-slate-600
+            hover:bg-slate-700
+            text-white
+            rounded-xl
+            text-xs sm:text-sm
+            font-bold
+            transition-colors
+        "
+        aria-label="權限與密碼設定">
+
+    <i class="fas fa-gear"
+       aria-hidden="true"></i>
+
+    <span class="sm:hidden">
+        權限設定
+    </span>
+</button>
+
 <button id="export-json-btn"
         type="button"
         onclick="openDataExportModal()"
@@ -7433,18 +7823,6 @@ body.role-admin
        aria-hidden="true"></i>
 
     <span>匯出資料</span>
-</button>
-
-<button id="osai-platform-btn"
-        type="button"
-        onclick="openOsaiPlatform()"
-        class="db-action-btn"
-        aria-label="切換至 OSAI 管理平台">
-
-    <i class="fas fa-layer-group"
-       aria-hidden="true"></i>
-
-    <span>OSAI 平台</span>
 </button>
 
 <button id="import-json-btn"
