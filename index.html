@@ -7216,7 +7216,7 @@ p[id^="budget-summary-"] {
     display: grid !important;
 
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: stretch !important;
 
     gap: 4px !important;
 }
@@ -7228,8 +7228,8 @@ p[id^="budget-summary-"] {
 body.role-viewer
 .hero-section
 .header-action-zone {
-grid-template-columns:
-    repeat(6, minmax(0, 36px)) !important;
+    grid-template-columns:
+        repeat(6, minmax(0, 1fr)) !important;
 }
 
 
@@ -7239,8 +7239,8 @@ grid-template-columns:
 body.role-editor
 .hero-section
 .header-action-zone {
-grid-template-columns:
-    repeat(7, minmax(0, 36px)) !important;
+    grid-template-columns:
+        repeat(7, minmax(0, 1fr)) !important;
 }
 
 
@@ -7250,8 +7250,8 @@ grid-template-columns:
 body.role-admin
 .hero-section
 .header-action-zone {
-grid-template-columns:
-    repeat(8, minmax(0, 36px)) !important;
+    grid-template-columns:
+        repeat(8, minmax(0, 1fr)) !important;
 }
 
 
@@ -7284,18 +7284,14 @@ grid-template-columns:
 .hero-section #import-json-btn {
     width: 100% !important;
     min-width: 0 !important;
-    max-width: 36px !important;
+    max-width: none !important;
 
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: 36px !important;
-
-    aspect-ratio: 1 / 1;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
 
     padding: 0 !important;
     margin: 0 !important;
-
-    justify-self: center !important;
 
     justify-content: center !important;
     align-items: center !important;
