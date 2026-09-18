@@ -945,6 +945,40 @@ html.fa-icons-ready.header-ui-ready
     padding: 0 !important;
 }
 
+/* =========================================================
+   Cloud Center 垃圾桶圖示尺寸
+
+   Font Awesome 為實心圖示，
+   使用 12px 視覺上與旁邊 14px SVG 圖示較一致。
+   僅影響雲端中心永久刪除垃圾桶。
+========================================================= */
+
+.cloud-tooltip-btn > .fa-trash {
+    font-size:
+        12px !important;
+
+    line-height:
+        1 !important;
+
+    width:
+        12px !important;
+
+    height:
+        12px !important;
+
+    display:
+        inline-flex !important;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    flex:
+        0 0 12px;
+}
+
 @media (hover: hover) and (pointer: fine) {
 
     .cloud-tooltip-btn::after {
@@ -7182,7 +7216,7 @@ p[id^="budget-summary-"] {
     display: grid !important;
 
     align-items: center !important;
-    justify-content: stretch !important;
+    justify-content: center !important;
 
     gap: 4px !important;
 }
@@ -7194,8 +7228,8 @@ p[id^="budget-summary-"] {
 body.role-viewer
 .hero-section
 .header-action-zone {
-    grid-template-columns:
-        repeat(6, minmax(0, 1fr)) !important;
+grid-template-columns:
+    repeat(6, minmax(0, 36px)) !important;
 }
 
 
@@ -7205,8 +7239,8 @@ body.role-viewer
 body.role-editor
 .hero-section
 .header-action-zone {
-    grid-template-columns:
-        repeat(7, minmax(0, 1fr)) !important;
+grid-template-columns:
+    repeat(7, minmax(0, 36px)) !important;
 }
 
 
@@ -7216,8 +7250,8 @@ body.role-editor
 body.role-admin
 .hero-section
 .header-action-zone {
-    grid-template-columns:
-        repeat(8, minmax(0, 1fr)) !important;
+grid-template-columns:
+    repeat(8, minmax(0, 36px)) !important;
 }
 
 
@@ -7250,14 +7284,18 @@ body.role-admin
 .hero-section #import-json-btn {
     width: 100% !important;
     min-width: 0 !important;
-    max-width: none !important;
+    max-width: 36px !important;
 
-    height: 40px !important;
-    min-height: 40px !important;
-    max-height: 40px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: 36px !important;
+
+    aspect-ratio: 1 / 1;
 
     padding: 0 !important;
     margin: 0 !important;
+
+    justify-self: center !important;
 
     justify-content: center !important;
     align-items: center !important;
@@ -7319,14 +7357,14 @@ body.role-admin
     align-items: center !important;
     justify-content: center !important;
 
-    width: 16px !important;
-    min-width: 16px !important;
-    height: 16px !important;
+    width: 13px !important;
+    min-width: 13px !important;
+    height: 13px !important;
 
-    font-size: 16px !important;
-    line-height: 16px !important;
+    font-size: 13px !important;
+    line-height: 13px !important;
 
-    flex: 0 0 16px !important;
+    flex: 0 0 13px !important;
 
     margin: 0 !important;
 }
@@ -7338,47 +7376,47 @@ body.role-admin
        → 雲端中心 → OSAI → 載入／退出預覽
     ===================================================== */
 
-    body.role-viewer
-    .hero-section
-    #login-toggle-btn {
-        order: 1 !important;
-        grid-column: auto !important;
-    }
+body.role-viewer
+.hero-section
+#login-toggle-btn {
+    order: 1 !important;
+    grid-column: auto !important;
+}
 
-    body.role-viewer
-    .hero-section
-    #export-btn {
-        order: 2 !important;
-        grid-column: auto !important;
-    }
+body.role-viewer
+.hero-section
+#export-btn {
+    order: 2 !important;
+    grid-column: auto !important;
+}
 
-    body.role-viewer
-    .hero-section
-    #print-btn {
-        order: 3 !important;
-        grid-column: auto !important;
-    }
+body.role-viewer
+.hero-section
+#cloud-preview-entry-btn {
+    order: 3 !important;
+    grid-column: auto !important;
+}
 
-    body.role-viewer
-    .hero-section
-    #cloud-preview-entry-btn {
-        order: 4 !important;
-        grid-column: auto !important;
-    }
+body.role-viewer
+.hero-section
+#osai-platform-btn {
+    order: 4 !important;
+    grid-column: auto !important;
+}
 
-    body.role-viewer
-    .hero-section
-    #osai-platform-btn {
-        order: 5 !important;
-        grid-column: auto !important;
-    }
+body.role-viewer
+.hero-section
+#print-btn {
+    order: 5 !important;
+    grid-column: auto !important;
+}
 
-    body.role-viewer
-    .hero-section
-    #import-json-btn {
-        order: 6 !important;
-        grid-column: auto !important;
-    }
+body.role-viewer
+.hero-section
+#import-json-btn {
+    order: 6 !important;
+    grid-column: auto !important;
+}
 
 
     /* =====================================================
@@ -7387,54 +7425,54 @@ body.role-admin
        → 雲端中心 → OSAI → 匯出資料 → 載入資料
     ===================================================== */
 
-    body.role-editor
-    .hero-section
-    #login-toggle-btn {
-        order: 1 !important;
-        grid-column: auto !important;
-    }
+body.role-editor
+.hero-section
+#login-toggle-btn {
+    order: 1 !important;
+    grid-column: auto !important;
+}
 
-    body.role-editor
-    .hero-section
-    #export-btn {
-        order: 2 !important;
-        grid-column: auto !important;
-    }
+body.role-editor
+.hero-section
+#export-btn {
+    order: 2 !important;
+    grid-column: auto !important;
+}
 
-    body.role-editor
-    .hero-section
-    #print-btn {
-        order: 3 !important;
-        grid-column: auto !important;
-    }
+body.role-editor
+.hero-section
+#cloud-preview-entry-btn {
+    order: 3 !important;
+    grid-column: auto !important;
+}
 
-    body.role-editor
-    .hero-section
-    #cloud-preview-entry-btn {
-        order: 4 !important;
-        grid-column: auto !important;
-    }
+body.role-editor
+.hero-section
+#osai-platform-btn {
+    order: 4 !important;
+    grid-column: auto !important;
+}
 
-    body.role-editor
-    .hero-section
-    #osai-platform-btn {
-        order: 5 !important;
-        grid-column: auto !important;
-    }
+body.role-editor
+.hero-section
+#print-btn {
+    order: 5 !important;
+    grid-column: auto !important;
+}
 
-    body.role-editor
-    .hero-section
-    #export-json-btn {
-        order: 6 !important;
-        grid-column: auto !important;
-    }
+body.role-editor
+.hero-section
+#export-json-btn {
+    order: 6 !important;
+    grid-column: auto !important;
+}
 
-    body.role-editor
-    .hero-section
-    #import-json-btn {
-        order: 7 !important;
-        grid-column: auto !important;
-    }
+body.role-editor
+.hero-section
+#import-json-btn {
+    order: 7 !important;
+    grid-column: auto !important;
+}
 
 
     /* =====================================================
@@ -7443,61 +7481,61 @@ body.role-admin
        → 雲端中心 → OSAI → 匯出資料 → 匯入資料
     ===================================================== */
 
-    body.role-admin
-    .hero-section
-    #login-toggle-btn {
-        order: 1 !important;
-        grid-column: auto !important;
-    }
+body.role-admin
+.hero-section
+#login-toggle-btn {
+    order: 1 !important;
+    grid-column: auto !important;
+}
 
-    body.role-admin
-    .hero-section
-    #permission-settings-btn {
-        order: 2 !important;
-        grid-column: auto !important;
-    }
+body.role-admin
+.hero-section
+#permission-settings-btn {
+    order: 2 !important;
+    grid-column: auto !important;
+}
 
-    body.role-admin
-    .hero-section
-    #export-btn {
-        order: 3 !important;
-        grid-column: auto !important;
-    }
+body.role-admin
+.hero-section
+#export-btn {
+    order: 3 !important;
+    grid-column: auto !important;
+}
 
-    body.role-admin
-    .hero-section
-    #print-btn {
-        order: 4 !important;
-        grid-column: auto !important;
-    }
+body.role-admin
+.hero-section
+#cloud-preview-entry-btn {
+    order: 4 !important;
+    grid-column: auto !important;
+}
 
-    body.role-admin
-    .hero-section
-    #cloud-preview-entry-btn {
-        order: 5 !important;
-        grid-column: auto !important;
-    }
+body.role-admin
+.hero-section
+#osai-platform-btn {
+    order: 5 !important;
+    grid-column: auto !important;
+}
 
-    body.role-admin
-    .hero-section
-    #osai-platform-btn {
-        order: 6 !important;
-        grid-column: auto !important;
-    }
+body.role-admin
+.hero-section
+#print-btn {
+    order: 6 !important;
+    grid-column: auto !important;
+}
 
-    body.role-admin
-    .hero-section
-    #export-json-btn {
-        order: 7 !important;
-        grid-column: auto !important;
-    }
+body.role-admin
+.hero-section
+#export-json-btn {
+    order: 7 !important;
+    grid-column: auto !important;
+}
 
-    body.role-admin
-    .hero-section
-    #import-json-btn {
-        order: 8 !important;
-        grid-column: auto !important;
-    }
+body.role-admin
+.hero-section
+#import-json-btn {
+    order: 8 !important;
+    grid-column: auto !important;
+}
 }
 
 
@@ -7752,6 +7790,20 @@ body.role-admin
         box-sizing: border-box !important;
     }
 
+body.role-admin
+.hero-section
+#permission-settings-btn i {
+    width: 12px !important;
+    min-width: 12px !important;
+    height: 12px !important;
+
+    font-size: 12px !important;
+    line-height: 12px !important;
+
+    flex: 0 0 12px !important;
+
+    margin: 0 !important;
+}    
 
     body.role-admin
     .hero-section
@@ -7790,27 +7842,43 @@ and (max-width: 950px) {
      * 權限設定只保留齒輪，
      * 高度與第一排其他主功能一致。
      */
-    body.role-admin
-    .hero-section
-    #permission-settings-btn {
-        width: 34px !important;
-        min-width: 34px !important;
-        max-width: 34px !important;
+body.role-admin
+.hero-section
+#permission-settings-btn {
+    width: 34px !important;
+    min-width: 34px !important;
+    max-width: 34px !important;
 
-        height: 34px !important;
-        min-height: 34px !important;
-        max-height: 34px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
 
-        padding: 0 !important;
-        gap: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
 
-        justify-content: center !important;
-        align-items: center !important;
+    justify-content: center !important;
+    align-items: center !important;
 
-        border-radius: 11px !important;
+    border-radius: 11px !important;
 
-        box-sizing: border-box !important;
-    }
+    box-sizing: border-box !important;
+}
+
+
+body.role-admin
+.hero-section
+#permission-settings-btn i {
+    width: 12px !important;
+    min-width: 12px !important;
+    height: 12px !important;
+
+    font-size: 12px !important;
+    line-height: 12px !important;
+
+    flex: 0 0 12px !important;
+
+    margin: 0 !important;
+}
 
 
     body.role-admin
@@ -8187,17 +8255,15 @@ body.role-admin
     }
 
 
-    /*
-     * 不再保留原本避開第一排齒輪的 41px。
-     */
-    body.role-admin
-    .hero-section
-    .header-action-zone
-    > .flex.justify-end.gap-2 {
-        margin-right: 0 !important;
-    }
+body.role-admin
+.hero-section
+.header-action-zone
+> .flex.justify-end.gap-2 {
+    margin-right: 0 !important;
+}
 
 }
+
 
 </style>
 </head>
@@ -8225,32 +8291,6 @@ body.role-admin
         items-center
         justify-end
     ">
-
-<!-- 雲端中心：移到匯出總表左邊 -->
-<button id="cloud-preview-entry-btn"
-        type="button"
-        onclick="openCloudPreviewModal()"
-        class="
-            header-cloud-btn
-            flex items-center justify-center
-            w-full sm:w-40
-            gap-2 sm:gap-3
-            py-2 sm:py-2.5
-            bg-sky-600
-            hover:bg-sky-700
-            text-white
-            rounded-xl
-            text-xs sm:text-sm
-            font-black
-            transition-all
-        "
-        aria-label="開啟雲端中心">
-
-    <i class="fas fa-cloud"
-       aria-hidden="true"></i>
-
-    <span>雲端中心</span>
-</button>
 
 <!-- 匯出總表：法規智能同步的翡翠綠色 -->
 <button id="export-btn"
@@ -8299,8 +8339,36 @@ body.role-admin
     <i class="fas fa-print"
        aria-hidden="true"></i>
 
-    <span>列印 / PDF</span>
+<span>列印 / PDF</span>
 </button>
+
+
+<!-- 雲端中心 -->
+<button id="cloud-preview-entry-btn"
+        type="button"
+        onclick="openCloudPreviewModal()"
+        class="
+            header-cloud-btn
+            flex items-center justify-center
+            w-full sm:w-40
+            gap-2 sm:gap-3
+            py-2 sm:py-2.5
+            bg-sky-600
+            hover:bg-sky-700
+            text-white
+            rounded-xl
+            text-xs sm:text-sm
+            font-black
+            transition-all
+        "
+        aria-label="開啟雲端中心">
+
+    <i class="fas fa-cloud"
+       aria-hidden="true"></i>
+
+    <span>雲端中心</span>
+</button>
+
 
 <button id="osai-platform-btn"
         type="button"
@@ -16359,11 +16427,9 @@ ${toggleEnabledIconHtml}
         onclick="deleteCloudPreviewFromButton(this)"
         class="
             cloud-tooltip-btn
-            system-tooltip-btn
-            certificate-trash-btn
             w-7 h-7
             rounded-lg
-            transition
+            text-red-500
             flex items-center
             justify-center
         "
@@ -22089,11 +22155,9 @@ return `
     onclick="deleteCloudWorkspaceFromButton(this)"
     class="
         cloud-tooltip-btn
-        system-tooltip-btn
-        certificate-trash-btn
         w-7 h-7
         rounded-lg
-        transition
+        text-red-500
         flex
         items-center
         justify-center
