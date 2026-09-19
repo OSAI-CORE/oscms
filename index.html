@@ -7031,6 +7031,41 @@ p[id^="budget-summary-"] {
 }
 
 /* =========================================================
+   手機橫式：雲端中心視窗放大
+
+   原本 max-w-sm 在手機橫式下過窄，
+   改為充分利用橫向空間，
+   不影響桌機與手機直式。
+========================================================= */
+
+@media screen
+and (orientation: landscape)
+and (max-width: 950px) {
+
+    #cloud-preview-modal {
+        padding: 8px !important;
+    }
+
+    #cloud-center-panel {
+        width:
+            calc(100vw - 16px) !important;
+
+        max-width:
+            680px !important;
+
+        margin-left:
+            0 !important;
+
+        margin-right:
+            0 !important;
+
+        max-height:
+            calc(100svh - 16px) !important;
+    }
+
+}
+
+/* =========================================================
    Header 最終按鈕配置
    1. 桌機：比照手機橫式，文字型按鈕統一尺寸
    2. OSAI 平台文字維持單排
@@ -11196,16 +11231,20 @@ scale-in-center">
                     有效期限
                 </label>
 
-                <input type="datetime-local"
-                       id="cloud-preview-edit-expiry"
-                       class="w-full h-11 px-4
-                              bg-slate-100
-                              border-none
-                              rounded-xl
-                              focus:ring-2
-                              focus:ring-sky-500
-                              outline-none
-                              text-sm text-slate-700">
+<input type="datetime-local"
+       id="cloud-preview-edit-expiry"
+       class="block
+              w-full min-w-0 max-w-full
+              h-11
+              pl-4 pr-2
+              box-border
+              bg-slate-100
+              border-none
+              rounded-xl
+              focus:ring-2
+              focus:ring-sky-500
+              outline-none
+              text-sm text-slate-700">
 
             </div>
 
