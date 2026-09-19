@@ -562,7 +562,6 @@ html.fa-icons-ready.header-ui-ready
 #cloud-preview-view-id,
 #cloud-preview-view-password,
 #cloud-preview-edit-name,
-#cloud-preview-edit-password,
 #cloud-preview-password-new,
 #cloud-preview-password-confirm,
 #cloud-preview-edit-expiry,
@@ -7574,6 +7573,43 @@ body.role-admin
         rgba(15, 118, 110, 0.28) !important;
 }
 
+/* =========================================================
+   雲端工作資料：建立雲端工作資料
+   配色與 Header「匯出總表」完全一致
+========================================================= */
+
+#cloud-workspace-create-btn {
+    background: #0f766e !important;
+    color: #ffffff !important;
+
+    border-color: transparent !important;
+
+    box-shadow:
+        0 4px 6px -1px
+        rgba(15, 118, 110, 0.28) !important;
+}
+
+
+/* 桌機滑鼠移入 */
+@media (hover: hover) and (pointer: fine) {
+
+    #cloud-workspace-create-btn:hover {
+        background: #115e59 !important;
+        color: #ffffff !important;
+
+        box-shadow:
+            0 7px 14px -3px
+            rgba(15, 118, 110, 0.34) !important;
+    }
+
+}
+
+
+/* 點擊狀態 */
+#cloud-workspace-create-btn:active {
+    background: #134e4a !important;
+    color: #ffffff !important;
+}
 
 /* =========================================================
    權限登入：沉穩鋼藍色
@@ -8789,9 +8825,9 @@ class="budget-save-btn system-tooltip-btn bg-emerald-600 text-white border borde
 </footer>
 
 
-<!-- 登出完成 Toast：外觀比照法規鑑別系統 -->
+<!-- 系統操作 Toast：右下角統一通知 -->
 <div
-    id="logout-success-toast"
+    id="system-action-toast"
     role="status"
     aria-live="polite"
     aria-atomic="true"
@@ -8828,18 +8864,17 @@ class="budget-save-btn system-tooltip-btn bg-emerald-600 text-white border borde
             space-x-3
         "
     >
-        <span
-            class="
-                text-green-500
-            "
-            aria-hidden="true"
-        >
-            ✓
-        </span>
+<span
+    id="system-action-toast-icon"
+    class="text-green-500"
+    aria-hidden="true"
+>
+    ✓
+</span>
 
-        <span>
-            已完成登出
-        </span>
+<span id="system-action-toast-message">
+    操作完成
+</span>
     </div>
 </div>
 
@@ -9982,9 +10017,9 @@ class="budget-save-btn system-tooltip-btn bg-emerald-600 text-white border borde
                    h-10 sm:h-9
                    px-2
                    rounded-xl
-                   border border-emerald-200
-                   bg-emerald-600
-                   hover:bg-emerald-700
+border-0
+bg-emerald-600
+hover:bg-emerald-700
                    text-white
                    text-[11px] sm:text-xs
                    font-black
@@ -9992,7 +10027,7 @@ class="budget-save-btn system-tooltip-btn bg-emerald-600 text-white border borde
                    flex items-center
                    justify-center
                    gap-1.5
-                   transition
+                   transition-all
                    shadow-sm">
 
         <svg viewBox="0 0 24 24"
@@ -11152,35 +11187,6 @@ scale-in-center">
             </div>
 
 
-            <!-- 新預覽密碼 -->
-            <div>
-
-                <label for="cloud-preview-edit-password"
-                       class="block text-xs
-                              font-bold text-slate-600 mb-1">
-                    新預覽密碼
-                </label>
-
-                <input type="password"
-                       id="cloud-preview-edit-password"
-                       autocomplete="new-password"
-                       class="w-full h-11 px-4
-                              bg-slate-100
-                              border-none
-                              rounded-xl
-                              focus:ring-2
-                              focus:ring-sky-500
-                              outline-none
-                              text-sm text-slate-700">
-
-                <p class="mt-1 text-[10px]
-                          text-slate-400 leading-snug">
-                    如不需要變更密碼，請保持空白。
-                </p>
-
-            </div>
-
-
             <!-- 有效期限 -->
             <div>
 
@@ -11299,7 +11305,7 @@ scale-in-center">
 </div>
 
 <!-- =========================================================
-     雲端預覽：重設預覽密碼
+     雲端預覽：變更預覽密碼
 ========================================================= -->
 <div id="cloud-preview-password-reset-modal"
      onpointerdown="closeCloudPreviewPasswordResetModalOutside(event)"
@@ -11371,7 +11377,7 @@ max-h-[calc(100svh-24px)]">
 </svg>
 
                 <h3 class="text-lg font-black">
-                    重設預覽密碼
+                    變更預覽密碼
                 </h3>
 
             </div>
@@ -11381,7 +11387,7 @@ max-h-[calc(100svh-24px)]">
                       text-slate-300
                       tracking-[0.14em]
                       font-semibold">
-                RESET PREVIEW PASSWORD
+                CHANGE PREVIEW PASSWORD
             </p>
 
         </div>
@@ -13022,7 +13028,9 @@ function setCloudPreviewViewerBusy(
         );
 
 
-    if (!button) return;
+    if (!button) {
+        return;
+    }
 
 
     button.disabled =
@@ -13038,16 +13046,11 @@ function setCloudPreviewViewerBusy(
 
 
         button.innerHTML = `
-            <span class="
-                w-4 h-4
-                rounded-full
-                border-2
-                border-white/40
-                border-t-white
-                animate-spin
-            "></span>
+            <i class="fas fa-cloud-arrow-down"></i>
 
-            <span>正在載入...</span>
+            <span>
+                正在載入...
+            </span>
         `;
 
     } else {
@@ -13059,14 +13062,12 @@ function setCloudPreviewViewerBusy(
 
 
         button.innerHTML = `
-            <i data-lucide="cloud-download"
-               class="w-4 h-4"></i>
+            <i class="fas fa-cloud-arrow-down"></i>
 
-            <span>開啟雲端預覽</span>
+            <span>
+                開啟雲端預覽
+            </span>
         `;
-
-
-        lucide.createIcons();
     }
 }
 
@@ -16069,18 +16070,20 @@ async function copyCloudPreviewId(
         }
     }
 
-    if (copied) {
-        showToast(
-            'Preview ID 已複製。',
-            'success'
-        );
+if (copied) {
 
-    } else {
-        showToast(
-            '無法自動複製 Preview ID，請手動選取複製。',
-            'error'
-        );
-    }
+    showSystemActionToast(
+        'Preview ID 已複製',
+        'success'
+    );
+
+} else {
+
+    showSystemActionToast(
+        '無法自動複製 Preview ID，請手動選取複製',
+        'error'
+    );
+}
 }
 
 function renderCloudPreviewManageList(
@@ -16280,7 +16283,7 @@ const toggleEnabledClass =
     </div>
 
 
-<!-- 重設預覽密碼 -->
+<!-- 變更預覽密碼 -->
 <button type="button"
         data-preview-id="${previewId}"
         data-preview-name="${previewName}"
@@ -16299,8 +16302,8 @@ hover:border-indigo-200
             flex items-center
             justify-center
         "
-        data-tooltip="重設密碼"
-        aria-label="重設密碼">
+        data-tooltip="變更密碼"
+        aria-label="變更密碼">
 
 <svg viewBox="0 0 24 24"
      fill="none"
@@ -16821,7 +16824,7 @@ function openCloudPreviewPasswordResetModalFromButton(
         role !== 'editor'
     ) {
         showToast(
-            '目前權限無法重設雲端預覽密碼。',
+            '目前權限無法變更雲端預覽密碼。',
             'error'
         );
 
@@ -16845,7 +16848,7 @@ function openCloudPreviewPasswordResetModalFromButton(
 
     if (!previewId) {
         setCloudPreviewManageStatus(
-            '找不到要重設密碼的雲端預覽。',
+            '找不到要變更密碼的雲端預覽。',
             'error'
         );
 
@@ -16993,7 +16996,7 @@ async function submitCloudPreviewPasswordReset() {
         role !== 'editor'
     ) {
         showToast(
-            '目前權限無法重設雲端預覽密碼。',
+            '目前權限無法變更雲端預覽密碼。',
             'error'
         );
 
@@ -17056,7 +17059,7 @@ async function submitCloudPreviewPasswordReset() {
     if (!previewId) {
 
         setCloudPreviewPasswordResetStatus(
-            '找不到要重設密碼的雲端預覽。'
+            '找不到要變更密碼的雲端預覽。'
         );
 
         return;
@@ -17158,10 +17161,10 @@ async function submitCloudPreviewPasswordReset() {
 
     } catch (error) {
 
-        console.error(
-            '重設雲端預覽密碼失敗：',
-            error
-        );
+console.error(
+    '變更雲端預覽密碼失敗：',
+    error
+);
 
 
         const code =
@@ -17172,7 +17175,7 @@ async function submitCloudPreviewPasswordReset() {
 
 
         let message =
-            '重設預覽密碼失敗，請稍後再試。';
+            '變更預覽密碼失敗，請稍後再試。';
 
 
         if (
@@ -17189,7 +17192,7 @@ async function submitCloudPreviewPasswordReset() {
         ) {
 
             message =
-                '此帳號沒有重設這筆雲端預覽密碼的權限。';
+                '此帳號沒有變更這筆雲端預覽密碼的權限。';
 
         } else if (
             error?.status ===
@@ -17427,12 +17430,6 @@ function openCloudPreviewEditModalFromButton(
         );
 
 
-    const passwordInput =
-        document.getElementById(
-            'cloud-preview-edit-password'
-        );
-
-
     const expiryInput =
         document.getElementById(
             'cloud-preview-edit-expiry'
@@ -17483,16 +17480,6 @@ function openCloudPreviewEditModalFromButton(
     if (nameInput) {
         nameInput.value =
             previewName;
-    }
-
-
-    /*
-     * 後端不會回傳原密碼，
-     * 因此預設保持空白。
-     */
-    if (passwordInput) {
-        passwordInput.value =
-            '';
     }
 
 
@@ -17566,18 +17553,6 @@ function closeCloudPreviewEditModal() {
         );
 
 
-    const passwordInput =
-        document.getElementById(
-            'cloud-preview-edit-password'
-        );
-
-
-    if (passwordInput) {
-        passwordInput.value =
-            '';
-    }
-
-
     setCloudPreviewEditStatus(
         ''
     );
@@ -17620,12 +17595,6 @@ async function submitCloudPreviewEdit() {
     const nameInput =
         document.getElementById(
             'cloud-preview-edit-name'
-        );
-
-
-    const passwordInput =
-        document.getElementById(
-            'cloud-preview-edit-password'
         );
 
 
@@ -17690,13 +17659,6 @@ async function submitCloudPreviewEdit() {
             nameInput?.value ||
             ''
         ).trim();
-
-
-    const previewPassword =
-        String(
-            passwordInput?.value ||
-            ''
-        );
 
 
     const expiresLocal =
@@ -17849,21 +17811,6 @@ async function submitCloudPreviewEdit() {
     ) {
         request.max_views =
             maxViews;
-
-        hasChanges =
-            true;
-    }
-
-
-    /*
-     * 密碼留白代表沿用舊密碼。
-     */
-    if (
-        previewPassword.length >
-        0
-    ) {
-        request.preview_password =
-            previewPassword;
 
         hasChanges =
             true;
@@ -20820,7 +20767,7 @@ function setCloudWorkspaceCreateBusy(
              h-10 sm:h-9
              px-2
              rounded-xl
-             border border-emerald-200
+             border-0
              bg-emerald-600
              text-white
              text-[11px] sm:text-xs
@@ -20830,7 +20777,7 @@ function setCloudWorkspaceCreateBusy(
              justify-center
              gap-1.5
              cursor-wait
-             transition
+             transition-all
              shadow-sm`;
 
 
@@ -20857,9 +20804,9 @@ function setCloudWorkspaceCreateBusy(
              h-10 sm:h-9
              px-2
              rounded-xl
-             border border-emerald-200
-             bg-emerald-600
-             hover:bg-emerald-700
+border-0
+bg-emerald-600
+hover:bg-emerald-700
              text-white
              text-[11px] sm:text-xs
              font-black
@@ -20867,7 +20814,7 @@ function setCloudWorkspaceCreateBusy(
              flex items-center
              justify-center
              gap-1.5
-             transition
+             transition-all
              shadow-sm`;
 
 
@@ -22184,18 +22131,18 @@ return `
                 }
 
 
-                <span class="
-                    shrink-0
-                    px-2 py-0.5
-                    rounded-full
-                    bg-emerald-100
-                    text-emerald-700
-                    text-[9px]
-                    font-black
-                    whitespace-nowrap
-                ">
-                    Revision ${revision}
-                </span>
+<span class="
+    shrink-0
+    px-2 py-0.5
+    rounded-full
+    bg-stone-200
+    text-stone-700
+    text-[9px]
+    font-black
+    whitespace-nowrap
+">
+    Revision ${revision}
+</span>
 
             </div>
 
@@ -30933,36 +30880,73 @@ async function saveSystemNow() {
  * 不修改系統既有 showToast() 行為。
  * ========================================================= */
 
-function showLogoutSuccessToast() {
+function showSystemActionToast(
+    message,
+    type = 'success'
+) {
 
     const toast =
         document.getElementById(
-            'logout-success-toast'
+            'system-action-toast'
         );
 
-    if (!toast) {
+    const icon =
+        document.getElementById(
+            'system-action-toast-icon'
+        );
+
+    const messageBox =
+        document.getElementById(
+            'system-action-toast-message'
+        );
+
+
+    if (
+        !toast ||
+        !icon ||
+        !messageBox
+    ) {
         return;
     }
 
-    /*
-     * 先顯示。
-     */
+
+    messageBox.textContent =
+        String(
+            message ||
+            '操作完成'
+        );
+
+
+    if (type === 'error') {
+
+        icon.textContent =
+            '✕';
+
+        icon.className =
+            'text-red-500';
+
+    } else {
+
+        icon.textContent =
+            '✓';
+
+        icon.className =
+            'text-green-500';
+    }
+
+
     toast.classList.remove(
         'translate-y-20',
         'opacity-0'
     );
 
 
-    /*
-     * 避免短時間重複觸發時，
-     * 多組 timer 互相干擾。
-     */
     clearTimeout(
-        window.__logoutSuccessToastTimer
+        window.__systemActionToastTimer
     );
 
 
-    window.__logoutSuccessToastTimer =
+    window.__systemActionToastTimer =
         setTimeout(
             () => {
 
@@ -31023,7 +31007,10 @@ clearWorkProtectionState();
 
 finalLogoutConfirm();
 
-showLogoutSuccessToast();
+showSystemActionToast(
+    '已完成登出',
+    'success'
+);
 
     } catch (error) {
 
