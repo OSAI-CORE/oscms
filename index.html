@@ -7049,37 +7049,49 @@ p[id^="budget-summary-"] {
         overflow: hidden !important;
     }
 
-    #cloud-preview-edit-expiry {
-        display: block !important;
+#cloud-preview-edit-expiry {
+    display: block !important;
 
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
 
-        box-sizing: border-box !important;
+    box-sizing: border-box !important;
 
-        overflow: hidden !important;
+    overflow: hidden !important;
 
-        padding-left: 1rem !important;
-        padding-right: 2.5rem !important;
-    }
+    padding-left: 1rem !important;
+    padding-right: 2.5rem !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 
-    #cloud-preview-edit-expiry::-webkit-date-and-time-value {
-        min-width: 0 !important;
-        width: 100% !important;
+    line-height: 1.25 !important;
+}
 
-        text-align: left !important;
+#cloud-preview-edit-expiry::-webkit-date-and-time-value {
+    min-width: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
 
-        padding: 0 !important;
-        margin: 0 !important;
-    }
+    text-align: left !important;
 
-    #cloud-preview-edit-expiry::-webkit-datetime-edit {
-        min-width: 0 !important;
+    display: flex !important;
+    align-items: center !important;
 
-        padding: 0 !important;
-        margin: 0 !important;
-    }
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#cloud-preview-edit-expiry::-webkit-datetime-edit {
+    min-width: 0 !important;
+    height: 100% !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+}
 
     #cloud-preview-edit-expiry::-webkit-calendar-picker-indicator {
         opacity: 0 !important;
