@@ -7106,6 +7106,28 @@ p[id^="budget-summary-"] {
 }
 
 /* =========================================================
+   桌機版：編輯雲端預覽有效期限
+
+   1. 隱藏手機版自訂日曆圖示
+   2. 保留瀏覽器原生 datetime-local 圖示
+   3. 恢復桌機右側正常內距
+========================================================= */
+
+@media screen and (min-width: 951px) {
+
+    #cloud-preview-edit-expiry-wrap
+    > .fa-calendar-days {
+        display: none !important;
+    }
+
+    #cloud-preview-edit-expiry {
+        padding-right: 1rem !important;
+        cursor: pointer;
+    }
+
+}
+
+/* =========================================================
    手機橫式：雲端中心高度與觸控捲動最佳化
 
    寬度維持原本 max-w-sm，
@@ -11386,20 +11408,27 @@ scale-in-center">
             overflow-hidden
             rounded-xl">
 
-    <input type="datetime-local"
-           id="cloud-preview-edit-expiry"
-           class="block
-                  w-full min-w-0 max-w-full
-                  h-11
-                  pl-4 pr-10
-                  box-border
-                  bg-slate-100
-                  border-none
-                  rounded-xl
-                  focus:ring-2
-                  focus:ring-sky-500
-                  outline-none
-                  text-sm text-slate-700">
+<input type="datetime-local"
+       id="cloud-preview-edit-expiry"
+       onclick="
+           if (typeof this.showPicker === 'function') {
+               try {
+                   this.showPicker();
+               } catch (error) {}
+           }
+       "
+       class="block
+              w-full min-w-0 max-w-full
+              h-11
+              pl-4 pr-10
+              box-border
+              bg-slate-100
+              border-none
+              rounded-xl
+              focus:ring-2
+              focus:ring-sky-500
+              outline-none
+              text-sm text-slate-700">
 
     <i class="fa-solid fa-calendar-days
               absolute
