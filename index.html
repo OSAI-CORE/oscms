@@ -7031,36 +7031,173 @@ p[id^="budget-summary-"] {
 }
 
 /* =========================================================
-   手機橫式：雲端中心視窗放大
+   手機版：編輯雲端預覽 datetime-local 修正
 
-   原本 max-w-sm 在手機橫式下過窄，
-   改為充分利用橫向空間，
-   不影響桌機與手機直式。
+   1. 外框寬度固定與其他欄位一致
+   2. 隱藏手機瀏覽器原生日期圖示
+   3. 使用自訂圖示維持一致視覺
+========================================================= */
+
+@media screen and (max-width: 950px) {
+
+    #cloud-preview-edit-expiry-wrap {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+    #cloud-preview-edit-expiry {
+        display: block !important;
+
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+
+        box-sizing: border-box !important;
+
+        overflow: hidden !important;
+
+        padding-left: 1rem !important;
+        padding-right: 2.5rem !important;
+    }
+
+    #cloud-preview-edit-expiry::-webkit-date-and-time-value {
+        min-width: 0 !important;
+        width: 100% !important;
+
+        text-align: left !important;
+
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    #cloud-preview-edit-expiry::-webkit-datetime-edit {
+        min-width: 0 !important;
+
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    #cloud-preview-edit-expiry::-webkit-calendar-picker-indicator {
+        opacity: 0 !important;
+
+        width: 24px !important;
+        height: 24px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+}
+
+/* =========================================================
+   手機橫式：雲端中心高度與觸控捲動最佳化
+
+   寬度維持原本 max-w-sm，
+   僅充分利用手機橫式高度，
+   並改為整個 Body 單一垂直捲動區。
 ========================================================= */
 
 @media screen
 and (orientation: landscape)
 and (max-width: 950px) {
 
+    /* 外框左右寬度維持原本設定 */
     #cloud-preview-modal {
-        padding: 8px !important;
+        padding:
+            6px
+            16px !important;
     }
 
+
+    /*
+     * 不修改 width / max-width，
+     * 繼續沿用 HTML 原本：
+     * w-full max-w-sm mx-3
+     *
+     * 只增加可使用高度。
+     */
     #cloud-center-panel {
-        width:
-            calc(100vw - 16px) !important;
+        height:
+            calc(100svh - 12px) !important;
 
-        max-width:
-            680px !important;
-
-        margin-left:
-            0 !important;
-
-        margin-right:
-            0 !important;
+        height:
+            calc(100dvh - 12px) !important;
 
         max-height:
-            calc(100svh - 16px) !important;
+            calc(100svh - 12px) !important;
+
+        max-height:
+            calc(100dvh - 12px) !important;
+    }
+
+
+    /*
+     * 手機橫式改由整個中間 Body
+     * 負責上下滑動。
+     *
+     * 這樣不必一定從很小的圖卡清單區
+     * 才能開始觸控捲動。
+     */
+    #cloud-center-body {
+        overflow-x:
+            hidden !important;
+
+        overflow-y:
+            auto !important;
+
+        -webkit-overflow-scrolling:
+            touch;
+
+        overscroll-behavior-y:
+            contain;
+
+        touch-action:
+            pan-y;
+    }
+
+
+    /*
+     * 橫式取消第二層頁面的內部高度限制，
+     * 內容改交給 cloud-center-body 統一捲動。
+     */
+    #cloud-preview-viewer-home:not(.hidden),
+    #cloud-preview-publisher-home:not(.hidden),
+    #cloud-preview-publish-view:not(.hidden),
+    #cloud-workspace-view:not(.hidden),
+    #cloud-preview-manage-view:not(.hidden),
+    #cloud-publisher-accounts-view:not(.hidden) {
+
+        flex:
+            0 0 auto !important;
+
+        min-height:
+            auto !important;
+
+        overflow:
+            visible !important;
+    }
+
+
+    /*
+     * 原本只有這三個小清單可以滑動，
+     * 橫式改成不要形成第二層巢狀捲動。
+     */
+    #cloud-workspace-list,
+    #cloud-preview-manage-list,
+    #cloud-publisher-accounts-list {
+
+        flex:
+            0 0 auto !important;
+
+        max-height:
+            none !important;
+
+        overflow:
+            visible !important;
     }
 
 }
@@ -11231,20 +11368,37 @@ scale-in-center">
                     有效期限
                 </label>
 
-<input type="datetime-local"
-       id="cloud-preview-edit-expiry"
-       class="block
-              w-full min-w-0 max-w-full
-              h-11
-              pl-4 pr-2
-              box-border
-              bg-slate-100
-              border-none
-              rounded-xl
-              focus:ring-2
-              focus:ring-sky-500
-              outline-none
-              text-sm text-slate-700">
+<div id="cloud-preview-edit-expiry-wrap"
+     class="relative
+            w-full min-w-0 max-w-full
+            overflow-hidden
+            rounded-xl">
+
+    <input type="datetime-local"
+           id="cloud-preview-edit-expiry"
+           class="block
+                  w-full min-w-0 max-w-full
+                  h-11
+                  pl-4 pr-10
+                  box-border
+                  bg-slate-100
+                  border-none
+                  rounded-xl
+                  focus:ring-2
+                  focus:ring-sky-500
+                  outline-none
+                  text-sm text-slate-700">
+
+    <i class="fa-solid fa-calendar-days
+              absolute
+              right-3 top-1/2
+              -translate-y-1/2
+              text-slate-400
+              text-sm
+              pointer-events-none"
+       aria-hidden="true"></i>
+
+</div>
 
             </div>
 
