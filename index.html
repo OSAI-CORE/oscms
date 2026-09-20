@@ -580,6 +580,36 @@ html.fa-icons-ready.header-ui-ready
     }
 }
 
+/* =========================================================
+   手機直式／橫式：
+   雲端中心所有密碼輸入框
+   圓點大小與間距比照系統權限登入密碼框
+========================================================= */
+
+@media screen and (max-width: 950px) {
+
+    [id^="cloud-"][id$="-modal"]
+    input[type="password"] {
+        font-size: 16px !important;
+        line-height: 1.5rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.42em !important;
+    }
+
+
+    /*
+     * 有 placeholder 的密碼欄位
+     * 不讓提示文字也被拉開字距。
+     */
+    [id^="cloud-"][id$="-modal"]
+    input[type="password"]::placeholder {
+        font-size: 16px !important;
+        line-height: 1.5rem !important;
+        font-weight: 400 !important;
+        letter-spacing: 0 !important;
+    }
+}
+
         .scan-line {
             width: 100%;
             height: 2px;
