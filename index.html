@@ -28292,7 +28292,7 @@ requirementPreview.innerHTML = previewRoles.map(role => `
 
 async function saveComplianceSettings() {
     if (!canManageComplianceBasis()) {
-        alert('請先登入使用者或管理者權限後再編輯法規配置基準。');
+        alert('請先登入權限後再編輯法規配置基準。');
         openLoginModal();
         return;
     }
@@ -31843,7 +31843,7 @@ function triggerLoadPreviewJSON() {
 
 function triggerImportJSON() {
     if (!canImportData()) {
-        alert('請先登入使用者或管理者權限後再載入資料。');
+        alert('請先登入權限後再載入資料。');
         openLoginModal();
         return;
     }
@@ -31919,7 +31919,7 @@ function openDataExportModal() {
     ) {
 
         alert(
-            '請先登入使用者或管理者權限後再匯出資料。'
+            '請先登入權限後再匯出資料。'
         );
 
         openLoginModal();
@@ -32291,7 +32291,7 @@ async function exportPreviewJSON() {
 
 async function exportJSON() {
     if (!canExportReviewData()) {
-        alert('請先登入使用者或管理者權限後再匯出資料。');
+        alert('請先登入權限後再匯出資料。');
         openLoginModal();
         return;
     }
@@ -32561,7 +32561,7 @@ alert(
 
 async function importJSON(event) {
     if (!canImportData()) {
-        alert('請先登入使用者或管理者權限後再載入資料。');
+        alert('請先登入權限後再載入資料。');
         event.target.value = '';
         openLoginModal();
         return;
