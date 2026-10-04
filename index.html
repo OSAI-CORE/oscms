@@ -1570,16 +1570,23 @@ body {
 
    無附件：
    - 開啟資料夾
-   - Slate 暗灰色
+   - 淡灰色
 
    有附件：
    - 關閉資料夾
    - Blue 藍色
 
-   兩種狀態都：
-   - 無外框
-   - 無底色
-   - 無陰影
+   Viewer：
+   - 空資料夾不可操作
+   - 一般箭頭
+   - 無 Hover
+   - 無 Tooltip
+
+   Admin / User：
+   - 空資料夾可進入附件管理新增附件
+
+   有附件：
+   - 三種角色皆可開啟
 ========================================================= */
 
 .certificate-attachment-btn {
@@ -1609,7 +1616,7 @@ body {
         none !important;
 
     color:
-        #64748b;
+        #94a3b8;
 
     display:
         inline-flex;
@@ -1621,61 +1628,48 @@ body {
         center;
 
     cursor:
-        pointer;
+        default;
 
     transition:
-        color 0.18s ease,
-        transform 0.1s ease;
+        color 0.18s ease;
 }
 
 
-/* 有附件：藍色關閉資料夾 */
+/* 真正可以操作時才出現手型 */
+.certificate-attachment-btn.is-actionable {
+    cursor:
+        pointer;
+}
+
+
+/* 有附件 */
 .certificate-attachment-btn.has-attachments {
     color:
         #2563eb;
 }
 
 
-/* 桌機 Hover：仍然不產生框線或底色 */
-@media (hover: hover) and (pointer: fine) {
-
-    .certificate-attachment-btn:hover {
-
-        border:
-            0 !important;
-
-        background:
-            transparent !important;
-
-        box-shadow:
-            none !important;
-
-        color:
-            #475569;
-    }
-
-
-    .certificate-attachment-btn.has-attachments:hover {
-        color:
-            #1d4ed8;
-    }
+/* Viewer 空資料夾 */
+.certificate-attachment-btn.is-disabled {
+    cursor:
+        default;
 }
 
 
-/* Font Awesome 資料夾尺寸 */
+/* 資料夾圖示縮小為 12px */
 .certificate-attachment-btn i {
 
     width:
-        14px;
+        12px;
 
     height:
-        14px;
+        12px;
 
     font-size:
-        14px;
+        12px;
 
     line-height:
-        14px;
+        12px;
 
     display:
         inline-flex;
@@ -1685,6 +1679,23 @@ body {
 
     justify-content:
         center;
+}
+
+
+/* 桌機 Hover：
+   只有可操作的資料夾才有反應 */
+@media (hover: hover) and (pointer: fine) {
+
+    .certificate-attachment-btn:not(.has-attachments).is-actionable:hover {
+        color:
+            #64748b;
+    }
+
+
+    .certificate-attachment-btn.has-attachments.is-actionable:hover {
+        color:
+            #1d4ed8;
+    }
 }
 
 /* =========================================================
@@ -10805,16 +10816,20 @@ class="budget-save-btn system-tooltip-btn bg-emerald-600 text-white border borde
                            placeholder="••••••">
                 </div>
 
-<label class="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+<label id="editor-enabled-setting-row"
+       class="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 invisible">
+
     <input
         type="checkbox"
         id="editor-enabled-checkbox"
         class="w-4 h-4 accent-indigo-600"
         disabled
     >
+
     <span class="text-sm font-bold text-slate-700">
         啟用使用者共用權限
     </span>
+
 </label>
 
 <p class="text-[11px] text-slate-400 leading-snug">
@@ -32353,7 +32368,37 @@ await persistBudgetData();
                 const nextDate = calculateNextDate(record.lastDate, record.cycle);
                 const status = getDisplayStatusInfo(record, nextDate);
                 const hasAttachments = record.attachments && record.attachments.length > 0;
-                
+
+/*
+ * 附件資料夾操作規則：
+ *
+ * 有附件：
+ * Viewer / User / Admin 都可以開啟。
+ *
+ * 無附件：
+ * 只有 Admin / User 可以進入附件管理新增附件。
+ *
+ * Viewer 空資料夾完全不可操作。
+ */
+const canOpenAttachment =
+    hasAttachments ||
+    canEditData();
+
+
+const attachmentClickAttr =
+    canOpenAttachment
+        ? `onclick="handleLinkClick(${record.id})"`
+        : '';
+
+
+/*
+ * Tooltip 只有已有附件時才顯示。
+ */
+const attachmentTooltipAttr =
+    hasAttachments
+        ? 'data-tooltip="管理附件"'
+        : '';                
+
                 stats.total++;
 if (status.label === '已過期') stats.expired++;
 else if (status.label === '待受訓') stats.warning++;
@@ -32480,17 +32525,21 @@ row.className = "table-row";
 
     id="certificate-attach-btn-${record.id}"
 
-    onclick="handleLinkClick(${record.id})"
+    ${attachmentClickAttr}
 
-    data-tooltip="管理附件"
+    ${attachmentTooltipAttr}
 
-    aria-label="管理附件"
+    aria-label="${
+        hasAttachments
+            ? '管理附件'
+            : '尚無附件'
+    }"
 
     class="
         link-icon-btn
         certificate-attachment-btn
-        system-tooltip-btn
-        ${hasAttachments ? 'has-attachments' : ''}
+        ${canOpenAttachment ? 'is-actionable' : 'is-disabled'}
+        ${hasAttachments ? 'has-attachments system-tooltip-btn' : ''}
     "
 >
 
@@ -34732,6 +34781,11 @@ async function openChangePasswordModal() {
             'editor-enabled-checkbox'
         );
 
+const editorEnabledSettingRow =
+    document.getElementById(
+        'editor-enabled-setting-row'
+    );        
+
     const errorBox =
         document.getElementById(
             'pwd-change-error'
@@ -34790,42 +34844,73 @@ async function openChangePasswordModal() {
     }
 
 
-    isOsaiSystemAccessSettingsReady =
+isOsaiSystemAccessSettingsReady =
+    false;
+
+
+/*
+ * -----------------------------------------------------
+ * User Enabled 初始顯示狀態
+ * -----------------------------------------------------
+ *
+ * 有新鮮 Cache：
+ * 先套用正式值，再顯示。
+ *
+ * 沒有新鮮 Cache：
+ * 維持整列 invisible，
+ * 避免 Checkbox 暫時以 unchecked 狀態出現。
+ */
+const hasFreshSettingsCache =
+    hasFreshOsaiSystemAccessSettingsCache();
+
+
+if (
+    editorEnabledCheckbox &&
+    hasFreshSettingsCache
+) {
+
+    editorEnabledCheckbox.checked =
+        osaiSystemAccessSettingsCache
+            .editorEnabled;
+
+
+    editorEnabledCheckbox.disabled =
         false;
 
 
-    /*
-     * 如果 Admin 登入時的 Prefetch
-     * 已經有新鮮 Cache，
-     * Checkbox 可以先立即顯示正式值。
-     */
     if (
-        editorEnabledCheckbox &&
-        hasFreshOsaiSystemAccessSettingsCache()
+        editorEnabledSettingRow
     ) {
-
-        editorEnabledCheckbox.checked =
-            osaiSystemAccessSettingsCache
-                .editorEnabled;
-
-        editorEnabledCheckbox.disabled =
-            false;
-
-        isOsaiSystemAccessSettingsReady =
-            true;
-
-
-    } else if (
-        editorEnabledCheckbox
-    ) {
-
-        /*
-         * 尚未拿到正式 Backend 值前，
-         * 不允許自行勾選。
-         */
-        editorEnabledCheckbox.disabled =
-            true;
+        editorEnabledSettingRow
+            .classList
+            .remove(
+                'invisible'
+            );
     }
+
+
+    isOsaiSystemAccessSettingsReady =
+        true;
+
+
+} else if (
+    editorEnabledCheckbox
+) {
+
+    editorEnabledCheckbox.disabled =
+        true;
+
+
+    if (
+        editorEnabledSettingRow
+    ) {
+        editorEnabledSettingRow
+            .classList
+            .add(
+                'invisible'
+            );
+    }
+}
 
 
     isOsaiSystemAccessSettingsPending =
@@ -34845,18 +34930,37 @@ async function openChangePasswordModal() {
             await refreshOsaiSystemAccessSettingsCache();
 
 
-        if (
-            editorEnabledCheckbox
-        ) {
+if (
+    editorEnabledCheckbox
+) {
 
-            editorEnabledCheckbox.checked =
-                settings
-                    ?.editor_enabled ===
-                true;
+    /*
+     * 先套用中央正式值。
+     */
+    editorEnabledCheckbox.checked =
+        settings
+            ?.editor_enabled ===
+        true;
 
-            editorEnabledCheckbox.disabled =
-                false;
-        }
+
+    editorEnabledCheckbox.disabled =
+        false;
+
+
+    /*
+     * 正式值已經完成套用後，
+     * 才顯示 User Enabled 設定列。
+     */
+    if (
+        editorEnabledSettingRow
+    ) {
+        editorEnabledSettingRow
+            .classList
+            .remove(
+                'invisible'
+            );
+    }
+}
 
 
         isOsaiSystemAccessSettingsReady =
@@ -34938,7 +35042,62 @@ async function openChangePasswordModal() {
 }
 
 function closeChangePasswordModal() {
-    document.getElementById('change-pwd-modal').classList.add('hidden');
+
+    const modal =
+        document.getElementById(
+            'change-pwd-modal'
+        );
+
+
+    const editorEnabledCheckbox =
+        document.getElementById(
+            'editor-enabled-checkbox'
+        );
+
+
+    const editorEnabledSettingRow =
+        document.getElementById(
+            'editor-enabled-setting-row'
+        );
+
+
+    if (
+        modal
+    ) {
+        modal.classList.add(
+            'hidden'
+        );
+    }
+
+
+    /*
+     * 關閉後恢復安全初始狀態。
+     *
+     * 下一次開啟：
+     * - 有 Cache → 立即套值後顯示
+     * - 無 Cache → 等中央正式值後顯示
+     */
+    if (
+        editorEnabledCheckbox
+    ) {
+        editorEnabledCheckbox.disabled =
+            true;
+    }
+
+
+    if (
+        editorEnabledSettingRow
+    ) {
+        editorEnabledSettingRow
+            .classList
+            .add(
+                'invisible'
+            );
+    }
+
+
+    isOsaiSystemAccessSettingsReady =
+        false;
 }
 
 function requestCloseChangePasswordModal() {
