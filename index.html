@@ -283,6 +283,166 @@ html.fa-icons-ready.header-ui-ready
     padding-right: 0.35rem !important;
 }
 
+/* =========================================================
+   OSCMS｜證照清單操作欄固定
+
+   不論表格內容多寬，
+   操作欄永遠固定在畫面右側。
+========================================================= */
+
+.certificate-action-header,
+.certificate-action-cell {
+    position:
+        sticky;
+
+    right:
+        0;
+}
+
+
+/* 表頭 */
+.certificate-action-header {
+    z-index:
+        6;
+
+    width:
+        88px;
+
+    min-width:
+        88px;
+
+    max-width:
+        88px;
+
+    background:
+        #f8fafc;
+
+    white-space:
+        nowrap;
+
+box-shadow:
+    none;
+}
+
+
+/* 資料列 */
+.certificate-action-cell {
+    z-index:
+        5;
+
+    background:
+        #ffffff;
+
+box-shadow:
+    none;
+}
+
+
+/*
+ * 滑鼠靠近整列時，
+ * Sticky 操作欄同步保持 Row Hover 顏色。
+ */
+.table-row:hover
+.certificate-action-cell {
+    background:
+        #f8fafc;
+}
+
+/* =========================================================
+   OSCMS｜證照清單操作欄 Tooltip 顯示層級修正
+
+   避免：
+   上移／下移／編輯 Tooltip
+   被下一筆資料列遮住。
+========================================================= */
+
+#certificate-panel
+.certificate-action-cell {
+    overflow:
+        visible !important;
+}
+
+
+#certificate-panel
+.certificate-action-wrap {
+    position:
+        relative;
+
+    overflow:
+        visible !important;
+}
+
+
+/*
+ * 只有目前 Hover / Focus 的操作欄提高層級，
+ * 不影響其他資料列。
+ */
+#certificate-panel
+.certificate-action-cell:hover,
+
+#certificate-panel
+.certificate-action-cell:focus-within {
+    z-index:
+        50;
+}
+
+/* =========================================================
+   OSCMS｜證照清單操作按鈕 Tooltip 改為向上顯示
+
+   僅影響：
+   - 上移
+   - 下移
+   - 編輯／權限登入
+
+   其他系統 Tooltip 維持原本向下顯示。
+========================================================= */
+
+@media (hover: hover) and (pointer: fine) {
+
+    #certificate-panel
+    .certificate-action-cell
+    .system-tooltip-btn::after {
+
+        top:
+            auto !important;
+
+        bottom:
+            calc(100% + 6px) !important;
+
+        transform:
+            translateX(-50%)
+            translateY(2px) !important;
+    }
+
+
+    #certificate-panel
+    .certificate-action-cell
+    .system-tooltip-btn:hover::after {
+
+        transform:
+            translateX(-50%)
+            translateY(0) !important;
+    }
+}
+
+/*
+ * 列印時不需要 Sticky。
+ */
+@media print {
+
+    body.print-certificate-report
+    .certificate-action-header,
+
+    body.print-certificate-report
+    .certificate-action-cell {
+        position:
+            static !important;
+
+        box-shadow:
+            none !important;
+    }
+}
+
 .certificate-action-wrap {
     display: inline-flex;
     align-items: center;
@@ -306,6 +466,41 @@ html.fa-icons-ready.header-ui-ready
 .certificate-action-btn:hover {
     background: #f1f5f9;
     color: #4f46e5;
+}
+
+/* =========================================================
+   OSCMS｜證照明細表水平捲動條隱藏
+
+   保留：
+   - 手機手勢左右滑
+   - Trackpad 左右滑
+   - Shift + 滾輪
+
+   只隱藏畫面最下方水平 scrollbar。
+========================================================= */
+
+#certificate-panel .certificate-table-scroll {
+    overflow-x:
+        auto;
+
+    scrollbar-width:
+        none;
+
+    -ms-overflow-style:
+        none;
+
+    -webkit-overflow-scrolling:
+        touch;
+}
+
+
+#certificate-panel
+.certificate-table-scroll::-webkit-scrollbar {
+    height:
+        0;
+
+    display:
+        none;
 }
 
 .certificate-status-cell .badge-status {
@@ -878,6 +1073,88 @@ html.fa-icons-ready.header-ui-ready
         #94a3b8;
 }
 
+/* =========================================================
+   OSCMS｜系統內部捲動條視覺統一
+
+   視覺基準：
+   比照風險評估系統報表／Cloud Center 捲動條。
+
+   原則：
+   1. 只處理系統內部捲動區。
+   2. 最外圍 html / body 完全不修改。
+   3. 附件預覽 .file-preview-body 完全不修改。
+   4. 不改變任何 overflow、觸控或捲動邏輯。
+   5. 原本刻意隱藏的 scrollbar 仍維持隱藏。
+========================================================= */
+
+/*
+ * Firefox
+ */
+*:not(html):not(body):not(.file-preview-body) {
+    scrollbar-width:
+        thin;
+
+    scrollbar-color:
+        #cbd5e1
+        #f1f5f9;
+}
+
+
+/*
+ * Chrome、Edge、Safari
+ */
+*:not(html):not(body):not(.file-preview-body)::-webkit-scrollbar {
+    width:
+        8px;
+
+    height:
+        8px;
+}
+
+
+*:not(html):not(body):not(.file-preview-body)::-webkit-scrollbar-track {
+    background:
+        #f1f5f9;
+}
+
+
+*:not(html):not(body):not(.file-preview-body)::-webkit-scrollbar-thumb {
+    background:
+        #cbd5e1;
+
+    border-radius:
+        4px;
+}
+
+
+*:not(html):not(body):not(.file-preview-body)::-webkit-scrollbar-thumb:hover {
+    background:
+        #94a3b8;
+}
+
+
+*:not(html):not(body):not(.file-preview-body)::-webkit-scrollbar-corner {
+    background:
+        #f1f5f9;
+}
+
+/* =========================================================
+   OSCMS｜最外圍頁面捲動條
+
+   比照風險評估系統：
+   保留瀏覽器／作業系統原生顏色與樣式，
+   僅調整為較細的 scrollbar。
+========================================================= */
+
+html,
+body {
+    scrollbar-color:
+        auto;
+
+    scrollbar-width:
+        thin;
+}
+
 /*
  * 下方關閉按鈕固定。
  */
@@ -925,7 +1202,9 @@ html.fa-icons-ready.header-ui-ready
 }
 
 [id^="cloud-"][id$="-modal"] .fa-spin,
-[id^="cloud-"][id$="-modal"] .animate-spin {
+[id^="cloud-"][id$="-modal"] .animate-spin,
+#login-modal .fa-spin,
+#login-modal .animate-spin {
     display: inline-block !important;
 
     -webkit-animation:
@@ -1137,6 +1416,47 @@ html.fa-icons-ready.header-ui-ready
     .system-tooltip-btn:active::after {
         opacity: 0;
         visibility: hidden;
+    }
+}
+
+/* =========================================================
+   OSCMS｜一般功能 Tooltip 最終視覺統一
+
+   標準：
+   比照「儲存資料」按鈕 Tooltip。
+========================================================= */
+
+@media (hover: hover) and (pointer: fine) {
+
+    .system-tooltip-btn::after,
+    .cloud-tooltip-btn::after {
+        padding:
+            4px 7px !important;
+
+        border-radius:
+            6px !important;
+
+        background:
+            rgba(15, 23, 42, 0.94) !important;
+
+        color:
+            #ffffff !important;
+
+        font-size:
+            10px !important;
+
+        font-weight:
+            700 !important;
+
+        line-height:
+            1.2 !important;
+
+        white-space:
+            nowrap !important;
+
+        box-shadow:
+            0 6px 16px
+            rgba(15, 23, 42, 0.18) !important;
     }
 }
 
@@ -1474,9 +1794,194 @@ html.fa-icons-ready.header-ui-ready
         rgba(2, 6, 23, 0.28);
     background-size: 26px 26px;
     background-position: 0 0, 0 13px, 13px -13px, -13px 0;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    touch-action: manipulation;
+-webkit-overflow-scrolling:
+    touch;
+
+overscroll-behavior-x:
+    contain;
+
+overscroll-behavior-y:
+    contain;
+
+/*
+ * 單指交由瀏覽器原生處理水平／垂直捲動。
+ *
+ * 雙指縮放則繼續由既有
+ * touchstart / touchmove 程式控制。
+ */
+touch-action:
+    pan-x pan-y;
+}
+
+/* =========================================================
+   OSCMS｜附件檔案預覽視窗捲動條（PDF 折衷版）
+
+   設計目標：
+   1. 有捲動條時維持清楚可辨，方便長 PDF 拖曳定位
+   2. 顏色不突兀，與深色預覽背景協調
+   3. Hover 時再稍微加強可視性
+   4. 僅作用於附件預覽內容區
+========================================================= */
+
+/*
+ * Firefox：
+ * 使用 thin，並指定柔和的深色系 Track / Thumb。
+ */
+.file-preview-body {
+    scrollbar-width:
+        thin;
+
+    scrollbar-color:
+        rgba(148, 163, 184, 0.58)
+        rgba(15, 23, 42, 0.22);
+}
+
+
+/*
+ * Chrome、Edge、Safari：
+ * 桌機版使用細捲動條樣式，方便拖曳。
+ */
+.file-preview-body::-webkit-scrollbar {
+    width:
+        10px;
+}
+
+
+/*
+ * 深色預覽背景上的低調 Track。
+ */
+.file-preview-body::-webkit-scrollbar-track {
+    background:
+        rgba(15, 23, 42, 0.20);
+
+    border-radius:
+        999px;
+}
+
+
+/*
+ * 平常狀態：
+ * 使用柔和 Slate 藍灰色。
+ */
+.file-preview-body::-webkit-scrollbar-thumb {
+    background:
+        rgba(148, 163, 184, 0.52);
+
+    border-radius:
+        999px;
+
+    border:
+        2px solid rgba(15, 23, 42, 0.08);
+}
+
+
+/*
+ * Hover。
+ */
+.file-preview-body::-webkit-scrollbar-thumb:hover {
+    background:
+        rgba(191, 219, 254, 0.68);
+}
+
+
+/*
+ * 拖曳中。
+ */
+.file-preview-body::-webkit-scrollbar-thumb:active {
+    background:
+        rgba(147, 197, 253, 0.82);
+}
+
+
+/* =========================================================
+   OSCMS｜附件預覽手機捲動統一
+
+   手機直式／橫式共用：
+   - 相同捲動機制
+   - 相同 Scrollbar 寬度
+   - 相同 Scrollbar 高度
+   - 相同 Track / Thumb
+========================================================= */
+
+@media screen and (max-width: 950px),
+       (hover: none) and (pointer: coarse) {
+
+    .file-preview-body {
+
+        scrollbar-width:
+            thin;
+
+        scrollbar-color:
+            rgba(148, 163, 184, 0.50)
+            rgba(15, 23, 42, 0.16);
+
+        -webkit-overflow-scrolling:
+            touch;
+
+        overscroll-behavior-x:
+            contain;
+
+        overscroll-behavior-y:
+            contain;
+
+        touch-action:
+            pan-x pan-y;
+    }
+
+
+    /*
+     * width  = 右側上下捲動條
+     * height = 下方左右捲動條
+     *
+     * 兩者必須同時指定，
+     * 避免手機直式與橫式看起來不同。
+     */
+    .file-preview-body::-webkit-scrollbar {
+
+        width:
+            7px;
+
+        height:
+            7px;
+    }
+
+
+    .file-preview-body::-webkit-scrollbar-track {
+
+        background:
+            rgba(15, 23, 42, 0.16);
+
+        border-radius:
+            999px;
+    }
+
+
+    .file-preview-body::-webkit-scrollbar-thumb {
+
+        background:
+            rgba(148, 163, 184, 0.50);
+
+        border-radius:
+            999px;
+
+        border:
+            1px solid
+            rgba(15, 23, 42, 0.06);
+    }
+
+
+    .file-preview-body::-webkit-scrollbar-thumb:active {
+
+        background:
+            rgba(147, 197, 253, 0.78);
+    }
+
+
+    .file-preview-body::-webkit-scrollbar-corner {
+
+        background:
+            rgba(15, 23, 42, 0.16);
+    }
 }
 
 #file-preview-stage {
@@ -1658,6 +2163,292 @@ body.file-preview-open {
             align-items: center;
         }
 
+/* =========================================================
+   OSCMS｜完整證書號碼 Tooltip｜精簡單排版
+
+   視覺：
+   比照一般「儲存資料」Tooltip。
+
+行為：
+1. 點擊顯示／固定
+2. 再次點擊或點擊外部關閉
+3. 可直接複製
+========================================================= */
+
+.certificate-number-tooltip-wrap {
+    position:
+        relative;
+
+    display:
+        block;
+
+    flex:
+        1 1 auto;
+
+    min-width:
+        0;
+}
+
+
+.certificate-number-tooltip-trigger {
+    display:
+        block;
+
+    width:
+        100%;
+
+    min-width:
+        0;
+
+    max-width:
+        100%;
+
+    padding:
+        0;
+
+    border:
+        0;
+
+    background:
+        transparent;
+
+    text-align:
+        left;
+
+cursor:
+    pointer;
+}
+
+/* =========================================================
+   OSCMS｜訓練項目完整內容 Tooltip Trigger
+
+   Tooltip 本體完全共用證書號碼機制，
+   此處只保持訓練項目欄位原本的文字外觀。
+========================================================= */
+
+.training-item-tooltip-trigger {
+    color:
+        inherit;
+
+    font-family:
+        inherit;
+
+    font-size:
+        inherit;
+
+    font-weight:
+        inherit;
+
+    line-height:
+        inherit;
+
+    white-space:
+        nowrap;
+
+    overflow:
+        hidden;
+
+    text-overflow:
+        clip;
+
+cursor:
+    pointer;
+}
+
+/*
+ * 固定定位，
+ * 避免被表格 overflow 裁掉。
+ */
+.certificate-number-tooltip-panel {
+    position:
+        fixed;
+
+    left:
+        -9999px;
+
+    top:
+        -9999px;
+
+    z-index:
+        1200;
+
+display:
+    grid;
+
+grid-template-columns:
+    minmax(0, auto)
+    22px;
+
+align-items:
+    center;
+
+gap:
+    7px;
+
+width:
+    fit-content;
+
+max-width:
+    min(280px, calc(100vw - 24px));
+
+    padding:
+        4px 6px 4px 8px;
+
+    border-radius:
+        6px;
+
+    background:
+        rgba(15, 23, 42, 0.94);
+
+    color:
+        #ffffff;
+
+    box-shadow:
+        0 6px 16px
+        rgba(15, 23, 42, 0.18);
+
+    opacity:
+        0;
+
+    visibility:
+        hidden;
+
+    transform:
+        translateY(-2px);
+
+    pointer-events:
+        none;
+
+    transition:
+        opacity 0.14s ease,
+        transform 0.14s ease,
+        visibility 0.14s ease;
+}
+
+
+/*
+ * 完整證書號碼。
+ */
+.certificate-number-tooltip-value {
+    display:
+        block;
+
+    min-width:
+        0;
+
+    color:
+        #ffffff;
+
+    font-family:
+        monospace;
+
+    font-size:
+        10px;
+
+    font-weight:
+        700;
+
+    line-height:
+        1.2;
+
+white-space:
+    normal;
+
+overflow-wrap:
+    anywhere;
+
+word-break:
+    break-word;
+
+    user-select:
+        text;
+}
+
+
+/*
+ * 只保留複製圖示。
+ */
+.certificate-number-copy-btn {
+    width:
+        22px;
+
+    height:
+        22px;
+
+    min-width:
+        22px;
+
+    padding:
+        0;
+
+    border:
+        0;
+
+    border-radius:
+        5px;
+
+    background:
+        transparent;
+
+    color:
+        #cbd5e1;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    flex:
+        0 0 22px;
+
+    cursor:
+        pointer;
+
+    transition:
+        background-color 0.14s ease,
+        color 0.14s ease;
+}
+
+
+.certificate-number-copy-btn:hover {
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    color:
+        #ffffff;
+}
+
+
+.certificate-number-copy-btn i {
+    font-size:
+        11px;
+
+    line-height:
+        1;
+}
+
+/*
+ * 點擊後固定。
+ */
+.certificate-number-tooltip-wrap.is-open
+.certificate-number-tooltip-panel {
+    opacity:
+        1;
+
+    visibility:
+        visible;
+
+    transform:
+        translateY(0);
+
+    pointer-events:
+        auto;
+}
+
         .legal-duty-trigger {
             display: inline-flex;
             align-items: center;
@@ -1670,7 +2461,7 @@ body.file-preview-open {
             font-size: 10px;
             line-height: 1;
             font-weight: 900;
-            cursor: help;
+            cursor: pointer;
             transition: all 0.18s ease;
             white-space: nowrap;
         }
@@ -1737,7 +2528,7 @@ body.file-preview-open {
             font-size: 10px;
             line-height: 1;
             font-weight: 900;
-            cursor: help;
+            cursor: pointer;
             transition: all 0.18s ease;
             white-space: nowrap;
         }
@@ -2088,6 +2879,68 @@ body.file-preview-open {
     word-break: break-word;
 }
 
+/* =========================================================
+   OSCMS｜預算表同步基本資料欄位
+
+   作業單位／姓名／訓練項目
+   由證照清單同步時不顯示欄位內部 Scrollbar。
+
+   僅隱藏 Scrollbar 視覺，
+   不修改資料同步、內容或欄位高度。
+========================================================= */
+
+#budget-panel
+.budget-table
+tbody
+td:nth-child(2)
+textarea.budget-resize-field:disabled,
+
+#budget-panel
+.budget-table
+tbody
+td:nth-child(3)
+textarea.budget-resize-field:disabled,
+
+#budget-panel
+.budget-table
+tbody
+td:nth-child(4)
+textarea.budget-resize-field:disabled {
+    scrollbar-width:
+        none !important;
+
+    -ms-overflow-style:
+        none;
+}
+
+
+#budget-panel
+.budget-table
+tbody
+td:nth-child(2)
+textarea.budget-resize-field:disabled::-webkit-scrollbar,
+
+#budget-panel
+.budget-table
+tbody
+td:nth-child(3)
+textarea.budget-resize-field:disabled::-webkit-scrollbar,
+
+#budget-panel
+.budget-table
+tbody
+td:nth-child(4)
+textarea.budget-resize-field:disabled::-webkit-scrollbar {
+    width:
+        0 !important;
+
+    height:
+        0 !important;
+
+    display:
+        none !important;
+}
+
 .budget-training-unit-field,
 .budget-training-unit-field:disabled,
 .budget-note-field,
@@ -2415,21 +3268,19 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
     scrollbar-width: thin;
 }
 
+/* 關閉上方手機橫式 @media */
+}
+
 .edit-resize-field::-webkit-scrollbar,
 .budget-textarea::-webkit-scrollbar,
 .budget-resize-field::-webkit-scrollbar,
 .budget-training-unit-field::-webkit-scrollbar,
 .budget-note-field::-webkit-scrollbar {
-    width: 4px;
-}
+    width:
+        8px;
 
-.edit-resize-field::-webkit-scrollbar-thumb,
-.budget-textarea::-webkit-scrollbar-thumb,
-.budget-resize-field::-webkit-scrollbar-thumb,
-.budget-training-unit-field::-webkit-scrollbar-thumb,
-.budget-note-field::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 999px;
+    height:
+        8px;
 }
 
 .edit-resize-field::-webkit-scrollbar-track,
@@ -2437,8 +3288,143 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
 .budget-resize-field::-webkit-scrollbar-track,
 .budget-training-unit-field::-webkit-scrollbar-track,
 .budget-note-field::-webkit-scrollbar-track {
-    background: transparent;
+    background:
+        #f8fafc;
 }
+
+/* =========================================================
+   OSCMS｜報表相關 Modal / 統計區 scrollbar Track 淡化
+========================================================= */
+
+#edit-modal > div,
+#budget-add-modal > div,
+#training-stats-list {
+    scrollbar-color:
+        #cbd5e1
+        #f8fafc;
+}
+
+
+#edit-modal > div::-webkit-scrollbar-track,
+#budget-add-modal > div::-webkit-scrollbar-track,
+#training-stats-list::-webkit-scrollbar-track {
+    background:
+        #f8fafc;
+}
+
+/* =========================================================
+   OSCMS｜訓練項目篩選欄防止長文字撐開版面
+========================================================= */
+
+#certificate-panel #itemFilter,
+#budget-panel #budgetItemFilter {
+    overflow:
+        hidden !important;
+
+    white-space:
+        nowrap !important;
+
+    text-overflow:
+        clip !important;
+}
+
+
+/*
+ * 桌機版證照清單：
+ * 所有項目維持固定寬度，
+ * 不再因某一筆訓練項目過長而擠壓搜尋框。
+ */
+@media screen and (min-width: 1024px) {
+
+    #certificate-panel #itemFilter {
+        width:
+            150px !important;
+
+        min-width:
+            150px !important;
+
+        max-width:
+            150px !important;
+
+        flex:
+            0 0 150px !important;
+    }
+}
+
+
+/*
+ * 預算表本身已是四欄等寬 Grid，
+ * 僅限制文字不要撐破所屬 Grid。
+ */
+#budget-panel #budgetItemFilter {
+    min-width:
+        0 !important;
+
+    max-width:
+        100% !important;
+}
+
+/* =========================================================
+   OSCMS｜訓練項目統計卡長名稱防撐開
+========================================================= */
+
+#training-stats-list
+> div
+> .flex:first-child
+> p {
+    flex:
+        1 1 auto !important;
+
+    min-width:
+        0 !important;
+
+    max-width:
+        100% !important;
+
+    overflow:
+        hidden !important;
+
+    white-space:
+        nowrap !important;
+
+text-overflow:
+    clip !important;
+}
+
+
+#training-stats-list
+> div
+> .flex:first-child
+> span {
+    flex:
+        0 0 auto !important;
+
+    white-space:
+        nowrap !important;
+}
+
+.edit-resize-field::-webkit-scrollbar-thumb,
+.budget-textarea::-webkit-scrollbar-thumb,
+.budget-resize-field::-webkit-scrollbar-thumb,
+.budget-training-unit-field::-webkit-scrollbar-thumb,
+.budget-note-field::-webkit-scrollbar-thumb {
+    background:
+        #cbd5e1;
+
+    border-radius:
+        4px;
+}
+
+.edit-resize-field::-webkit-scrollbar-thumb:hover,
+.budget-textarea::-webkit-scrollbar-thumb:hover,
+.budget-resize-field::-webkit-scrollbar-thumb:hover,
+.budget-training-unit-field::-webkit-scrollbar-thumb:hover,
+.budget-note-field::-webkit-scrollbar-thumb:hover {
+    background:
+        #94a3b8;
+}
+
+@media screen and (orientation: landscape) and (max-width: 950px) {
 
     .budget-type-option {
         font-size: 10px;
@@ -4697,6 +5683,209 @@ body.role-editor #budget-panel .budget-save-btn {
     justify-self: start;
 }
 
+/* =========================================================
+   OSCMS｜新年度外訓預算統計表
+   編輯／檢視切換
+
+   外觀比照風險評估系統。
+========================================================= */
+
+#budget-panel
+.budget-edit-toggle-btn {
+    width:
+        36px !important;
+
+    min-width:
+        36px !important;
+
+    max-width:
+        36px !important;
+
+    height:
+        36px !important;
+
+    min-height:
+        36px !important;
+
+    max-height:
+        36px !important;
+
+    padding:
+        0 !important;
+
+    flex:
+        0 0 36px !important;
+
+    border-radius:
+        12px !important;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    font-size:
+        15px;
+
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease;
+
+    box-shadow:
+        0 3px 8px
+        rgba(15, 23, 42, 0.12);
+}
+
+
+/* 檢視模式：
+   顯示藍色編輯圖示 */
+#budget-panel
+.budget-edit-toggle-btn.is-view {
+    background:
+        #ffffff;
+
+    border:
+        1px solid #bfdbfe;
+
+    color:
+        #2563eb;
+}
+
+
+#budget-panel
+.budget-edit-toggle-btn.is-view:hover {
+    background:
+        #eff6ff;
+
+    border-color:
+        #93c5fd;
+}
+
+
+/* 編輯模式：
+   顯示黃色完成圖示 */
+#budget-panel
+.budget-edit-toggle-btn.is-editing {
+    background:
+        #fffbeb;
+
+    border:
+        1px solid #fbbf24;
+
+    color:
+        #b45309;
+}
+
+
+#budget-panel
+.budget-edit-toggle-btn.is-editing:hover {
+    background:
+        #fef3c7;
+
+    border-color:
+        #f59e0b;
+
+    color:
+        #92400e;
+}
+
+
+#budget-panel
+.budget-edit-toggle-btn:active {
+    transform:
+        scale(0.95);
+}
+
+
+#budget-panel
+.budget-edit-toggle-btn i {
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    width:
+        16px !important;
+
+    height:
+        16px !important;
+
+    font-size:
+        15px !important;
+
+    line-height:
+        16px !important;
+}
+
+
+/* =========================================================
+   預算表檢視模式
+
+   檢視模式：
+   所有欄位內的小型 scrollbar 隱藏。
+
+   編輯模式：
+   原本可以編輯的欄位恢復 scrollbar。
+========================================================= */
+
+body:not(.budget-edit-mode)
+#budget-panel
+.budget-textarea,
+
+body:not(.budget-edit-mode)
+#budget-panel
+.budget-resize-field,
+
+body:not(.budget-edit-mode)
+#budget-panel
+.budget-training-unit-field,
+
+body:not(.budget-edit-mode)
+#budget-panel
+.budget-note-field {
+    scrollbar-width:
+        none !important;
+
+    -ms-overflow-style:
+        none;
+}
+
+
+body:not(.budget-edit-mode)
+#budget-panel
+.budget-textarea::-webkit-scrollbar,
+
+body:not(.budget-edit-mode)
+#budget-panel
+.budget-resize-field::-webkit-scrollbar,
+
+body:not(.budget-edit-mode)
+#budget-panel
+.budget-training-unit-field::-webkit-scrollbar,
+
+body:not(.budget-edit-mode)
+#budget-panel
+.budget-note-field::-webkit-scrollbar {
+    width:
+        0 !important;
+
+    height:
+        0 !important;
+
+    display:
+        none !important;
+}
+
 /* 統一 Font Awesome 操作圖示比例 */
 #certificate-panel #add-person-btn i,
 #certificate-panel #save-certificate-btn i,
@@ -5923,6 +7112,49 @@ body.budget-admin-enabled
 
     overscroll-behavior-x: none !important;
     overscroll-behavior-y: contain !important;
+}
+
+/* =========================================================
+   OSCMS｜編輯法規配置基準視窗專屬 scrollbar
+
+   白色圓角 Modal 不使用明顯的方形 Track，
+   避免上下端與圓角邊界產生破圖感。
+========================================================= */
+
+#compliance-settings-modal > div {
+    scrollbar-width:
+        thin;
+
+    scrollbar-color:
+        #cbd5e1
+        transparent;
+}
+
+
+#compliance-settings-modal > div::-webkit-scrollbar {
+    width:
+        7px;
+}
+
+
+#compliance-settings-modal > div::-webkit-scrollbar-track {
+    background:
+        transparent;
+}
+
+
+#compliance-settings-modal > div::-webkit-scrollbar-thumb {
+    background:
+        #cbd5e1;
+
+    border-radius:
+        999px;
+}
+
+
+#compliance-settings-modal > div::-webkit-scrollbar-thumb:hover {
+    background:
+        #94a3b8;
 }
 
 /* 標題列 */
@@ -8867,7 +10099,7 @@ body.role-admin
         onclick="openAddModal()"
 data-tooltip="新增人員"
 aria-label="新增人員"
-class="hidden certificate-icon-action-btn system-tooltip-btn bg-amber-300 text-amber-950 border border-amber-400 rounded-lg hover:bg-amber-400 hover:text-amber-950 hover:border-amber-500 transition flex items-center justify-center shadow-sm">
+class="hidden certificate-icon-action-btn system-tooltip-btn bg-blue-500 text-white border border-blue-500 rounded-lg hover:bg-blue-600 hover:text-white hover:border-blue-600 transition flex items-center justify-center shadow-sm">
     <i class="fas fa-user-plus"
    aria-hidden="true"></i>
 </button>
@@ -8912,7 +10144,7 @@ class="hidden certificate-icon-action-btn system-tooltip-btn bg-emerald-600 text
         </div>
 
         <div class="report-table-container">
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto certificate-table-scroll">
 <table class="w-full border-collapse min-w-[1000px] certificate-table">
     <thead>
                         <tr>
@@ -8925,7 +10157,9 @@ class="hidden certificate-icon-action-btn system-tooltip-btn bg-emerald-600 text
 <th class="table-header-cell certificate-date-cell">上次受訓日期</th>
 <th class="table-header-cell certificate-date-cell">下次複訓日期</th>
 <th class="table-header-cell text-center certificate-status-cell">狀態</th>
-                            <th class="table-header-cell text-center">操作</th>
+                            <th class="table-header-cell text-center certificate-action-header">
+    操作
+</th>
                         </tr>
                     </thead>
                     <tbody id="report-body"></tbody>
@@ -8957,13 +10191,25 @@ class="hidden certificate-icon-action-btn system-tooltip-btn bg-emerald-600 text
 
 <span class="budget-edit-actions budget-admin-only">
 
-    <button type="button"
-            onclick="openBudgetAddModal()"
+<button type="button"
+        onclick="openBudgetAddModal()"
 data-tooltip="新增人員"
 aria-label="新增人員"
-class="budget-add-person-btn system-tooltip-btn bg-amber-300 text-amber-950 border border-amber-400 rounded-xl hover:bg-amber-400 hover:text-amber-950 hover:border-amber-500 transition inline-flex items-center justify-center shadow-sm">
-        <i class="fas fa-user-plus"
+class="budget-add-person-btn system-tooltip-btn bg-blue-500 text-white border border-blue-500 rounded-xl hover:bg-blue-600 hover:text-white hover:border-blue-600 transition inline-flex items-center justify-center shadow-sm">
+    <i class="fas fa-user-plus"
    aria-hidden="true"></i>
+</button>
+
+    <button type="button"
+            id="budget-edit-toggle-btn"
+            onclick="toggleBudgetEditMode()"
+            data-tooltip="編輯模式"
+            aria-label="編輯模式"
+            class="budget-edit-toggle-btn is-view system-tooltip-btn">
+
+        <i class="fa-solid fa-pen-to-square"
+           aria-hidden="true"></i>
+
     </button>
 
     <button type="button"
@@ -9242,7 +10488,8 @@ class="budget-save-btn system-tooltip-btn bg-emerald-600 text-white border borde
 
         <!-- 頂部簡潔標頭 -->
         <div class="relative bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-900 px-5 py-4 text-white">
-            <button onclick="closeLoginModal()"
+            <button type="button"
+        onclick="requestCloseLoginModal()"
                     class="absolute right-3 top-3 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition flex items-center justify-center"
                     title="關閉">
                 <i data-lucide="x" class="w-4 h-4"></i>
@@ -9291,11 +10538,13 @@ class="budget-save-btn system-tooltip-btn bg-emerald-600 text-white border borde
             </div>
 
             <!-- 登入按鈕 -->
-            <button onclick="checkPassword()"
-                    class="w-full h-11 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-black shadow-md shadow-indigo-500/20 transition flex items-center justify-center gap-2">
-                <i data-lucide="log-in" class="w-4 h-4"></i>
-                登入驗證
-            </button>
+<button id="admin-login-submit-btn"
+        type="button"
+        onclick="checkPassword()"
+        class="w-full h-11 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-black shadow-md shadow-indigo-500/20 transition flex items-center justify-center gap-2">
+    <i data-lucide="log-in" class="w-4 h-4"></i>
+    登入驗證
+</button>
 
             <p id="login-error"
                class="hidden text-center text-red-500 text-xs font-bold">
@@ -9308,6 +10557,7 @@ class="budget-save-btn system-tooltip-btn bg-emerald-600 text-white border borde
 
 <!-- 權限與密碼設定 Modal -->
 <div id="change-pwd-modal"
+     onpointerdown="rememberModalBackdropPointerDown(event)"
      onclick="closeChangePasswordModalOutside(event)"
      class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[500] p-4">
     <div onclick="event.stopPropagation()"
@@ -9377,13 +10627,23 @@ class="budget-save-btn system-tooltip-btn bg-emerald-600 text-white border borde
     </span>
 </label>
 
-                <p class="text-[11px] text-slate-400 leading-snug">
-                    使用者權限可編輯、上傳附件、儲存、載入與匯出資料；刪除與權限設定仍限管理者。
-                </p>
+<p class="text-[11px] text-slate-400 leading-snug">
+    使用者權限可編輯、上傳附件、儲存、載入與匯出資料；刪除與權限設定仍限管理者。
+</p>
+
+<p id="pwd-change-error"
+   class="hidden text-center text-red-500 text-[11px] font-bold leading-relaxed">
+</p>
 
 <div class="flex gap-2 pt-1">
-    <button onclick="closeChangePasswordModal()" class="flex-1 bg-slate-100 text-slate-600 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition text-xs">取消</button>
-    <button onclick="savePasswordSettings()"
+    <button type="button"
+        onclick="requestCloseChangePasswordModal()"
+        class="flex-1 bg-slate-100 text-slate-600 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition text-xs">
+    取消
+</button>
+<button id="change-pwd-save-btn"
+        type="button"
+        onclick="savePasswordSettings()"
         class="flex-1 bg-indigo-600 text-white py-1.5 rounded-lg font-bold hover:bg-indigo-700 transition text-xs flex items-center justify-center gap-1.5">
 
     <i class="fa-solid fa-floppy-disk"></i>
@@ -9661,7 +10921,10 @@ class="budget-save-btn system-tooltip-btn bg-emerald-600 text-white border borde
 
 
     <!-- 法規合規基準設定 Modal -->
-    <div id="compliance-settings-modal" onclick="closeComplianceSettingsModalOutside(event)" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[550] p-4">
+    <div id="compliance-settings-modal"
+     onpointerdown="rememberModalBackdropPointerDown(event)"
+     onclick="closeComplianceSettingsModalOutside(event)"
+     class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[550] p-4">
         <div onclick="event.stopPropagation()" class="bg-white p-8 rounded-3xl w-full max-w-lg shadow-2xl scale-in-center max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-start gap-4 mb-6">
                 <div>
@@ -11888,15 +13151,15 @@ gap-1.5">
                 <button onclick="closeAttachmentModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
             <div id="upload-area" class="mb-6">
-                <div id="drop-zone" class="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-indigo-400 transition cursor-pointer group"
-                     onclick="document.getElementById('attach-file-input').click()">
-                    <input type="file" id="attach-file-input" class="hidden" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="handleFileUpload(event)">
-                    <div class="bg-slate-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-indigo-50">
-                        <i data-lucide="upload-cloud" class="w-6 h-6 text-slate-400 group-hover:text-indigo-500"></i>
-                    </div>
-                    <p class="text-sm font-bold text-slate-600">點擊或拖移檔案至此</p>
-                    <p class="text-[10px] text-slate-400 mt-1">支援 PDF, PNG, JPG (IndexedDB 儲存)</p>
-                </div>
+<div id="drop-zone" class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-indigo-400 transition cursor-pointer group"
+     onclick="document.getElementById('attach-file-input').click()">
+    <input type="file" id="attach-file-input" class="hidden" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="handleFileUpload(event)">
+    <div class="bg-slate-50 w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-indigo-50">
+        <i data-lucide="upload-cloud" class="w-5 h-5 text-slate-400 group-hover:text-indigo-500"></i>
+    </div>
+    <p class="text-sm font-bold text-slate-600">點擊或拖移檔案至此</p>
+    <p class="text-[10px] text-slate-400 mt-1">支援 PDF, PNG, JPG；可點擊或直接拖移檔案至此上傳</p>
+</div>
             </div>
             <div class="space-y-3 max-h-[300px] overflow-y-auto pr-2" id="attachment-list"></div>
             <button onclick="closeAttachmentModal()" class="w-full mt-6 bg-slate-800 text-white py-3 rounded-xl font-bold hover:bg-slate-900 transition">完成</button>
@@ -11904,7 +13167,10 @@ gap-1.5">
     </div>
 
     <!-- 預算新增人員 Modal -->
-    <div id="budget-add-modal" onclick="closeBudgetAddModalOutside(event)" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[130] p-4">
+    <div id="budget-add-modal"
+     onpointerdown="rememberModalBackdropPointerDown(event)"
+     onclick="closeBudgetAddModalOutside(event)"
+     class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[130] p-4">
         <div onclick="event.stopPropagation()" class="bg-white p-8 rounded-3xl w-full max-w-lg shadow-2xl scale-in-center max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-6">
                 <div>
@@ -11947,7 +13213,8 @@ gap-1.5">
     </div>
 
     <!-- 編輯紀錄 Modal -->
-    <div id="edit-modal"
+<div id="edit-modal"
+     onpointerdown="rememberModalBackdropPointerDown(event)"
      onclick="closeEditModalOutside(event)"
      class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[120] p-4">
         <div onclick="event.stopPropagation()"
@@ -11968,19 +13235,35 @@ gap-1.5">
                 <input type="hidden" id="edit-id">
 <div class="md:col-span-1 mobile-edit-horizontal">
     <label class="block text-xs font-bold text-slate-500 mb-1">作業單位</label>
-    <textarea id="edit-dept" class="edit-resize-field" placeholder="" oninput="autoResizeEditableField(this)"></textarea>
+    <textarea id="edit-dept"
+          class="edit-resize-field"
+          placeholder=""
+          autocomplete="off"
+          oninput="autoResizeEditableField(this)"></textarea>
 </div>
 <div class="md:col-span-1 mobile-edit-horizontal">
     <label class="block text-xs font-bold text-slate-500 mb-1">姓名</label>
-    <textarea id="edit-name" class="edit-resize-field" oninput="autoResizeEditableField(this)"></textarea>
+    <textarea id="edit-name"
+          class="edit-resize-field"
+          placeholder=""
+          autocomplete="off"
+          oninput="autoResizeEditableField(this)"></textarea>
 </div>
 <div class="md:col-span-2 mobile-edit-horizontal">
     <label class="block text-xs font-bold text-slate-500 mb-1">訓練項目</label>
-    <textarea id="edit-item" class="edit-resize-field" oninput="autoResizeEditableField(this)"></textarea>
+    <textarea id="edit-item"
+          class="edit-resize-field"
+          placeholder=""
+          autocomplete="off"
+          oninput="autoResizeEditableField(this)"></textarea>
 </div>
                 <div class="md:col-span-2">
                     <label class="block text-xs font-bold text-slate-500 mb-1">證書號碼</label>
-                    <textarea id="edit-certNo" class="edit-resize-field" oninput="autoResizeEditableField(this)"></textarea>
+                    <textarea id="edit-certNo"
+          class="edit-resize-field"
+          placeholder=""
+          autocomplete="off"
+          oninput="autoResizeEditableField(this)"></textarea>
                 </div>
                 <div>
 <label class="flex items-center gap-2 text-xs font-bold text-slate-500 mb-1 certificate-nowrap-cell">
@@ -12024,10 +13307,6 @@ const DB_VERSION = 1;
 const STORE_RECORDS = 'records';
 const STORE_CONFIG = 'config';
 
-const DEFAULT_ADMIN_PASSWORD = "admincore1098";
-const DEFAULT_EDITOR_PASSWORD = "teamuser001";
-const DEFAULT_EDITOR_ENABLED = true;
-
 const OSAI_PLATFORM_URL =
     'https://osai-core.vercel.app/';
 
@@ -12042,8 +13321,6 @@ function openOsaiPlatform() {
         'noopener,noreferrer'
     );
 }
-
-const MASTER_RECOVERY_CODE = "SAM-SUN-CORE-RECOVERY";
 
 let db;
 
@@ -12062,7 +13339,7 @@ let db;
                 if (!dbInstance.objectStoreNames.contains(STORE_RECORDS)) {
                     dbInstance.createObjectStore(STORE_RECORDS, { keyPath: 'id' });
                 }
-                // 建立配置儲存區 (用於儲存密碼等)
+                // 建立舊版配置相容儲存區
                 if (!dbInstance.objectStoreNames.contains(STORE_CONFIG)) {
                     dbInstance.createObjectStore(STORE_CONFIG, { keyPath: 'key' });
                 }
@@ -12166,9 +13443,10 @@ async function persistAllRecords(recordsArray) {
     });
 }
 
-    /**
-     * 讀取配置資訊 (密碼)
-     */
+/**
+ * 讀取舊版配置資訊
+ * 僅保留相容既有函式呼叫。
+ */
     async function getConfig(key) {
         return new Promise((resolve) => {
             const transaction = db.transaction([STORE_CONFIG], 'readonly');
@@ -12228,13 +13506,17 @@ async function setConfig(key, value) {
 }
 
 async function clearPersistedSystemData() {
-    /*
-     * 清除舊版本可能殘留於 IndexedDB 的
-     * 證照資料、附件、預算、法規設定與權限資料。
-     *
-     * 正式資料來源改為 JSON；
-     * 正式權限來源改為 GitHub HTML。
-     */
+/*
+ * 清除舊版本可能殘留於 IndexedDB 的
+ * 證照資料、附件、預算、法規設定與舊權限資料。
+ *
+ * 正式工作資料來源：
+ * JSON / Cloud Workspace。
+ *
+ * 正式系統權限來源：
+ * OSAI Core 中央權限服務
+ * osai-system-access。
+ */
     return new Promise((resolve, reject) => {
         const transaction =
             db.transaction(
@@ -12286,19 +13568,66 @@ async function clearPersistedSystemData() {
 let isAdmin = false;
 let isEditor = false;
 
-let systemPassword = DEFAULT_ADMIN_PASSWORD;
-let editorPassword = DEFAULT_EDITOR_PASSWORD;
-let editorEnabled = DEFAULT_EDITOR_ENABLED;
+
+/*
+ * 證照清單手動上下排列狀態。
+ *
+ * false：
+ * 使用原本固定排序規則。
+ *
+ * true：
+ * 使用管理者手動調整後的排列。
+ */
+let isCertificateManualOrderMode =
+    false;
+
+
+/*
+ * 新年度外訓預算統計表
+ * 編輯／檢視狀態。
+ *
+ * 登入管理者或使用者後，
+ * 預設仍維持檢視模式。
+ */
+let isBudgetEditMode =
+    false;
+
+
+/*
+ * =========================================================
+ * OSCMS｜中央登入 Pending 狀態
+ *
+ * 1. 防止登入按鈕或 Enter 重複送出。
+ * 2. 登入驗證期間顯示 Spinner。
+ * 3. 登入成功後先關閉 Modal，
+ *    再恢復原始登入按鈕，
+ *    避免 log-in 圖示瞬間閃現。
+ * =========================================================
+ */
+let isOsaiSystemAccessLoginPending =
+    false;
+
+
+/*
+ * 第一次進入 Pending 時，
+ * 保存登入按鈕原本完整內容。
+ */
+let osaiSystemAccessLoginButtonOriginalHtml =
+    '';
 
 let records = [];
 let currentAttachRecordId = null;
 let complianceBasisFiles = [];
 let budgetRecords = {};
 let budgetFeeDefaults = {};
-let manualBudgetRows = [];
+manualBudgetRows = [];
+isPreviewDataMode = false;
 
-/* 預覽載入模式：只暫存在目前頁面，不寫入瀏覽器 IndexedDB */
-let isPreviewDataMode = false;
+isCertificateManualOrderMode =
+    false;
+
+isBudgetEditMode =
+    false;
 
 /*
  * 限時預覽使用紀錄：
@@ -12389,6 +13718,879 @@ const OSH_CLOUD_VIEW_FUNCTION =
 const OSH_CLOUD_WORKSPACE_FUNCTION =
     `${OSH_CLOUD_PROJECT_URL}/functions/v1/cloud-workspace`;
 
+/* =========================================================
+   OSAI Core｜中央系統權限
+========================================================= */
+
+/*
+ * 七套系統共用中央權限服務。
+ *
+ * 負責：
+ * - Admin / User 登入驗證
+ * - 全域 Admin 密碼
+ * - 全域 User 密碼
+ * - 各系統獨立 User Enabled
+ *
+ * 與：
+ * Cloud Publisher
+ * Cloud Workspace
+ * Cloud Preview
+ *
+ * 為彼此獨立的權限架構。
+ */
+const OSAI_SYSTEM_ACCESS_FUNCTION =
+    `${OSH_CLOUD_PROJECT_URL}/functions/v1/osai-system-access`;
+
+
+/*
+ * 證照管理系統在中央權限服務中的識別碼。
+ */
+const OSAI_ACCESS_SYSTEM_TYPE =
+    'certificate';
+
+
+/*
+ * 中央權限 Session。
+ *
+ * 只存在目前頁面記憶體。
+ * F5 或關閉頁面後自然消失。
+ */
+let osaiSystemAccessSession = {
+    token: '',
+    role: 'viewer',
+    expiresAt: 0
+};
+
+
+/*
+ * 權限設定讀取／儲存狀態。
+ */
+let isOsaiSystemAccessSettingsPending =
+    false;
+
+let isOsaiSystemAccessSettingsReady =
+    false;
+
+
+/*
+ * User Enabled 短期記憶體快取。
+ *
+ * 不保存：
+ * 密碼、Hash、Salt、Token。
+ */
+let osaiSystemAccessSettingsCache = {
+    editorEnabled: null,
+    fetchedAt: 0
+};
+
+
+let osaiSystemAccessSettingsFetchPromise =
+    null;
+
+
+/*
+ * Edge Function Warm-up。
+ */
+let isOsaiSystemAccessWarmupPending =
+    false;
+
+let osaiSystemAccessLastWarmupAt =
+    0;
+
+
+/*
+ * Retry / Timeout。
+ */
+const OSAI_SYSTEM_ACCESS_RETRY_DELAY_MS =
+    350;
+
+const OSAI_SYSTEM_ACCESS_FAST_REQUEST_TIMEOUT_MS =
+    8000;
+
+const OSAI_SYSTEM_ACCESS_REQUEST_TIMEOUT_MS =
+    15000;
+
+const OSAI_SYSTEM_ACCESS_WARMUP_TIMEOUT_MS =
+    5000;
+
+const OSAI_SYSTEM_ACCESS_WARMUP_COOLDOWN_MS =
+    5 * 60 * 1000;
+
+const OSAI_SYSTEM_ACCESS_SETTINGS_CACHE_MAX_AGE_MS =
+    60 * 1000;
+
+
+/* =========================================================
+   OSAI Core｜共用工具
+========================================================= */
+
+function waitOsaiSystemAccess(
+    milliseconds
+) {
+
+    return new Promise(
+        resolve => {
+            setTimeout(
+                resolve,
+                milliseconds
+            );
+        }
+    );
+}
+
+
+function createOsaiSystemAccessError(
+    code,
+    status = 0
+) {
+
+    const error =
+        new Error(
+            String(
+                code ||
+                'ACCESS_SERVICE_ERROR'
+            )
+        );
+
+    error.code =
+        String(
+            code ||
+            'ACCESS_SERVICE_ERROR'
+        );
+
+    error.status =
+        Number(
+            status
+        ) || 0;
+
+    return error;
+}
+
+
+/*
+ * 只有暫時性服務問題才 Retry。
+ *
+ * 不 Retry：
+ * - 密碼錯誤
+ * - User Disabled
+ * - 401
+ * - 403
+ */
+function shouldRetryOsaiSystemAccessRequest(
+    error
+) {
+
+    const code =
+        String(
+            error?.code ||
+            error?.message ||
+            ''
+        );
+
+    const status =
+        Number(
+            error?.status
+        ) || 0;
+
+    if (
+        code ===
+            'ACCESS_SERVICE_TIMEOUT' ||
+        code ===
+            'ACCESS_SERVICE_UNAVAILABLE'
+    ) {
+        return true;
+    }
+
+    if (
+        status >=
+        500
+    ) {
+        return true;
+    }
+
+    return false;
+}
+
+
+/* =========================================================
+   OSAI Core｜Settings Cache
+========================================================= */
+
+function clearOsaiSystemAccessSettingsCache() {
+
+    osaiSystemAccessSettingsCache = {
+        editorEnabled: null,
+        fetchedAt: 0
+    };
+
+    osaiSystemAccessSettingsFetchPromise =
+        null;
+
+    isOsaiSystemAccessSettingsReady =
+        false;
+}
+
+
+function setOsaiSystemAccessSettingsCache(
+    settings
+) {
+
+    osaiSystemAccessSettingsCache = {
+        editorEnabled:
+            settings?.editor_enabled ===
+            true,
+
+        fetchedAt:
+            Date.now()
+    };
+}
+
+
+function hasFreshOsaiSystemAccessSettingsCache() {
+
+    return (
+        typeof
+            osaiSystemAccessSettingsCache
+                .editorEnabled ===
+            'boolean' &&
+
+        osaiSystemAccessSettingsCache
+            .fetchedAt >
+            0 &&
+
+        (
+            Date.now() -
+            osaiSystemAccessSettingsCache
+                .fetchedAt
+        ) <=
+        OSAI_SYSTEM_ACCESS_SETTINGS_CACHE_MAX_AGE_MS
+    );
+}
+
+
+/* =========================================================
+   OSAI Core｜Session
+========================================================= */
+
+function clearOsaiSystemAccessSession() {
+
+    osaiSystemAccessSession = {
+        token: '',
+        role: 'viewer',
+        expiresAt: 0
+    };
+
+    clearOsaiSystemAccessSettingsCache();
+}
+
+
+/*
+ * 中央 Session 已失效時，
+ * 證照系統立即退回 Viewer。
+ *
+  * 不呼叫 finalLogoutConfirm()，
+ * 也不主動清除目前工作資料。
+ */
+function resetLocalRoleAfterOsaiSessionFailure() {
+
+    isAdmin =
+        false;
+
+    isEditor =
+        false;
+
+    clearOsaiSystemAccessSession();
+
+    refreshSystemView();
+}
+
+
+/*
+ * 儲存 Backend 登入成功後
+ * 回傳的正式 Session。
+ */
+function setOsaiSystemAccessSession(
+    data
+) {
+
+    const token =
+        String(
+            data?.session_token ||
+            ''
+        ).trim();
+
+    const role =
+        String(
+            data?.role ||
+            ''
+        ).trim();
+
+    const expiresIn =
+        Number(
+            data?.expires_in
+        ) || 0;
+
+    const systemType =
+        String(
+            data?.system_type ||
+            ''
+        ).trim();
+
+    /*
+     * 防止錯誤系統、未知角色
+     * 或不完整 Session 被接受。
+     */
+    if (
+        !token ||
+        ![
+            'admin',
+            'editor'
+        ].includes(role) ||
+        expiresIn <= 0 ||
+        systemType !==
+            OSAI_ACCESS_SYSTEM_TYPE
+    ) {
+
+        throw createOsaiSystemAccessError(
+            'ACCESS_SESSION_RESPONSE_INVALID'
+        );
+    }
+
+    /*
+     * 提前 30 秒視為到期。
+     */
+    osaiSystemAccessSession = {
+        token,
+        role,
+
+        expiresAt:
+            Date.now() +
+            Math.max(
+                0,
+                expiresIn - 30
+            ) *
+            1000
+    };
+}
+
+
+function hasValidOsaiSystemAccessSession() {
+
+    return (
+        !!osaiSystemAccessSession
+            .token &&
+
+        osaiSystemAccessSession
+            .expiresAt >
+        Date.now()
+    );
+}
+
+
+/*
+ * Backend 哪些錯誤代表
+ * Session 已失效。
+ */
+function isOsaiSystemAccessSessionError(
+    error
+) {
+
+    const code =
+        String(
+            error?.code ||
+            error?.message ||
+            ''
+        );
+
+    return [
+        'SYSTEM_SESSION_INVALID',
+        'SYSTEM_SESSION_EXPIRED',
+        'ADMIN_LOGIN_REQUIRED',
+        'ADMIN_PERMISSION_REQUIRED',
+        'SYSTEM_SESSION_MISMATCH'
+    ].includes(
+        code
+    );
+}
+
+
+/* =========================================================
+   OSAI Core｜Request Adapter
+========================================================= */
+
+async function osaiSystemAccessRequest(
+    requestBody,
+    options = {}
+) {
+
+    const requiresSession =
+        options?.requiresSession ===
+        true;
+
+    const timeoutMs =
+        Math.max(
+            1000,
+            Number(
+                options?.timeoutMs
+            ) ||
+            OSAI_SYSTEM_ACCESS_REQUEST_TIMEOUT_MS
+        );
+
+    const headers = {
+        apikey:
+            OSH_CLOUD_PUBLISHABLE_KEY,
+
+        'Content-Type':
+            'application/json'
+    };
+
+
+    /*
+     * get-settings / update-settings
+     * 必須使用中央 Session。
+     */
+    if (
+        requiresSession
+    ) {
+
+        if (
+            !hasValidOsaiSystemAccessSession()
+        ) {
+
+            clearOsaiSystemAccessSession();
+
+            throw createOsaiSystemAccessError(
+                'SYSTEM_SESSION_EXPIRED',
+                401
+            );
+        }
+
+        headers.Authorization =
+            `Bearer ${
+                osaiSystemAccessSession.token
+            }`;
+    }
+
+
+    const controller =
+        new AbortController();
+
+    const timeoutId =
+        setTimeout(
+            () => {
+                controller.abort();
+            },
+            timeoutMs
+        );
+
+    let response;
+
+    try {
+
+        response =
+            await fetch(
+                OSAI_SYSTEM_ACCESS_FUNCTION,
+                {
+                    method:
+                        'POST',
+
+                    headers,
+
+                    signal:
+                        controller.signal,
+
+                    body:
+                        JSON.stringify(
+                            requestBody
+                        )
+                }
+            );
+
+    } catch (error) {
+
+        if (
+            error?.name ===
+            'AbortError'
+        ) {
+
+            throw createOsaiSystemAccessError(
+                'ACCESS_SERVICE_TIMEOUT'
+            );
+        }
+
+        console.error(
+            '中央權限服務連線失敗：',
+            error
+        );
+
+        throw createOsaiSystemAccessError(
+            'ACCESS_SERVICE_UNAVAILABLE'
+        );
+
+    } finally {
+
+        clearTimeout(
+            timeoutId
+        );
+    }
+
+
+    let data = {};
+
+    try {
+
+        data =
+            await response.json();
+
+    } catch (error) {
+
+        console.error(
+            '中央權限服務回應解析失敗：',
+            error
+        );
+    }
+
+
+    if (
+        !response.ok ||
+        data?.ok !==
+        true
+    ) {
+
+        const code =
+            String(
+                data?.error ||
+                'ACCESS_SERVICE_ERROR'
+            );
+
+        const accessError =
+            createOsaiSystemAccessError(
+                code,
+                response.status
+            );
+
+        if (
+            isOsaiSystemAccessSessionError(
+                accessError
+            )
+        ) {
+            clearOsaiSystemAccessSession();
+        }
+
+        throw accessError;
+    }
+
+
+    return data;
+}
+
+
+/* =========================================================
+   OSAI Core｜Read-only Retry
+========================================================= */
+
+async function osaiSystemAccessRequestWithRetry(
+    requestBody,
+    options = {}
+) {
+
+    let lastError =
+        null;
+
+    const attempts =
+        2;
+
+    for (
+        let attempt = 1;
+        attempt <= attempts;
+        attempt += 1
+    ) {
+
+        try {
+
+            return await osaiSystemAccessRequest(
+                requestBody,
+                {
+                    ...options,
+
+                    timeoutMs:
+                        options?.timeoutMs ||
+                        OSAI_SYSTEM_ACCESS_FAST_REQUEST_TIMEOUT_MS
+                }
+            );
+
+        } catch (error) {
+
+            lastError =
+                error;
+
+            if (
+                !shouldRetryOsaiSystemAccessRequest(
+                    error
+                ) ||
+                attempt >=
+                    attempts
+            ) {
+                throw error;
+            }
+
+            await waitOsaiSystemAccess(
+                OSAI_SYSTEM_ACCESS_RETRY_DELAY_MS
+            );
+        }
+    }
+
+    throw lastError;
+}
+
+
+/* =========================================================
+   OSAI Core｜Login / Settings API
+========================================================= */
+
+async function osaiSystemAccessLogin(
+    password
+) {
+
+    clearOsaiSystemAccessSession();
+
+    const data =
+        await osaiSystemAccessRequestWithRetry(
+            {
+                action:
+                    'login',
+
+                system_type:
+                    OSAI_ACCESS_SYSTEM_TYPE,
+
+                password:
+                    String(
+                        password ||
+                        ''
+                    )
+            }
+        );
+
+    setOsaiSystemAccessSession(
+        data
+    );
+
+
+    /*
+     * Admin 登入成功後
+     * 背景預抓 User Enabled。
+     */
+    if (
+        data?.role ===
+        'admin'
+    ) {
+
+        prefetchOsaiSystemAccessSettings();
+    }
+
+    return data;
+}
+
+
+async function osaiSystemAccessGetSettings() {
+
+    return await osaiSystemAccessRequestWithRetry(
+        {
+            action:
+                'get-settings',
+
+            system_type:
+                OSAI_ACCESS_SYSTEM_TYPE
+        },
+        {
+            requiresSession:
+                true
+        }
+    );
+}
+
+
+async function osaiSystemAccessUpdateSettings(
+    settings
+) {
+
+    return await osaiSystemAccessRequest(
+        {
+            action:
+                'update-settings',
+
+            system_type:
+                OSAI_ACCESS_SYSTEM_TYPE,
+
+            ...settings
+        },
+        {
+            requiresSession:
+                true
+        }
+    );
+}
+
+
+/* =========================================================
+   OSAI Core｜Settings Cache Fetch
+========================================================= */
+
+async function refreshOsaiSystemAccessSettingsCache() {
+
+    if (
+        osaiSystemAccessSettingsFetchPromise
+    ) {
+        return await
+            osaiSystemAccessSettingsFetchPromise;
+    }
+
+    osaiSystemAccessSettingsFetchPromise =
+        (
+            async () => {
+
+                const settings =
+                    await osaiSystemAccessGetSettings();
+
+                setOsaiSystemAccessSettingsCache(
+                    settings
+                );
+
+                return settings;
+            }
+        )();
+
+    try {
+
+        return await
+            osaiSystemAccessSettingsFetchPromise;
+
+    } finally {
+
+        osaiSystemAccessSettingsFetchPromise =
+            null;
+    }
+}
+
+
+function prefetchOsaiSystemAccessSettings() {
+
+    if (
+        !hasValidOsaiSystemAccessSession() ||
+        osaiSystemAccessSession.role !==
+            'admin'
+    ) {
+        return;
+    }
+
+    void refreshOsaiSystemAccessSettingsCache()
+        .catch(
+            () => {
+                /*
+                 * 背景預抓失敗不提示。
+                 * 真正開設定視窗時
+                 * 會重新正式取得。
+                 */
+            }
+        );
+}
+
+
+/* =========================================================
+   OSAI Core｜Edge Function Warm-up
+========================================================= */
+
+async function warmUpOsaiSystemAccessService() {
+
+    const now =
+        Date.now();
+
+    if (
+        isOsaiSystemAccessWarmupPending
+    ) {
+        return;
+    }
+
+    if (
+        osaiSystemAccessLastWarmupAt >
+            0 &&
+        (
+            now -
+            osaiSystemAccessLastWarmupAt
+        ) <
+        OSAI_SYSTEM_ACCESS_WARMUP_COOLDOWN_MS
+    ) {
+        return;
+    }
+
+    isOsaiSystemAccessWarmupPending =
+        true;
+
+    const controller =
+        new AbortController();
+
+    const timeoutId =
+        setTimeout(
+            () => {
+                controller.abort();
+            },
+            OSAI_SYSTEM_ACCESS_WARMUP_TIMEOUT_MS
+        );
+
+    try {
+
+        const response =
+            await fetch(
+                OSAI_SYSTEM_ACCESS_FUNCTION,
+                {
+                    method:
+                        'POST',
+
+                    headers: {
+                        apikey:
+                            OSH_CLOUD_PUBLISHABLE_KEY,
+
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    signal:
+                        controller.signal,
+
+                    body:
+                        JSON.stringify(
+                            {
+                                action:
+                                    'health'
+                            }
+                        )
+                }
+            );
+
+        if (
+            response.ok
+        ) {
+
+            osaiSystemAccessLastWarmupAt =
+                Date.now();
+        }
+
+    } catch (error) {
+
+        /*
+         * Warm-up 失敗不干擾 Viewer。
+         */
+
+    } finally {
+
+        clearTimeout(
+            timeoutId
+        );
+
+        isOsaiSystemAccessWarmupPending =
+            false;
+    }
+}    
 
 /* =========================================================
    Cloud Publisher Session
@@ -27385,6 +29587,12 @@ function clearViewerWorkingData() {
 manualBudgetRows = [];
 isPreviewDataMode = false;
 
+isCertificateManualOrderMode =
+    false;
+
+isBudgetEditMode =
+    false;
+
 /*
  * 新工作階段／登出／退出預覽時，
  * 一併清除尚未儲存及尚未匯出狀態。
@@ -27511,6 +29719,31 @@ function exitPreviewMode() {
             return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char];
         });
     }
+
+/*
+ * 訓練項目畫面顯示限制。
+ *
+ * 只處理顯示文字，
+ * 不修改原始資料、篩選值或匯出內容。
+ */
+function formatTrainingItemDisplay(value, maxLength = 10) {
+
+    const text =
+        String(
+            value ??
+            ''
+        );
+
+    const characters =
+        Array.from(text);
+
+    return characters
+        .slice(
+            0,
+            maxLength
+        )
+        .join('');
+}    
 
     function getStoredFileType(file) {
         if (!file) return 'unknown';
@@ -28058,6 +30291,319 @@ function closeAuxiliaryTooltip(element) {
     element.classList.remove('is-open');
 }
 
+/*
+ * =========================================================
+ * OSCMS｜完整證書號碼 Tooltip
+ * =========================================================
+ */
+
+function positionCertificateNumberTooltip(element) {
+
+    if (!element) return;
+
+    const panel =
+        element.querySelector(
+            '.certificate-number-tooltip-panel'
+        );
+
+    if (!panel) return;
+
+    const rect =
+        element.getBoundingClientRect();
+
+
+    /*
+     * 不再由 JavaScript 固定 Tooltip 寬度。
+     *
+     * 寬度完全交給 CSS：
+     * - 短內容：依實際內容縮短
+     * - 長內容：最多 280px
+     * - 超過後自動換行
+     */
+    panel.style.width =
+        '';
+
+    /*
+     * 先移到畫面外，
+     * 取得 CSS 計算完成後的實際尺寸。
+     */
+    panel.style.left =
+        '-9999px';
+
+    panel.style.top =
+        '-9999px';
+
+
+    const panelRect =
+        panel.getBoundingClientRect();
+
+
+    const panelWidth =
+        Math.min(
+            panelRect.width || 120,
+            Math.max(
+                120,
+                window.innerWidth - 24
+            )
+        );
+
+
+    const panelHeight =
+        panelRect.height ||
+        30;
+
+
+    /*
+     * 預設與證書號碼左側對齊。
+     */
+    let left =
+        rect.left;
+
+
+    /*
+     * 避免超出畫面右側。
+     */
+    left =
+        Math.max(
+            12,
+            Math.min(
+                left,
+                window.innerWidth -
+                panelWidth -
+                12
+            )
+        );
+
+
+    /*
+     * 原則上顯示於證書號碼下方。
+     */
+    let top =
+        rect.bottom +
+        8;
+
+
+    /*
+     * 下方空間不足時，
+     * 自動改到上方。
+     */
+    if (
+        top +
+        panelHeight >
+        window.innerHeight -
+        12
+    ) {
+
+        top =
+            Math.max(
+                12,
+                rect.top -
+                panelHeight -
+                8
+            );
+    }
+
+
+    panel.style.left =
+        `${Math.round(left)}px`;
+
+    panel.style.top =
+        `${Math.round(top)}px`;
+}
+
+
+function toggleCertificateNumberTooltip(
+    event,
+    element
+) {
+
+    event.stopPropagation();
+
+    if (!element) return;
+
+    const shouldOpen =
+        !element.classList.contains(
+            'is-open'
+        );
+
+    /*
+     * 關閉其他證書號碼。
+     */
+    document
+        .querySelectorAll(
+            '.certificate-number-tooltip-wrap.is-open'
+        )
+        .forEach(item => {
+            item.classList.remove(
+                'is-open'
+            );
+        });
+
+    /*
+     * 同時關閉法定專職／輔助 Tooltip，
+     * 避免多個浮動視窗一起出現。
+     */
+    document
+        .querySelectorAll(
+            '.legal-duty-tooltip-wrap.is-open, .auxiliary-tooltip-wrap.is-open'
+        )
+        .forEach(item => {
+            item.classList.remove(
+                'is-open'
+            );
+        });
+
+    if (!shouldOpen) {
+        return;
+    }
+
+    positionCertificateNumberTooltip(
+        element
+    );
+
+    element.classList.add(
+        'is-open'
+    );
+}
+
+
+async function copyCertificateNumber(
+    event,
+    button
+) {
+
+    event.stopPropagation();
+
+    const wrapper =
+        button?.closest(
+            '.certificate-number-tooltip-wrap'
+        );
+
+    const value =
+        wrapper?.dataset
+            .certificateNumber ||
+        '';
+
+    if (!value) return;
+
+    let copied =
+        false;
+
+    /*
+     * 優先使用 Clipboard API。
+     */
+    try {
+
+        if (
+            navigator.clipboard &&
+            window.isSecureContext
+        ) {
+
+            await navigator.clipboard
+                .writeText(
+                    value
+                );
+
+            copied =
+                true;
+        }
+
+    } catch (error) {
+        copied =
+            false;
+    }
+
+
+    /*
+     * 舊瀏覽器／非安全環境備援。
+     */
+    if (!copied) {
+
+        const textarea =
+            document.createElement(
+                'textarea'
+            );
+
+        textarea.value =
+            value;
+
+        textarea.style.position =
+            'fixed';
+
+        textarea.style.left =
+            '-9999px';
+
+        textarea.setAttribute(
+            'readonly',
+            ''
+        );
+
+        document.body.appendChild(
+            textarea
+        );
+
+        textarea.select();
+
+        try {
+
+            copied =
+                document.execCommand(
+                    'copy'
+                );
+
+        } catch (error) {
+
+            copied =
+                false;
+        }
+
+        textarea.remove();
+    }
+
+
+/*
+ * 複製成功時，
+ * 圖示短暫改成勾勾。
+ */
+const icon =
+    button.querySelector(
+        'i'
+    );
+
+if (!icon) return;
+
+if (copied) {
+
+    icon.className =
+        'fa-solid fa-check';
+
+    button.style.color =
+        '#86efac';
+
+} else {
+
+    icon.className =
+        'fa-solid fa-xmark';
+
+    button.style.color =
+        '#fca5a5';
+}
+
+
+window.setTimeout(
+    () => {
+
+        icon.className =
+            'fa-solid fa-copy';
+
+        button.style.color =
+            '';
+
+    },
+    1000
+);
+}
+
     function renderStatusIconHTML(isComplete, completeIcon = 'check-circle-2') {
         if (isComplete) return `<i data-lucide="${completeIcon}" class="w-5 h-5"></i>`;
         return `<span class="text-lg font-black leading-none" aria-hidden="true">!</span>`;
@@ -28191,7 +30737,16 @@ updateComplianceBasisButton();
             trainingList.innerHTML = trainingStats.map(stat => `
                 <div class="rounded-2xl border border-slate-100 bg-slate-50/70 p-3">
                     <div class="flex items-center justify-between gap-3 mb-2">
-                        <p class="font-black text-slate-800 text-sm truncate" title="${escapeHTML(stat.item)}">${escapeHTML(stat.item)}</p>
+                        <p
+    class="font-black text-slate-800 text-sm truncate"
+    title="${escapeHTML(stat.item)}"
+>
+    ${escapeHTML(
+        formatTrainingItemDisplay(
+            stat.item
+        )
+    )}
+</p>
                         <span class="text-xs font-black text-indigo-600 bg-indigo-50 rounded-full px-2.5 py-1">${stat.total} 人</span>
                     </div>
 <div class="grid grid-cols-4 gap-2 text-center">
@@ -28236,9 +30791,70 @@ function openComplianceSettingsModal() {
         document.getElementById('compliance-settings-modal').classList.add('hidden');
     }
 
-    function closeComplianceSettingsModalOutside(event) {
-        if (event.target === event.currentTarget) closeComplianceSettingsModal();
+/*
+ * =========================================================
+ * OSCMS｜Modal 外部點擊關閉保護
+ *
+ * 避免使用者在 Modal 內拖曳反藍文字時，
+ * 滑鼠放開於背景區而被誤判為外部點擊。
+ *
+ * 只有：
+ * 1. PointerDown 起點在 Modal 背景
+ * 2. Click 終點也在 Modal 背景
+ *
+ * 才允許關閉視窗。
+ * =========================================================
+ */
+
+function rememberModalBackdropPointerDown(event) {
+
+    const modal =
+        event?.currentTarget;
+
+    if (!modal) return;
+
+    modal.dataset.backdropPointerDown =
+        event.target === modal
+            ? '1'
+            : '0';
+}
+
+
+function shouldCloseModalFromBackdropClick(event) {
+
+    const modal =
+        event?.currentTarget;
+
+    if (!modal) {
+        return false;
     }
+
+    const startedOnBackdrop =
+        modal.dataset.backdropPointerDown ===
+        '1';
+
+    /*
+     * 每次 Click 判斷完成後重設。
+     */
+    modal.dataset.backdropPointerDown =
+        '';
+
+    return (
+        startedOnBackdrop &&
+        event.target === modal
+    );
+}
+
+function closeComplianceSettingsModalOutside(event) {
+
+    if (
+        shouldCloseModalFromBackdropClick(
+            event
+        )
+    ) {
+        closeComplianceSettingsModal();
+    }
+}
 
     function updateComplianceRequirementPreview() {
         const typeKey = document.getElementById('compliance-business-type')?.value || complianceSettings.businessTypeKey;
@@ -28319,9 +30935,95 @@ await setConfig(
 
     // --- UI 初始化功能 ---
 
-    function initIcons() {
-        if (typeof lucide !== 'undefined') lucide.createIcons();
+/*
+ * =========================================================
+ * OSCMS｜一般功能按鈕 Tooltip 統一
+ * =========================================================
+ *
+ * 所有按鈕／圖示型 title 提示，
+ * 自動轉成與「儲存資料」相同的小黑框。
+ *
+ * 排除：
+ * - 法定專職 (不可兼任)
+ * - 兼任 / 輔助
+ *
+ * 表單輸入欄位的 title 操作說明不處理，
+ * 避免影響原有輸入提示。
+ */
+function applyUnifiedSystemTooltips() {
+
+    document
+        .querySelectorAll(
+            'button[title], a[title], [role="button"][title]'
+        )
+        .forEach(element => {
+
+            /*
+             * 法定應置人員兩套特殊 Tooltip
+             * 完整保留原本樣式。
+             */
+            if (
+                element.closest(
+                    '.legal-duty-tooltip-wrap, .auxiliary-tooltip-wrap'
+                )
+            ) {
+                return;
+            }
+
+            const tooltipText =
+                String(
+                    element.getAttribute(
+                        'title'
+                    ) ||
+                    ''
+                ).trim();
+
+            if (!tooltipText) {
+                return;
+            }
+
+            /*
+             * 保留無障礙文字。
+             */
+            if (
+                !element.hasAttribute(
+                    'aria-label'
+                )
+            ) {
+                element.setAttribute(
+                    'aria-label',
+                    tooltipText
+                );
+            }
+
+            /*
+             * 改用系統統一 Tooltip。
+             */
+            element.dataset.tooltip =
+                tooltipText;
+
+            element.removeAttribute(
+                'title'
+            );
+
+            element.classList.add(
+                'system-tooltip-btn'
+            );
+        });
+}
+
+
+function initIcons() {
+
+    if (
+        typeof lucide !==
+        'undefined'
+    ) {
+        lucide.createIcons();
     }
+
+    applyUnifiedSystemTooltips();
+}
 
 function setTodayDate() {
     const dateDisplay = document.getElementById('current-date-display');
@@ -28424,13 +31126,46 @@ function calculateNextDate(lastDateStr, cycleStr) {
         const items = [...new Set(records.map(r => r.item))].filter(Boolean).sort();
         
         itemFilter.innerHTML = '<option value="">所有項目</option>';
-        items.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item;
-            option.textContent = item;
-            if (item === currentVal) option.selected = true;
-            itemFilter.appendChild(option);
-        });
+items.forEach(item => {
+
+    const option =
+        document.createElement(
+            'option'
+        );
+
+    /*
+     * value 保留完整訓練項目，
+     * 所以原本篩選判斷完全不變。
+     */
+    option.value =
+        item;
+
+    /*
+     * 畫面最多顯示 10 個字。
+     */
+    option.textContent =
+        formatTrainingItemDisplay(
+            item
+        );
+
+    /*
+     * 桌機可由原生提示看到完整名稱。
+     */
+    option.title =
+        item;
+
+    if (
+        item ===
+        currentVal
+    ) {
+        option.selected =
+            true;
+    }
+
+    itemFilter.appendChild(
+        option
+    );
+});
     }
 
     function getRecordRetrainingYear(record) {
@@ -28586,13 +31321,36 @@ return [...syncedRows, ...manualRows].sort((a, b) =>
 
         const items = [...new Set(rows.map(row => row.item).filter(Boolean))].sort();
         itemFilter.innerHTML = '<option value="">所有項目</option>';
-        items.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item;
-            option.textContent = item;
-            if (item === currentItem) option.selected = true;
-            itemFilter.appendChild(option);
-        });
+items.forEach(item => {
+
+    const option =
+        document.createElement(
+            'option'
+        );
+
+    option.value =
+        item;
+
+    option.textContent =
+        formatTrainingItemDisplay(
+            item
+        );
+
+    option.title =
+        item;
+
+    if (
+        item ===
+        currentItem
+    ) {
+        option.selected =
+            true;
+    }
+
+    itemFilter.appendChild(
+        option
+    );
+});
 
         const years = new Set();
         for (let year = currentYear - 1; year <= currentYear + 5; year++) years.add(year);
@@ -28644,8 +31402,18 @@ return [...syncedRows, ...manualRows].sort((a, b) =>
         return ['dept', 'name', 'item', 'retrainingDate'].includes(field);
     }
 
-async function saveBudgetField(rowId, year, field, value, itemName = '', sourceType = 'synced') {
-    if (!canEditData()) return;
+async function saveBudgetField(
+    rowId,
+    year,
+    field,
+    value,
+    itemName = '',
+    sourceType = 'synced'
+) {
+
+    if (!canEditBudgetNow()) {
+        return;
+    }
 
     if (isPreviewDataMode) {
         alert('目前為預覽資料模式，不能保存預算欄位。請先以使用者或管理者身分正式載入資料後再操作。');
@@ -28826,13 +31594,157 @@ if (el.classList.contains('edit-resize-field')) {
             </div>`;
     }
 
+/* =========================================================
+   OSCMS｜外訓預算表 編輯／檢視控制
+========================================================= */
+
+function canEditBudgetNow() {
+
+    return (
+        canEditData() &&
+        !isPreviewDataMode &&
+        isBudgetEditMode
+    );
+}
+
+
+function updateBudgetEditModeControls() {
+
+    const editBtn =
+        document.getElementById(
+            'budget-edit-toggle-btn'
+        );
+
+
+    const showControls =
+        canEditData() &&
+        !isPreviewDataMode;
+
+
+    /*
+     * 未登入或進入預覽資料時，
+     * 一律退出預算編輯模式。
+     */
+    if (!showControls) {
+
+        isBudgetEditMode =
+            false;
+    }
+
+
+    document.body.classList.toggle(
+        'budget-edit-mode',
+        showControls &&
+        isBudgetEditMode
+    );
+
+
+    if (!editBtn) {
+        return;
+    }
+
+
+    editBtn.classList.toggle(
+        'hidden',
+        !showControls
+    );
+
+
+    editBtn.classList.toggle(
+        'is-view',
+        !isBudgetEditMode
+    );
+
+
+    editBtn.classList.toggle(
+        'is-editing',
+        isBudgetEditMode
+    );
+
+
+    /*
+     * 完全比照風險評估：
+     *
+     * 檢視 → 編輯筆
+     * 編輯 → 完成勾
+     */
+    editBtn.innerHTML = `
+        <i class="fa-solid ${
+            isBudgetEditMode
+                ? 'fa-circle-check'
+                : 'fa-pen-to-square'
+        }"
+        aria-hidden="true"></i>
+    `;
+
+
+    const modeLabel =
+        isBudgetEditMode
+            ? '檢視模式'
+            : '編輯模式';
+
+
+    editBtn.setAttribute(
+        'data-tooltip',
+        modeLabel
+    );
+
+
+    editBtn.setAttribute(
+        'aria-label',
+        modeLabel
+    );
+}
+
+
+function toggleBudgetEditMode() {
+
+    if (!canEditData()) {
+
+        openLoginModal();
+
+        return;
+    }
+
+
+    if (isPreviewDataMode) {
+
+        showToast(
+            '目前為預覽資料模式，不能進入編輯模式。',
+            'warning'
+        );
+
+        return;
+    }
+
+
+    isBudgetEditMode =
+        !isBudgetEditMode;
+
+
+    updateBudgetEditModeControls();
+
+
+    /*
+     * 重新產生報表，
+     * 讓所有欄位同步切換
+     * Disabled / Editable。
+     */
+    renderBudgetReport();
+}   
+
     function renderBudgetReport() {
         const tableBody = document.getElementById('budget-report-body');
         if (!tableBody) return;
 
-        document.body.classList.toggle('budget-admin-enabled', canEditData());
+document.body.classList.toggle(
+    'budget-admin-enabled',
+    canEditData()
+);
 
-        const itemFilter = document.getElementById('budgetItemFilter')?.value || '';
+updateBudgetEditModeControls();
+
+const itemFilter = document.getElementById('budgetItemFilter')?.value || '';
         const yearFilter = document.getElementById('budgetYearFilter')?.value || '';
 
         const rows = getBudgetSourceRows().filter(row => {
@@ -28860,11 +31772,30 @@ if (el.classList.contains('edit-resize-field')) {
         }
 
         tableBody.innerHTML = rows.map((row, index) => {
-const disabledAttr = canEditData() ? '' : 'disabled';
-const inputTitle = canEditData() ? '可編輯，支援方向鍵與 Enter 跳欄' : '請登入使用者或管理者模式後編輯';
+const budgetEditableNow =
+    canEditBudgetNow();
+
+
+const disabledAttr =
+    budgetEditableNow
+        ? ''
+        : 'disabled';
+
+
+const inputTitle =
+    budgetEditableNow
+        ? '可編輯，支援方向鍵與 Enter 跳欄'
+        : (
+            canEditData()
+                ? '目前為檢視模式，請先切換至編輯模式'
+                : '請登入使用者或管理者模式後編輯'
+        );
             const safeItem = escapeJSString(row.item);
             const safeSource = escapeJSString(row.sourceType);
-const canEditBase = canEditData() && row.sourceType === 'manual';
+const canEditBase =
+    budgetEditableNow &&
+    row.sourceType ===
+        'manual';
             const baseDisabled = canEditBase ? '' : 'disabled';
 
 return `
@@ -28872,7 +31803,7 @@ return `
 <td class="table-cell font-mono text-slate-400 text-sm text-center budget-index-cell">
     <div class="budget-index-inner">
         <span class="budget-index-number">${index + 1}</span>
-        ${row.sourceType === 'manual' && isAdmin ? `
+        ${row.sourceType === 'manual' && isAdmin && budgetEditableNow ? `
     <span class="budget-index-actions">
 <button type="button"
         onclick="removeBudgetManualRow('${escapeJSString(row.recordId)}')"
@@ -28905,7 +31836,7 @@ return `
                         ${renderBudgetTypeSelector(row, index, 3, disabledAttr)}
                     </td>
 <td class="table-cell text-slate-500 budget-date-cell">
-${canEditData() ? `
+${budgetEditableNow ? `
         <input type="date" class="budget-input budget-date-field" title="${row.sourceType === 'manual' ? inputTitle : '由證照清單受訓日期同步'}" value="${escapeHTML(row.retrainingDate)}" ${baseDisabled}
                data-budget-row="${index}" data-budget-col="4" onkeydown="handleBudgetCellKeydown(event)"
                onchange="saveBudgetField('${escapeJSString(row.recordId)}', ${row.year}, 'retrainingDate', this.value, '${safeItem}', '${safeSource}')">
@@ -28944,12 +31875,19 @@ async function saveBudgetRecordsNow() {
 }
 
 function openBudgetAddModal() {
+
     if (!canEditData()) {
+
         openLoginModal();
+
         return;
     }
 
-    const form = document.getElementById('budget-add-form');
+
+    const form =
+        document.getElementById(
+            'budget-add-form'
+        );
     if (form) form.reset();
 
     const dateInput = document.getElementById('budget-add-date');
@@ -28963,23 +31901,85 @@ function openBudgetAddModal() {
         document.getElementById('budget-add-modal')?.classList.add('hidden');
     }
 
-    function closeBudgetAddModalOutside(event) {
-        if (event.target === event.currentTarget) closeBudgetAddModal();
+function closeBudgetAddModalOutside(event) {
+
+    if (
+        shouldCloseModalFromBackdropClick(
+            event
+        )
+    ) {
+        closeBudgetAddModal();
     }
+}
 
 async function saveBudgetManualRow() {
-    if (!canEditData()) return;
-        const row = {
-            id: `manual-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-            dept: document.getElementById('budget-add-dept')?.value || '未設定',
-            name: document.getElementById('budget-add-name')?.value || '未命名',
-            item: document.getElementById('budget-add-item')?.value || '未設定項目',
-            retrainingDate: document.getElementById('budget-add-date')?.value || `${new Date().getFullYear()}-01-01`,
-            trainingType: document.getElementById('budget-add-type')?.value || '複訓',
-            trainingUnit: '',
-            fee: '',
-            note: ''
-        };
+
+    if (
+        !canEditData() ||
+        isPreviewDataMode
+    ) {
+        return;
+    }
+const row = {
+
+    id:
+        `manual-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+
+    dept:
+        String(
+            document
+                .getElementById(
+                    'budget-add-dept'
+                )
+                ?.value ||
+            ''
+        ).trim(),
+
+    name:
+        String(
+            document
+                .getElementById(
+                    'budget-add-name'
+                )
+                ?.value ||
+            ''
+        ).trim(),
+
+    item:
+        String(
+            document
+                .getElementById(
+                    'budget-add-item'
+                )
+                ?.value ||
+            ''
+        ).trim(),
+
+    retrainingDate:
+        document
+            .getElementById(
+                'budget-add-date'
+            )
+            ?.value ||
+        `${new Date().getFullYear()}-01-01`,
+
+    trainingType:
+        document
+            .getElementById(
+                'budget-add-type'
+            )
+            ?.value ||
+        '複訓',
+
+    trainingUnit:
+        '',
+
+    fee:
+        '',
+
+    note:
+        ''
+};
 manualBudgetRows.push(row);
 
 markCertificateDirty();
@@ -29130,9 +32130,22 @@ await persistBudgetData();
         if (records.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="10" class="p-20 text-center text-slate-400">目前尚無資料，可載入預覽資料或使用權限登入。</td></tr>';
         } else {
-            [...records]
-    .sort((a, b) => compareTrainingItemDateDeptName(a, b, 'lastDate'))
-    .forEach(record => {
+
+            const certificateDisplayRecords =
+                isCertificateManualOrderMode
+                    ? [...records]
+                    : [...records].sort(
+                        (a, b) =>
+                            compareTrainingItemDateDeptName(
+                                a,
+                                b,
+                                'lastDate'
+                            )
+                    );
+
+
+            certificateDisplayRecords.forEach(
+                record => {
                 const nextDate = calculateNextDate(record.lastDate, record.cycle);
                 const status = getDisplayStatusInfo(record, nextDate);
                 const hasAttachments = record.attachments && record.attachments.length > 0;
@@ -29170,10 +32183,94 @@ row.className = "table-row";
                         <td class="table-cell font-mono text-slate-400 text-sm text-center certificate-index-cell">${visibleCount}</td>
                         <td class="table-cell font-medium text-slate-500 certificate-dept-cell">${record.dept}</td>
                         <td class="table-cell font-bold text-slate-800 certificate-name-cell">${record.name}</td>
-                        <td class="table-cell font-semibold text-indigo-600 certificate-item-cell">${record.item}</td>
+<td
+    class="table-cell font-semibold text-indigo-600 certificate-item-cell"
+>
+<span
+    class="certificate-number-tooltip-wrap"
+    data-certificate-number="${escapeHTML(record.item || '')}"
+    onclick="toggleCertificateNumberTooltip(event, this)"
+>
+
+        <button
+            type="button"
+            class="certificate-number-tooltip-trigger training-item-tooltip-trigger"
+            aria-label="查看完整訓練項目：${escapeHTML(record.item || '')}"
+        >
+            ${escapeHTML(
+                formatTrainingItemDisplay(
+                    record.item
+                )
+            )}
+        </button>
+
+        <span
+            class="certificate-number-tooltip-panel"
+            role="tooltip"
+            onclick="event.stopPropagation()"
+        >
+
+            <span class="certificate-number-tooltip-value">
+                ${escapeHTML(record.item || '')}
+            </span>
+
+            <button
+                type="button"
+                class="certificate-number-copy-btn"
+                onclick="copyCertificateNumber(event, this)"
+                aria-label="複製訓練項目"
+            >
+                <i
+                    class="fa-solid fa-copy"
+                    aria-hidden="true"
+                ></i>
+            </button>
+
+        </span>
+
+    </span>
+</td>
 <td class="table-cell certificate-certno-cell">
     <div class="certificate-certno-wrap group">
-        <span class="certificate-certno-text">${record.certNo}</span>
+<span
+    class="certificate-number-tooltip-wrap"
+    data-certificate-number="${escapeHTML(record.certNo || '')}"
+    onclick="toggleCertificateNumberTooltip(event, this)"
+>
+
+    <button
+        type="button"
+        class="certificate-certno-text certificate-number-tooltip-trigger"
+        aria-label="查看完整證書號碼：${escapeHTML(record.certNo || '')}"
+    >
+        ${escapeHTML(record.certNo || '')}
+    </button>
+
+<span
+    class="certificate-number-tooltip-panel"
+    role="tooltip"
+    onclick="event.stopPropagation()"
+>
+
+    <span class="certificate-number-tooltip-value">
+        ${escapeHTML(record.certNo || '')}
+    </span>
+
+    <button
+        type="button"
+        class="certificate-number-copy-btn"
+        onclick="copyCertificateNumber(event, this)"
+        aria-label="複製證書號碼"
+    >
+        <i
+            class="fa-solid fa-copy"
+            aria-hidden="true"
+        ></i>
+    </button>
+
+</span>
+
+</span>
         <button onclick="handleLinkClick(${record.id})" 
                 class="link-icon-btn p-1.5 rounded-lg transition-colors ${hasAttachments ? 'text-blue-500 hover:bg-blue-50' : 'text-slate-300'}">
             <i data-lucide="paperclip" class="w-3.5 h-3.5"></i>
@@ -29194,16 +32291,28 @@ row.className = "table-row";
                         </td>
 <td class="table-cell text-center certificate-action-cell">
     <div class="certificate-action-wrap">
+
         ${isAdmin ? `
-<button onclick="moveRecordUp(${record.id})" class="certificate-action-btn text-slate-400" title="上移">
-    <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
+<button onclick="moveRecordUp(${record.id})"
+        class="certificate-action-btn text-slate-400"
+        title="上移">
+    <i data-lucide="chevron-up"
+       class="w-3.5 h-3.5"></i>
 </button>
-<button onclick="moveRecordDown(${record.id})" class="certificate-action-btn text-slate-400" title="下移">
-    <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+
+<button onclick="moveRecordDown(${record.id})"
+        class="certificate-action-btn text-slate-400"
+        title="下移">
+    <i data-lucide="chevron-down"
+       class="w-3.5 h-3.5"></i>
 </button>
         ` : ''}
-<button onclick="openEditModal(${record.id})" class="certificate-action-btn text-slate-400" title="${canEditData() ? '編輯' : '權限登入'}">
-    <i data-lucide="${canEditData() ? 'edit-3' : 'settings'}" class="w-3.5 h-3.5"></i>
+
+<button onclick="openEditModal(${record.id})"
+        class="certificate-action-btn text-slate-400"
+        title="${canEditData() ? '編輯' : '權限登入'}">
+    <i data-lucide="${canEditData() ? 'edit-3' : 'settings'}"
+       class="w-3.5 h-3.5"></i>
 </button>
     </div>
 </td>
@@ -29928,12 +33037,35 @@ function ensureFilePreviewGestures() {
         setFilePreviewScale(filePreviewTouchScale * ratio);
     }, { passive: false });
 
-    body.addEventListener('touchend', function(event) {
-        if (event.touches.length < 2) {
-            filePreviewTouchDistance = null;
-            filePreviewTouchScale = filePreviewScale;
+const resetFilePreviewTouchState =
+    function(event) {
+
+        if (
+            !event.touches ||
+            event.touches.length < 2
+        ) {
+
+            filePreviewTouchDistance =
+                null;
+
+            filePreviewTouchScale =
+                filePreviewScale;
         }
-    });
+    };
+
+
+body.addEventListener(
+    'touchend',
+    resetFilePreviewTouchState,
+    { passive: true }
+);
+
+
+body.addEventListener(
+    'touchcancel',
+    resetFilePreviewTouchState,
+    { passive: true }
+);
 
     filePreviewGesturesReady = true;
 }
@@ -30714,6 +33846,98 @@ summaryWs['!merges'] = [
 
 // --- 驗證與登入邏輯 ---
 
+/* =========================================================
+   OSCMS｜中央登入按鈕 Pending UI
+========================================================= */
+
+function setOsaiSystemAccessLoginPending(
+    pending
+) {
+
+    const isPending =
+        pending ===
+        true;
+
+
+    isOsaiSystemAccessLoginPending =
+        isPending;
+
+
+    const button =
+        document.getElementById(
+            'admin-login-submit-btn'
+        );
+
+
+    if (!button) {
+        return;
+    }
+
+
+    /*
+     * 第一次操作時保存原本完整 HTML。
+     */
+    if (
+        !osaiSystemAccessLoginButtonOriginalHtml
+    ) {
+
+        osaiSystemAccessLoginButtonOriginalHtml =
+            button.innerHTML;
+    }
+
+
+    button.disabled =
+        isPending;
+
+
+    if (
+        isPending
+    ) {
+
+        button.setAttribute(
+            'aria-busy',
+            'true'
+        );
+
+
+        /*
+         * 保留按鈕尺寸與原本藍色，
+         * 只替換內部內容。
+         */
+        button.innerHTML = `
+            <i class="fas fa-spinner fa-spin text-sm"
+               aria-hidden="true"></i>
+
+            <span>
+                驗證中...
+            </span>
+        `;
+
+
+    } else {
+
+        button.removeAttribute(
+            'aria-busy'
+        );
+
+
+        button.innerHTML =
+            osaiSystemAccessLoginButtonOriginalHtml;
+
+
+        /*
+         * 原按鈕使用 Lucide，
+         * 還原後重新建立圖示。
+         */
+        if (
+            window.lucide
+        ) {
+
+            lucide.createIcons();
+        }
+    }
+}
+
 function openLoginModal() {
     /*
      * 比照績效管理系統：
@@ -30754,13 +33978,21 @@ function openLoginModal() {
         loginError.classList.add('hidden');
     }
 
-    if (modal) {
-        modal.classList.remove('hidden');
-    }
+if (modal) {
+    modal.classList.remove('hidden');
+}
 
-    setTimeout(() => {
-        if (input) input.focus();
-    }, 100);
+/*
+ * 背景預熱中央權限 Edge Function。
+ *
+ * 不等待完成，
+ * 不影響登入 Modal 顯示速度。
+ */
+void warmUpOsaiSystemAccessService();
+
+setTimeout(() => {
+    if (input) input.focus();
+}, 100);
 
     initIcons();
 }
@@ -30779,188 +34011,1161 @@ function closeLoginModal() {
     }
 }
 
-function closeLoginModalOutside(event) {
-    if (event.target === event.currentTarget) {
-        closeLoginModal();
+/*
+ * 中央驗證進行中不允許關閉登入視窗，
+ * 避免 API 回來後才突然切換角色。
+ */
+function requestCloseLoginModal() {
+
+    if (
+        isOsaiSystemAccessLoginPending
+    ) {
+        return;
+    }
+
+    closeLoginModal();
+}
+
+
+function closeLoginModalOutside(
+    event
+) {
+
+    if (
+        event.target !==
+        event.currentTarget
+    ) {
+        return;
+    }
+
+    requestCloseLoginModal();
+}
+
+function closeEditModalOutside(event) {
+
+    if (
+        shouldCloseModalFromBackdropClick(
+            event
+        )
+    ) {
+        closeEditModal();
     }
 }
 
 async function checkPassword() {
-    const input = document.getElementById('login-pwd');
-    const loginError = document.getElementById('login-error');
-    const pwd = input ? input.value : "";
 
-    if (loginError) {
-        loginError.innerText = "密碼錯誤，請重新輸入";
-        loginError.classList.add('hidden');
-    }
-
-if (pwd === MASTER_RECOVERY_CODE) {
-    systemPassword = DEFAULT_ADMIN_PASSWORD;
-    editorPassword = DEFAULT_EDITOR_PASSWORD;
-    editorEnabled = DEFAULT_EDITOR_ENABLED;
-
-        isAdmin = false;
-        isEditor = false;
-
-        closeLoginModal();
-
-        alert("權限設定已恢復預設值，請重新登入後再修改密碼。");
-
-        updateUIForRole();
+    /*
+     * 防止滑鼠連點或 Enter
+     * 在中央驗證尚未完成時重複送出。
+     */
+    if (
+        isOsaiSystemAccessLoginPending
+    ) {
         return;
     }
 
-if (pwd === systemPassword) {
-    await completeFormalLogin('admin');
-    return;
-}
 
-if (editorEnabled && pwd === editorPassword) {
-    await completeFormalLogin('editor');
-    return;
-}
+    const input =
+        document.getElementById(
+            'login-pwd'
+        );
 
-    if (!editorEnabled && pwd === editorPassword) {
-        if (loginError) {
-            loginError.innerText = "使用者共用權限目前已停用，請洽管理者。";
-            loginError.classList.remove('hidden');
+    const loginError =
+        document.getElementById(
+            'login-error'
+        );
+
+
+    const inputPwd =
+        String(
+            input?.value ||
+            ''
+        );
+
+
+    /*
+     * 清除上一筆錯誤。
+     */
+    if (
+        loginError
+    ) {
+
+        loginError.innerText =
+            '';
+
+        loginError.classList.add(
+            'hidden'
+        );
+    }
+
+
+    /*
+     * 空白密碼不送 API。
+     */
+    if (
+        !inputPwd
+    ) {
+
+        if (
+            loginError
+        ) {
+
+            loginError.innerText =
+                '請輸入登入密碼';
+
+            loginError.classList.remove(
+                'hidden'
+            );
         }
 
-        if (input) {
-            input.value = "";
+
+        if (
+            input
+        ) {
             input.focus();
         }
 
+
         return;
     }
 
-    if (loginError) {
-        loginError.innerText = "密碼錯誤，請重新輸入";
-        loginError.classList.remove('hidden');
-    }
 
-    if (input) {
-        input.value = "";
-        input.focus();
+    /*
+     * 立即切換成：
+     * Spinner + 驗證中...
+     */
+    setOsaiSystemAccessLoginPending(
+        true
+    );
+
+
+    /*
+     * 先讓瀏覽器完成一次繪製。
+     *
+     * 否則網路請求太快開始時，
+     * 有些瀏覽器可能還沒把 Spinner 畫出來。
+     */
+    await new Promise(
+        resolve => {
+
+            requestAnimationFrame(
+                resolve
+            );
+        }
+    );
+
+
+    try {
+
+        let loginResult;
+
+
+        try {
+
+            /*
+             * 正式中央登入。
+             */
+            loginResult =
+                await osaiSystemAccessLogin(
+                    inputPwd
+                );
+
+
+        } catch (
+            error
+        ) {
+
+            const code =
+                String(
+                    error?.code ||
+                    error?.message ||
+                    ''
+                );
+
+
+            /*
+             * 密碼錯誤。
+             */
+            if (
+                code ===
+                'INVALID_CREDENTIALS'
+            ) {
+
+                if (
+                    loginError
+                ) {
+
+                    loginError.innerText =
+                        '密碼錯誤，請重新輸入';
+
+                    loginError.classList.remove(
+                        'hidden'
+                    );
+                }
+
+
+            /*
+             * User 密碼正確，
+             * 但證照管理系統 User Enabled 已停用。
+             */
+            } else if (
+                code ===
+                'EDITOR_DISABLED'
+            ) {
+
+                if (
+                    loginError
+                ) {
+
+                    loginError.innerText =
+                        '使用者共用權限目前已停用，請洽管理者。';
+
+                    loginError.classList.remove(
+                        'hidden'
+                    );
+                }
+
+
+            /*
+             * 中央服務或網路異常。
+             */
+            } else {
+
+                console.error(
+                    '中央權限登入失敗：',
+                    error
+                );
+
+
+                if (
+                    loginError
+                ) {
+
+                    loginError.innerText =
+                        '權限驗證服務暫時無法連線，請稍後再試。';
+
+                    loginError.classList.remove(
+                        'hidden'
+                    );
+                }
+            }
+
+
+            if (
+                input
+            ) {
+
+                input.value =
+                    '';
+
+                input.focus();
+            }
+
+
+            return;
+        }
+
+
+        /*
+         * Backend 僅接受：
+         * admin / editor
+         */
+        if (
+            ![
+                'admin',
+                'editor'
+            ].includes(
+                loginResult?.role
+            )
+        ) {
+
+            clearOsaiSystemAccessSession();
+
+
+            if (
+                loginError
+            ) {
+
+                loginError.innerText =
+                    '權限驗證服務回應異常，請稍後再試。';
+
+                loginError.classList.remove(
+                    'hidden'
+                );
+            }
+
+
+            if (
+                input
+            ) {
+
+                input.value =
+                    '';
+            }
+
+
+            return;
+        }
+
+
+        /*
+         * =====================================================
+         * 沿用證照系統既有正式登入流程
+         * =====================================================
+         *
+         * completeFormalLogin() 會：
+         * - Admin → isAdmin = true
+         * - Admin / User → isEditor = true
+         * - 清空預覽工作資料
+         * - 重整證照畫面
+         * - 關閉 Login Modal
+         *
+         * 最重要：
+         * Login Modal 會在 finally 還原按鈕前先關閉。
+         *
+         * 因此不會看到：
+         * Spinner
+         *   ↓
+         * 原 log-in 圖示瞬間閃一下
+         *   ↓
+         * Modal 才消失
+         */
+        await completeFormalLogin(
+            loginResult.role
+        );
+
+
+        if (
+            input
+        ) {
+
+            input.value =
+                '';
+        }
+
+
+    } finally {
+
+        /*
+         * 成功：
+         * Modal 已先關閉。
+         *
+         * 失敗：
+         * Modal 仍顯示。
+         *
+         * 最後才還原登入按鈕。
+         */
+        setOsaiSystemAccessLoginPending(
+            false
+        );
     }
 }
 
-function openChangePasswordModal() {
-    if (!canChangePassword()) {
-        alert('請先使用管理者密碼登入，才可修改權限與密碼設定。');
+async function openChangePasswordModal() {
+
+    if (
+        !canChangePassword()
+    ) {
+
+        alert(
+            '請先使用管理者密碼登入，才可修改權限與密碼設定。'
+        );
+
         closeLoginModal();
         openLoginModal();
+
         return;
     }
 
-    const oldPwdInput = document.getElementById('old-pwd');
-    const newAdminPwdInput = document.getElementById('new-admin-pwd');
-    const newEditorPwdInput = document.getElementById('new-editor-pwd');
-    const editorEnabledCheckbox = document.getElementById('editor-enabled-checkbox');
 
-    if (oldPwdInput) oldPwdInput.value = '';
-    if (newAdminPwdInput) newAdminPwdInput.value = '';
-    if (newEditorPwdInput) newEditorPwdInput.value = '';
-    if (editorEnabledCheckbox) {
-    editorEnabledCheckbox.checked =
-        DEFAULT_EDITOR_ENABLED;
-}
+    /*
+     * 若中央設定正在讀取或儲存，
+     * 不重複送出。
+     */
+    if (
+        isOsaiSystemAccessSettingsPending
+    ) {
+        return;
+    }
 
-    document.getElementById('change-pwd-modal').classList.remove('hidden');
+
+    const modal =
+        document.getElementById(
+            'change-pwd-modal'
+        );
+
+    const oldPwdInput =
+        document.getElementById(
+            'old-pwd'
+        );
+
+    const newAdminPwdInput =
+        document.getElementById(
+            'new-admin-pwd'
+        );
+
+    const newEditorPwdInput =
+        document.getElementById(
+            'new-editor-pwd'
+        );
+
+    const editorEnabledCheckbox =
+        document.getElementById(
+            'editor-enabled-checkbox'
+        );
+
+    const errorBox =
+        document.getElementById(
+            'pwd-change-error'
+        );
+
+
+    /*
+     * 每次開啟都清空密碼。
+     */
+    if (
+        oldPwdInput
+    ) {
+        oldPwdInput.value =
+            '';
+    }
+
+    if (
+        newAdminPwdInput
+    ) {
+        newAdminPwdInput.value =
+            '';
+    }
+
+    if (
+        newEditorPwdInput
+    ) {
+        newEditorPwdInput.value =
+            '';
+    }
+
+
+    if (
+        errorBox
+    ) {
+
+        errorBox.innerText =
+            '';
+
+        errorBox.classList.add(
+            'hidden'
+        );
+    }
+
+
+    /*
+     * Modal 立即顯示，
+     * 不等待中央 API。
+     */
+    if (
+        modal
+    ) {
+
+        modal.classList.remove(
+            'hidden'
+        );
+    }
+
+
+    isOsaiSystemAccessSettingsReady =
+        false;
+
+
+    /*
+     * 如果 Admin 登入時的 Prefetch
+     * 已經有新鮮 Cache，
+     * Checkbox 可以先立即顯示正式值。
+     */
+    if (
+        editorEnabledCheckbox &&
+        hasFreshOsaiSystemAccessSettingsCache()
+    ) {
+
+        editorEnabledCheckbox.checked =
+            osaiSystemAccessSettingsCache
+                .editorEnabled;
+
+        editorEnabledCheckbox.disabled =
+            false;
+
+        isOsaiSystemAccessSettingsReady =
+            true;
+
+
+    } else if (
+        editorEnabledCheckbox
+    ) {
+
+        /*
+         * 尚未拿到正式 Backend 值前，
+         * 不允許自行勾選。
+         */
+        editorEnabledCheckbox.disabled =
+            true;
+    }
+
+
+    isOsaiSystemAccessSettingsPending =
+        true;
+
+
+    try {
+
+        /*
+         * 正式讀中央權限設定。
+         *
+         * 若登入時 Prefetch 尚未完成，
+         * 會沿用同一個 Promise，
+         * 不重複呼叫 API。
+         */
+        const settings =
+            await refreshOsaiSystemAccessSettingsCache();
+
+
+        if (
+            editorEnabledCheckbox
+        ) {
+
+            editorEnabledCheckbox.checked =
+                settings
+                    ?.editor_enabled ===
+                true;
+
+            editorEnabledCheckbox.disabled =
+                false;
+        }
+
+
+        isOsaiSystemAccessSettingsReady =
+            true;
+
+
+    } catch (
+        error
+    ) {
+
+        console.error(
+            '讀取中央權限設定失敗：',
+            error
+        );
+
+
+        /*
+         * 完全沒有可用 Cache 時，
+         * Checkbox 維持鎖定。
+         */
+        if (
+            !hasFreshOsaiSystemAccessSettingsCache()
+        ) {
+
+            isOsaiSystemAccessSettingsReady =
+                false;
+
+            if (
+                editorEnabledCheckbox
+            ) {
+
+                editorEnabledCheckbox.disabled =
+                    true;
+            }
+        }
+
+
+        /*
+         * 中央 Session 已失效：
+         * 立即退回 Viewer。
+         */
+        if (
+            isOsaiSystemAccessSessionError(
+                error
+            )
+        ) {
+
+            resetLocalRoleAfterOsaiSessionFailure();
+
+            closeChangePasswordModal();
+
+            showToast(
+                '權限驗證工作階段已失效，請重新登入。',
+                'error'
+            );
+
+
+        } else {
+
+            if (
+                errorBox
+            ) {
+
+                errorBox.innerText =
+                    '權限設定服務暫時無法連線，請稍後再試。';
+
+                errorBox.classList.remove(
+                    'hidden'
+                );
+            }
+        }
+
+
+    } finally {
+
+        isOsaiSystemAccessSettingsPending =
+            false;
+    }
 }
 
 function closeChangePasswordModal() {
     document.getElementById('change-pwd-modal').classList.add('hidden');
 }
 
-function closeChangePasswordModalOutside(event) {
-    if (event.target === event.currentTarget) {
-        closeChangePasswordModal();
-    }
-}
+function requestCloseChangePasswordModal() {
 
-async function savePasswordSettings() {
-    if (!canChangePassword()) {
-        alert(
-            '只有管理者可以修改權限與密碼設定。'
-        );
+    /*
+     * 中央設定正在讀取／儲存時，
+     * 不允許使用者中途關閉。
+     */
+    if (
+        isOsaiSystemAccessSettingsPending
+    ) {
         return;
     }
 
-    const oldP =
+    closeChangePasswordModal();
+}
+
+function closeChangePasswordModalOutside(
+    event
+) {
+
+    if (
+        !shouldCloseModalFromBackdropClick(
+            event
+        )
+    ) {
+        return;
+    }
+
+    requestCloseChangePasswordModal();
+}
+
+async function savePasswordSettings() {
+
+    const errorBox =
+        document.getElementById(
+            'pwd-change-error'
+        );
+
+
+    if (
+        errorBox
+    ) {
+
+        errorBox.innerText =
+            '';
+
+        errorBox.classList.add(
+            'hidden'
+        );
+    }
+
+
+    /*
+     * 僅 Admin。
+     */
+    if (
+        !canChangePassword()
+    ) {
+
+        if (
+            errorBox
+        ) {
+
+            errorBox.innerText =
+                '只有管理者可以修改權限與密碼設定';
+
+            errorBox.classList.remove(
+                'hidden'
+            );
+        }
+
+        return;
+    }
+
+
+    /*
+     * get-settings 尚未完成，
+     * 或設定正在儲存時禁止送出。
+     */
+    if (
+        isOsaiSystemAccessSettingsPending ||
+        !isOsaiSystemAccessSettingsReady
+    ) {
+
+        if (
+            errorBox
+        ) {
+
+            errorBox.innerText =
+                '權限設定仍在讀取中，請稍候';
+
+            errorBox.classList.remove(
+                'hidden'
+            );
+        }
+
+        return;
+    }
+
+
+    const oldPasswordInput =
         document.getElementById(
             'old-pwd'
-        ).value;
+        );
 
-    const newAdminP =
+    const newAdminPasswordInput =
         document.getElementById(
             'new-admin-pwd'
-        ).value.trim();
+        );
 
-    const newEditorP =
+    const newEditorPasswordInput =
         document.getElementById(
             'new-editor-pwd'
-        ).value.trim();
+        );
+
+    const editorEnabledCheckbox =
+        document.getElementById(
+            'editor-enabled-checkbox'
+        );
+
+    const saveButton =
+        document.getElementById(
+            'change-pwd-save-btn'
+        );
+
+
+    const oldPwd =
+        String(
+            oldPasswordInput
+                ?.value ||
+            ''
+        );
+
+
+    const newAdminPwd =
+        String(
+            newAdminPasswordInput
+                ?.value ||
+            ''
+        ).trim();
+
+
+    const newEditorPwd =
+        String(
+            newEditorPasswordInput
+                ?.value ||
+            ''
+        ).trim();
+
 
     /*
-     * 只有修改管理者密碼時，
-     * 才再次驗證目前管理者密碼。
+     * 只有修改 Admin 密碼，
+     * 才要求目前 Admin 密碼。
      */
-    if (newAdminP) {
-        if (!oldP) {
-            alert(
-                '修改管理者密碼時，請先輸入目前管理者密碼。'
+    if (
+        newAdminPwd &&
+        !oldPwd
+    ) {
+
+        if (
+            errorBox
+        ) {
+
+            errorBox.innerText =
+                '修改管理者密碼時，請先輸入目前管理者密碼';
+
+            errorBox.classList.remove(
+                'hidden'
             );
-            return;
         }
 
-        if (oldP !== systemPassword) {
-            alert(
-                '目前管理者密碼不正確'
-            );
-            return;
-        }
-
-        /*
-         * 僅修改目前工作階段記憶體。
-         * 不寫入 IndexedDB。
-         */
-        systemPassword = newAdminP;
+        return;
     }
 
-    if (newEditorP) {
-        /*
-         * 僅修改目前工作階段記憶體。
-         * 不寫入 IndexedDB。
-         */
-        editorPassword = newEditorP;
-    }
 
     /*
-     * 使用者正式啟用狀態
-     * 永遠以 GitHub HTML 為準。
+     * 每次更新一定送出
+     * 本證照系統 User Enabled。
      */
-    editorEnabled =
-        DEFAULT_EDITOR_ENABLED;
+    const updatePayload = {
 
-    alert(
-        "權限與密碼設定已更新成功！"
+        editor_enabled:
+            editorEnabledCheckbox
+                ?.checked ===
+            true
+    };
+
+
+    /*
+     * 修改 Admin 密碼。
+     */
+    if (
+        newAdminPwd
+    ) {
+
+        updatePayload.current_admin_password =
+            oldPwd;
+
+        updatePayload.new_admin_password =
+            newAdminPwd;
+    }
+
+
+    /*
+     * 修改 User 密碼。
+     *
+     * User 密碼屬於七套系統共用，
+     * 不需要再次輸入 Admin 密碼。
+     */
+    if (
+        newEditorPwd
+    ) {
+
+        updatePayload.new_editor_password =
+            newEditorPwd;
+    }
+
+
+    isOsaiSystemAccessSettingsPending =
+        true;
+
+
+    if (
+        saveButton
+    ) {
+
+        saveButton.disabled =
+            true;
+
+        saveButton.classList.add(
+            'opacity-60',
+            'cursor-wait'
+        );
+    }
+
+
+    if (
+        editorEnabledCheckbox
+    ) {
+
+        editorEnabledCheckbox.disabled =
+            true;
+    }
+
+
+    let updateResult;
+
+
+    try {
+
+        /*
+         * update-settings 不使用 Retry，
+         * 避免密碼變更被重複送出。
+         */
+        updateResult =
+            await osaiSystemAccessUpdateSettings(
+                updatePayload
+            );
+
+
+    } catch (
+        error
+    ) {
+
+        const code =
+            String(
+                error?.code ||
+                error?.message ||
+                ''
+            );
+
+
+        console.error(
+            '更新中央權限設定失敗：',
+            error
+        );
+
+
+        if (
+            code ===
+            'CURRENT_ADMIN_PASSWORD_INVALID'
+        ) {
+
+            if (
+                errorBox
+            ) {
+
+                errorBox.innerText =
+                    '目前管理者密碼不正確';
+
+                errorBox.classList.remove(
+                    'hidden'
+                );
+            }
+
+
+        } else if (
+            code ===
+            'CURRENT_ADMIN_PASSWORD_REQUIRED'
+        ) {
+
+            if (
+                errorBox
+            ) {
+
+                errorBox.innerText =
+                    '修改管理者密碼時，請先輸入目前管理者密碼';
+
+                errorBox.classList.remove(
+                    'hidden'
+                );
+            }
+
+
+        } else if (
+            code ===
+            'PASSWORD_TOO_SHORT'
+        ) {
+
+            if (
+                errorBox
+            ) {
+
+                errorBox.innerText =
+                    '新密碼至少需要 8 個字元';
+
+                errorBox.classList.remove(
+                    'hidden'
+                );
+            }
+
+
+        } else if (
+            code ===
+            'PASSWORD_TOO_LONG'
+        ) {
+
+            if (
+                errorBox
+            ) {
+
+                errorBox.innerText =
+                    '新密碼長度超過允許範圍';
+
+                errorBox.classList.remove(
+                    'hidden'
+                );
+            }
+
+
+        } else if (
+            isOsaiSystemAccessSessionError(
+                error
+            )
+        ) {
+
+            resetLocalRoleAfterOsaiSessionFailure();
+
+            closeChangePasswordModal();
+
+            showToast(
+                '權限驗證工作階段已失效，請重新登入。',
+                'error'
+            );
+
+
+        } else {
+
+            if (
+                errorBox
+            ) {
+
+                errorBox.innerText =
+                    '權限與密碼設定更新失敗，請稍後再試';
+
+                errorBox.classList.remove(
+                    'hidden'
+                );
+            }
+        }
+
+
+        return;
+
+
+    } finally {
+
+        isOsaiSystemAccessSettingsPending =
+            false;
+
+
+        if (
+            saveButton
+        ) {
+
+            saveButton.disabled =
+                false;
+
+            saveButton.classList.remove(
+                'opacity-60',
+                'cursor-wait'
+            );
+        }
+
+
+        if (
+            editorEnabledCheckbox &&
+            isOsaiSystemAccessSettingsReady
+        ) {
+
+            editorEnabledCheckbox.disabled =
+                false;
+        }
+    }
+
+
+    /*
+     * Backend 正式值同步回 Checkbox。
+     */
+    if (
+        editorEnabledCheckbox
+    ) {
+
+        editorEnabledCheckbox.checked =
+            updateResult
+                ?.editor_enabled ===
+            true;
+    }
+
+
+    /*
+     * 更新非敏感 Cache。
+     */
+    setOsaiSystemAccessSettingsCache(
+        updateResult
     );
+
+
+    isOsaiSystemAccessSettingsReady =
+        true;
+
+
+    /*
+     * =====================================================
+     * 若 Admin 密碼有修改，
+     * Backend 可能要求重新建立 Session。
+     * =====================================================
+     */
+    if (
+        updateResult
+            ?.requires_relogin ===
+        true &&
+        newAdminPwd
+    ) {
+
+        try {
+
+            const refreshedLogin =
+                await osaiSystemAccessLogin(
+                    newAdminPwd
+                );
+
+
+            if (
+                refreshedLogin
+                    ?.role !==
+                'admin'
+            ) {
+
+                throw createOsaiSystemAccessError(
+                    'ADMIN_SESSION_REFRESH_FAILED'
+                );
+            }
+
+
+        } catch (
+            error
+        ) {
+
+            console.error(
+                '管理者密碼更新後重新建立 Session 失敗：',
+                error
+            );
+
+
+            /*
+             * 密碼已修改成功，
+             * 但新 Session 建立失敗。
+             *
+             * 為安全起見直接退回 Viewer，
+             * 但不清除目前工作資料。
+             */
+            resetLocalRoleAfterOsaiSessionFailure();
+
+            closeChangePasswordModal();
+
+
+            showToast(
+                '權限設定已更新，請使用新管理者密碼重新登入。',
+                'error'
+            );
+
+
+            return;
+        }
+    }
+
+
+    /*
+     * 清空密碼輸入欄。
+     */
+    if (
+        oldPasswordInput
+    ) {
+
+        oldPasswordInput.value =
+            '';
+    }
+
+
+    if (
+        newAdminPasswordInput
+    ) {
+
+        newAdminPasswordInput.value =
+            '';
+    }
+
+
+    if (
+        newEditorPasswordInput
+    ) {
+
+        newEditorPasswordInput.value =
+            '';
+    }
+
 
     closeChangePasswordModal();
 
-    document.getElementById(
-        'old-pwd'
-    ).value = '';
 
-    document.getElementById(
-        'new-admin-pwd'
-    ).value = '';
-
-    document.getElementById(
-        'new-editor-pwd'
-    ).value = '';
+    showToast(
+        '權限與密碼設定已更新成功！'
+    );
 }
 
 /*
@@ -31350,7 +35555,23 @@ document.addEventListener(
 );
 
 function updateUIForRole() {
-document.body.classList.remove('role-viewer', 'role-editor', 'role-admin');
+
+document.body.classList.remove(
+    'role-viewer',
+    'role-editor',
+    'role-admin'
+);
+
+
+if (
+    !canEditData() ||
+    isPreviewDataMode
+) {
+
+    isBudgetEditMode =
+        false;
+}
+
 
 if (isAdmin) {
     document.body.classList.add('role-admin');
@@ -31473,9 +35694,14 @@ if (loginBtn) {
 }
 
     // 沿用原本 CSS 名稱，但實際代表「可編輯模式」
-    document.body.classList.toggle('budget-admin-enabled', canEditData());
+document.body.classList.toggle(
+    'budget-admin-enabled',
+    canEditData()
+);
 
-    updateJsonActionButtons();
+updateBudgetEditModeControls();
+
+updateJsonActionButtons();
     renderComplianceDashboard();
     renderBudgetReport();
     initIcons();
@@ -31558,6 +35784,27 @@ function finalLogoutConfirm() {
     isAdmin = false;
     isEditor = false;
 
+
+    /*
+     * =========================================================
+     * OSCMS｜登出同步清除中央權限 Session
+     *
+     * 只清除目前頁面記憶體中的：
+     * - OSAI Core Token
+     * - Role
+     * - Session 到期時間
+     * - 非敏感 Settings Cache
+     *
+     * 不修改：
+     * - 中央管理者密碼
+     * - 中央使用者密碼
+     * - User Enabled
+     * - Supabase 雲端資料
+     * =========================================================
+     */
+    clearOsaiSystemAccessSession();
+
+
     /*
      * 登出時同步清除目前 Cloud Publisher
      * 的記憶體登入狀態。
@@ -31577,18 +35824,6 @@ function finalLogoutConfirm() {
      * 不會刪除 Supabase 上的 Workspace。
      */
     clearActiveCloudWorkspace();
-
-    /*
-     * 登出後立即恢復 GitHub HTML 正式權限設定。
-     */
-    systemPassword =
-        DEFAULT_ADMIN_PASSWORD;
-
-    editorPassword =
-        DEFAULT_EDITOR_PASSWORD;
-
-    editorEnabled =
-        DEFAULT_EDITOR_ENABLED;
 
 /*
  * 登出後清除目前工作階段資料，
@@ -31612,52 +35847,283 @@ function finalLogoutConfirm() {
 
     // --- 資料編輯功能 ---
 
-async function moveRecordUp(id) {
+function getCertificateManualMoveOrder() {
+
+    return isCertificateManualOrderMode
+        ? [...records]
+        : [...records].sort(
+            (a, b) =>
+                compareTrainingItemDateDeptName(
+                    a,
+                    b,
+                    'lastDate'
+                )
+        );
+}
+
+
+function getVisibleCertificateRecordsForMove(
+    orderedRecords
+) {
+
+    const searchTerm =
+        String(
+            document
+                .getElementById(
+                    'searchInput'
+                )
+                ?.value ||
+            ''
+        ).toLowerCase();
+
+
+    const statusFilter =
+        document
+            .getElementById(
+                'statusFilter'
+            )
+            ?.value ||
+        '';
+
+
+    const itemFilter =
+        document
+            .getElementById(
+                'itemFilter'
+            )
+            ?.value ||
+        '';
+
+
+    const yearFilter =
+        document
+            .getElementById(
+                'yearFilter'
+            )
+            ?.value ||
+        '';
+
+
+    return orderedRecords.filter(
+        record => {
+
+            const nextDate =
+                calculateNextDate(
+                    record.lastDate,
+                    record.cycle
+                );
+
+
+            const status =
+                getDisplayStatusInfo(
+                    record,
+                    nextDate
+                );
+
+
+            const retrainingYear =
+                nextDate
+                    ? String(
+                        nextDate.getFullYear()
+                    )
+                    : '';
+
+
+            const matchesSearch =
+                String(
+                    record.name || ''
+                )
+                    .toLowerCase()
+                    .includes(
+                        searchTerm
+                    ) ||
+
+                String(
+                    record.item || ''
+                )
+                    .toLowerCase()
+                    .includes(
+                        searchTerm
+                    ) ||
+
+                String(
+                    record.certNo || ''
+                )
+                    .toLowerCase()
+                    .includes(
+                        searchTerm
+                    );
+
+
+            const matchesStatus =
+                statusFilter === '' ||
+                status.label ===
+                    statusFilter;
+
+
+            const matchesItem =
+                itemFilter === '' ||
+                record.item ===
+                    itemFilter;
+
+
+            const matchesYear =
+                yearFilter === '' ||
+                retrainingYear ===
+                    yearFilter;
+
+
+            return (
+                matchesSearch &&
+                matchesStatus &&
+                matchesItem &&
+                matchesYear
+            );
+        }
+    );
+}
+
+
+async function moveCertificateRecordByVisibleStep(
+    id,
+    direction
+) {
+
     if (!isAdmin) {
+
         openLoginModal();
+
         return;
     }
 
-    const index = records.findIndex(r => r.id === id);
-    if (index <= 0) return;
 
-    const temp = records[index - 1];
-records[index - 1] =
-    records[index];
+    const orderedRecords =
+        getCertificateManualMoveOrder();
 
-records[index] =
-    temp;
 
-markCertificateDirty();
+    /*
+     * 依目前畫面實際可見資料移動。
+     *
+     * 即使使用者正在使用：
+     * - 搜尋
+     * - 項目篩選
+     * - 狀態篩選
+     * - 年度篩選
+     *
+     * 上移／下移仍會有實際畫面效果。
+     */
+    const visibleRecords =
+        getVisibleCertificateRecordsForMove(
+            orderedRecords
+        );
 
-await persistAllRecords(
-    records
-);
+
+    const visibleIndex =
+        visibleRecords.findIndex(
+            record =>
+                record.id === id
+        );
+
+
+    const targetVisibleIndex =
+        visibleIndex +
+        direction;
+
+
+    if (
+        visibleIndex === -1 ||
+        targetVisibleIndex < 0 ||
+        targetVisibleIndex >=
+            visibleRecords.length
+    ) {
+        return;
+    }
+
+
+    const targetId =
+        visibleRecords[
+            targetVisibleIndex
+        ].id;
+
+
+    const currentIndex =
+        orderedRecords.findIndex(
+            record =>
+                record.id === id
+        );
+
+
+    const targetIndex =
+        orderedRecords.findIndex(
+            record =>
+                record.id === targetId
+        );
+
+
+    if (
+        currentIndex === -1 ||
+        targetIndex === -1
+    ) {
+        return;
+    }
+
+
+    [
+        orderedRecords[
+            currentIndex
+        ],
+        orderedRecords[
+            targetIndex
+        ]
+    ] = [
+        orderedRecords[
+            targetIndex
+        ],
+        orderedRecords[
+            currentIndex
+        ]
+    ];
+
+
+    records =
+        orderedRecords;
+
+
+    /*
+     * 一旦管理者自行排列，
+     * 本工作階段即改採手動順序。
+     */
+    isCertificateManualOrderMode =
+        true;
+
+
+    markCertificateDirty();
+
+
+    await persistAllRecords(
+        records
+    );
+
+
     renderReport();
 }
 
+
+async function moveRecordUp(id) {
+
+    await moveCertificateRecordByVisibleStep(
+        id,
+        -1
+    );
+}
+
+
 async function moveRecordDown(id) {
-    if (!isAdmin) {
-        openLoginModal();
-        return;
-    }
 
-    const index = records.findIndex(r => r.id === id);
-    if (index === -1 || index >= records.length - 1) return;
-
-    const temp = records[index + 1];
-records[index + 1] =
-    records[index];
-
-records[index] =
-    temp;
-
-markCertificateDirty();
-
-await persistAllRecords(
-    records
-);
-    renderReport();
+    await moveCertificateRecordByVisibleStep(
+        id,
+        1
+    );
 }
 
 function insertRecordUnderSameDept(record) {
@@ -31715,6 +36181,26 @@ if (!canEditData()) { openLoginModal(); return; }
 if (modalSubtitle) modalSubtitle.innerText = 'NEW CERTIFICATE RECORD';
         document.getElementById('edit-id').value = "";
         document.getElementById('edit-form').reset();
+
+/*
+ * 新增人員模式：
+ * 四個基本資料欄位固定從空白開始。
+ */
+[
+    'edit-dept',
+    'edit-name',
+    'edit-item',
+    'edit-certNo'
+].forEach(id => {
+
+    const field =
+        document.getElementById(id);
+
+    if (field) {
+        field.value = '';
+    }
+});
+
         document.getElementById('edit-trainingStatus').value = 'active';
         document.getElementById('save-btn').innerText = "新增紀錄";
         document.getElementById('remove-btn').classList.add('hidden');
@@ -31729,12 +36215,6 @@ if (modalSubtitle) modalSubtitle.innerText = 'NEW CERTIFICATE RECORD';
     document.getElementById('edit-modal').classList.add('hidden');
 }
 
-function closeEditModalOutside(event) {
-    if (event.target === event.currentTarget) {
-        closeEditModal();
-    }
-}
-
     async function saveEdit() {
     if (isPreviewDataMode) {
         alert('目前為預覽資料模式，不能新增或編輯保存資料。請先以使用者或管理者身分正式載入資料後再操作。');
@@ -31746,15 +36226,51 @@ if (!canEditData()) {
 }
 
         const idVal = document.getElementById('edit-id').value;
-        const data = {
-            dept: document.getElementById('edit-dept').value || "未設定",
-            name: document.getElementById('edit-name').value || "未命名",
-            item: document.getElementById('edit-item').value || "未設定項目",
-            certNo: document.getElementById('edit-certNo').value || "無",
-            cycle: document.getElementById('edit-cycle').value || "1Y",
-            lastDate: document.getElementById('edit-lastDate').value || "",
-trainingStatus: document.getElementById('edit-trainingStatus').value || "active"
-        };
+const data = {
+
+    dept:
+        String(
+            document.getElementById(
+                'edit-dept'
+            )?.value || ''
+        ).trim(),
+
+    name:
+        String(
+            document.getElementById(
+                'edit-name'
+            )?.value || ''
+        ).trim(),
+
+    item:
+        String(
+            document.getElementById(
+                'edit-item'
+            )?.value || ''
+        ).trim(),
+
+    certNo:
+        String(
+            document.getElementById(
+                'edit-certNo'
+            )?.value || ''
+        ).trim(),
+
+    cycle:
+        document.getElementById(
+            'edit-cycle'
+        ).value || "1Y",
+
+    lastDate:
+        document.getElementById(
+            'edit-lastDate'
+        ).value || "",
+
+    trainingStatus:
+        document.getElementById(
+            'edit-trainingStatus'
+        ).value || "active"
+};
 
 if (idVal === "") {
     const newId = records.length > 0 ? Math.max(...records.map(r => r.id)) + 1 : 1;
@@ -32791,11 +37307,52 @@ async function startAutoUpdate() {
 
     // --- 應用程式啟動 ---
 
-document.addEventListener('click', function(event) {
-        document.querySelectorAll('.legal-duty-tooltip-wrap.is-open').forEach(el => {
-            if (!el.contains(event.target)) el.classList.remove('is-open');
-        });
-    });
+document.addEventListener(
+    'click',
+    function(event) {
+
+        /*
+         * 法定專職 Tooltip。
+         */
+        document
+            .querySelectorAll(
+                '.legal-duty-tooltip-wrap.is-open'
+            )
+            .forEach(el => {
+
+                if (
+                    !el.contains(
+                        event.target
+                    )
+                ) {
+                    el.classList.remove(
+                        'is-open'
+                    );
+                }
+            });
+
+
+        /*
+         * 完整證書號碼 Tooltip。
+         */
+        document
+            .querySelectorAll(
+                '.certificate-number-tooltip-wrap.is-open'
+            )
+            .forEach(el => {
+
+                if (
+                    !el.contains(
+                        event.target
+                    )
+                ) {
+                    el.classList.remove(
+                        'is-open'
+                    );
+                }
+            });
+    }
+);
 
 document.addEventListener(
     'keydown',
@@ -32806,9 +37363,9 @@ document.addEventListener(
             'Escape'
         ) {
 
-            closeLoginModal();
+            requestCloseLoginModal();
 
-            closeChangePasswordModal();
+            requestCloseChangePasswordModal();
 
             closeDataExportModal();
 
@@ -32840,21 +37397,6 @@ window.onload = async () => {
 
     try {
         await initDB();
-
-/*
- * 權限設定統一以目前 GitHub HTML
- * 發布版本為正式來源。
- *
- * 不讀取任何瀏覽器舊有權限設定。
- */
-systemPassword =
-    DEFAULT_ADMIN_PASSWORD;
-
-editorPassword =
-    DEFAULT_EDITOR_PASSWORD;
-
-editorEnabled =
-    DEFAULT_EDITOR_ENABLED;
 
 /*
  * 每次重新開啟 / F5：
