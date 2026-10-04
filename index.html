@@ -3293,11 +3293,9 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
 }
 
 /* =========================================================
-   OSCMS｜報表相關 Modal / 統計區 scrollbar Track 淡化
+   OSCMS｜訓練項目統計區 scrollbar Track 淡化
 ========================================================= */
 
-#edit-modal > div,
-#budget-add-modal > div,
 #training-stats-list {
     scrollbar-color:
         #cbd5e1
@@ -3305,8 +3303,6 @@ body:not(.budget-admin-enabled) #budget-panel .budget-note-field::-webkit-scroll
 }
 
 
-#edit-modal > div::-webkit-scrollbar-track,
-#budget-add-modal > div::-webkit-scrollbar-track,
 #training-stats-list::-webkit-scrollbar-track {
     background:
         #f8fafc;
@@ -7115,13 +7111,27 @@ body.budget-admin-enabled
 }
 
 /* =========================================================
-   OSCMS｜編輯法規配置基準視窗專屬 scrollbar
+   OSCMS｜白色圓角資料視窗 Scrollbar 統一
 
-   白色圓角 Modal 不使用明顯的方形 Track，
-   避免上下端與圓角邊界產生破圖感。
+   套用視窗：
+   1. 編輯法規配置基準
+   2. 新增人員紀錄
+   3. 編輯紀錄明細
+   4. 新增預算人員
+   5. 附件資料管理
+
+   設計：
+   - 細型 Scrollbar
+   - 透明 Track
+   - 圓角 Thumb
+   - 避免白色圓角 Modal 上下端出現方形破圖感
 ========================================================= */
 
-#compliance-settings-modal > div {
+#compliance-settings-modal > div,
+#edit-modal > div,
+#budget-add-modal > div,
+#attachment-modal > div {
+
     scrollbar-width:
         thin;
 
@@ -7131,19 +7141,34 @@ body.budget-admin-enabled
 }
 
 
-#compliance-settings-modal > div::-webkit-scrollbar {
+/* Chrome / Edge / Safari */
+#compliance-settings-modal > div::-webkit-scrollbar,
+#edit-modal > div::-webkit-scrollbar,
+#budget-add-modal > div::-webkit-scrollbar,
+#attachment-modal > div::-webkit-scrollbar {
+
     width:
         7px;
 }
 
 
-#compliance-settings-modal > div::-webkit-scrollbar-track {
+/* Scrollbar 軌道透明 */
+#compliance-settings-modal > div::-webkit-scrollbar-track,
+#edit-modal > div::-webkit-scrollbar-track,
+#budget-add-modal > div::-webkit-scrollbar-track,
+#attachment-modal > div::-webkit-scrollbar-track {
+
     background:
         transparent;
 }
 
 
-#compliance-settings-modal > div::-webkit-scrollbar-thumb {
+/* Scrollbar 拉桿 */
+#compliance-settings-modal > div::-webkit-scrollbar-thumb,
+#edit-modal > div::-webkit-scrollbar-thumb,
+#budget-add-modal > div::-webkit-scrollbar-thumb,
+#attachment-modal > div::-webkit-scrollbar-thumb {
+
     background:
         #cbd5e1;
 
@@ -7152,7 +7177,12 @@ body.budget-admin-enabled
 }
 
 
-#compliance-settings-modal > div::-webkit-scrollbar-thumb:hover {
+/* Hover */
+#compliance-settings-modal > div::-webkit-scrollbar-thumb:hover,
+#edit-modal > div::-webkit-scrollbar-thumb:hover,
+#budget-add-modal > div::-webkit-scrollbar-thumb:hover,
+#attachment-modal > div::-webkit-scrollbar-thumb:hover {
+
     background:
         #94a3b8;
 }
@@ -10981,7 +11011,7 @@ class="budget-save-btn system-tooltip-btn bg-emerald-600 text-white border borde
                     <div class="bg-white w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-3 border border-slate-100 group-hover:bg-indigo-50">
                         <i data-lucide="upload-cloud" class="w-5 h-5 text-slate-400 group-hover:text-indigo-500"></i>
                     </div>
-                    <p class="text-sm font-bold text-slate-600">管理者或使用者可上傳新版基準依據檔案</p>
+                    <p class="text-sm font-bold text-blue-600">管理者或使用者可上傳新版基準依據檔案</p>
                     <p class="text-[10px] text-slate-400 mt-1">支援 PDF, PNG, JPG；可點擊或直接拖移檔案至此上傳</p>
                 </div>
             </div>
@@ -13140,16 +13170,30 @@ gap-1.5">
     <!-- 附件管理 Modal -->
     <div id="attachment-modal" onpointerdown="closeAttachmentModalOutside(event)" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[150] p-4">
         <div onclick="event.stopPropagation()" class="bg-white p-8 rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl scale-in-center">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <div class="flex items-center gap-2">
-    <i data-lucide="paperclip" class="w-5 h-5 text-indigo-600"></i>
-    <h2 id="attachment-modal-title" class="text-xl font-black text-slate-800">附件資料管理</h2>
+<div class="flex justify-between items-start mb-6 gap-3">
+    <div>
+        <div class="flex items-center gap-2">
+            <i data-lucide="paperclip"
+               class="w-[18px] h-[18px] text-indigo-600"></i>
+
+            <h2 id="attachment-modal-title"
+                class="text-lg font-black text-slate-800 leading-tight">
+                附件資料管理
+            </h2>
+        </div>
+
+        <p class="text-xs text-slate-400 mt-0.5"
+           id="attach-record-info">
+            姓名 - 訓練項目
+        </p>
+    </div>
+
+    <button onclick="closeAttachmentModal()"
+            class="text-slate-400 hover:text-slate-600 mt-0.5">
+        <i data-lucide="x"
+           class="w-5 h-5"></i>
+    </button>
 </div>
-                    <p class="text-xs text-slate-400" id="attach-record-info">姓名 - 訓練項目</p>
-                </div>
-                <button onclick="closeAttachmentModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-6 h-6"></i></button>
-            </div>
             <div id="upload-area" class="mb-6">
 <div id="drop-zone" class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-indigo-400 transition cursor-pointer group"
      onclick="document.getElementById('attach-file-input').click()">
@@ -13157,7 +13201,7 @@ gap-1.5">
     <div class="bg-slate-50 w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-indigo-50">
         <i data-lucide="upload-cloud" class="w-5 h-5 text-slate-400 group-hover:text-indigo-500"></i>
     </div>
-    <p class="text-sm font-bold text-slate-600">點擊或拖移檔案至此</p>
+    <p class="text-sm font-bold text-blue-600">點擊或拖移檔案至此</p>
     <p class="text-[10px] text-slate-400 mt-1">支援 PDF, PNG, JPG；可點擊或直接拖移檔案至此上傳</p>
 </div>
             </div>
