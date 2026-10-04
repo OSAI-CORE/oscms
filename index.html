@@ -1565,6 +1565,166 @@ body {
             transition: transform 0.1s;
         }
 
+/* =========================================================
+   OSCMS｜證照清單附件資料夾按鈕
+
+   無附件：
+   - 開啟資料夾
+   - Slate 暗灰色
+
+   有附件：
+   - 關閉資料夾
+   - Blue 藍色
+
+   兩種狀態都：
+   - 無外框
+   - 無底色
+   - 無陰影
+========================================================= */
+
+.certificate-attachment-btn {
+
+    width:
+        24px;
+
+    height:
+        24px;
+
+    min-width:
+        24px;
+
+    padding:
+        0 !important;
+
+    border:
+        0 !important;
+
+    border-radius:
+        0 !important;
+
+    background:
+        transparent !important;
+
+    box-shadow:
+        none !important;
+
+    color:
+        #64748b;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    cursor:
+        pointer;
+
+    transition:
+        color 0.18s ease,
+        transform 0.1s ease;
+}
+
+
+/* 有附件：藍色關閉資料夾 */
+.certificate-attachment-btn.has-attachments {
+    color:
+        #2563eb;
+}
+
+
+/* 桌機 Hover：仍然不產生框線或底色 */
+@media (hover: hover) and (pointer: fine) {
+
+    .certificate-attachment-btn:hover {
+
+        border:
+            0 !important;
+
+        background:
+            transparent !important;
+
+        box-shadow:
+            none !important;
+
+        color:
+            #475569;
+    }
+
+
+    .certificate-attachment-btn.has-attachments:hover {
+        color:
+            #1d4ed8;
+    }
+}
+
+
+/* Font Awesome 資料夾尺寸 */
+.certificate-attachment-btn i {
+
+    width:
+        14px;
+
+    height:
+        14px;
+
+    font-size:
+        14px;
+
+    line-height:
+        14px;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+}
+
+/* =========================================================
+   OSCMS｜附件資料管理視窗標題圖示
+
+   固定使用藍色開啟資料夾，
+   與風險評估系統附件管理視窗一致。
+========================================================= */
+
+#attachment-modal
+.attachment-modal-title-icon {
+
+    width:
+        18px;
+
+    height:
+        18px;
+
+    font-size:
+        18px;
+
+    line-height:
+        18px;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    flex:
+        0 0 18px;
+
+    color:
+        #2563eb;
+}
+
 .attachment-symbol {
     display: inline-flex;
     align-items: center;
@@ -13173,8 +13333,8 @@ gap-1.5">
 <div class="flex justify-between items-start mb-6 gap-3">
     <div>
         <div class="flex items-center gap-2">
-            <i data-lucide="paperclip"
-               class="w-[18px] h-[18px] text-indigo-600"></i>
+<i class="fa-solid fa-folder-open text-blue-600 attachment-modal-title-icon"
+   aria-hidden="true"></i>
 
             <h2 id="attachment-modal-title"
                 class="text-lg font-black text-slate-800 leading-tight">
@@ -32315,10 +32475,38 @@ row.className = "table-row";
 </span>
 
 </span>
-        <button onclick="handleLinkClick(${record.id})" 
-                class="link-icon-btn p-1.5 rounded-lg transition-colors ${hasAttachments ? 'text-blue-500 hover:bg-blue-50' : 'text-slate-300'}">
-            <i data-lucide="paperclip" class="w-3.5 h-3.5"></i>
-        </button>
+<button
+    type="button"
+
+    id="certificate-attach-btn-${record.id}"
+
+    onclick="handleLinkClick(${record.id})"
+
+    data-tooltip="管理附件"
+
+    aria-label="管理附件"
+
+    class="
+        link-icon-btn
+        certificate-attachment-btn
+        system-tooltip-btn
+        ${hasAttachments ? 'has-attachments' : ''}
+    "
+>
+
+    <i
+        id="certificate-attach-icon-${record.id}"
+
+        class="fa-solid ${
+            hasAttachments
+                ? 'fa-folder'
+                : 'fa-folder-open'
+        }"
+
+        aria-hidden="true"
+    ></i>
+
+</button>
     </div>
 </td>
                         <td class="table-cell text-slate-500">${record.cycle}</td>
@@ -32380,7 +32568,72 @@ row.className = "table-row";
         initIcons();
     }
 
-    // --- 附件管理與預覽 ---
+// --- 附件管理與預覽 ---
+
+
+/*
+ * 證照清單附件資料夾狀態同步
+ *
+ * 無附件：
+ * 開啟資料夾 + 暗色
+ *
+ * 有附件：
+ * 關閉資料夾 + 藍色
+ */
+function updateCertificateAttachmentButton(id) {
+
+    const record =
+        records.find(
+            r => r.id === id
+        );
+
+
+    const button =
+        document.getElementById(
+            `certificate-attach-btn-${id}`
+        );
+
+
+    const icon =
+        document.getElementById(
+            `certificate-attach-icon-${id}`
+        );
+
+
+    if (
+        !record ||
+        !button ||
+        !icon
+    ) {
+        return;
+    }
+
+
+    const hasAttachments =
+        Array.isArray(
+            record.attachments
+        ) &&
+        record.attachments.length > 0;
+
+
+    button.classList.toggle(
+        'has-attachments',
+        hasAttachments
+    );
+
+
+    icon.classList.toggle(
+        'fa-folder',
+        hasAttachments
+    );
+
+
+    icon.classList.toggle(
+        'fa-folder-open',
+        !hasAttachments
+    );
+}
+
 
 function handleLinkClick(id) {
     if (canEditData()) {
@@ -32448,10 +32701,31 @@ async function closeAttachmentModal() {
     }
 
 function renderAttachmentList(previewOnly = false) {
-    const listContainer = document.getElementById('attachment-list');
-    const record = records.find(r => r.id === currentAttachRecordId);
+
+    const listContainer =
+        document.getElementById(
+            'attachment-list'
+        );
+
+
+    const record =
+        records.find(
+            r =>
+                r.id ===
+                currentAttachRecordId
+        );
+
 
     listContainer.innerHTML = '';
+
+
+    /*
+     * 每次附件新增／移除／重新顯示清單，
+     * 同步更新報表上的資料夾狀態。
+     */
+    updateCertificateAttachmentButton(
+        currentAttachRecordId
+    );
 
     if (!record.attachments || record.attachments.length === 0) {
         listContainer.innerHTML = '<p class="text-center text-slate-400 py-4 text-sm">尚未上傳任何檔案</p>';
