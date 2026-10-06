@@ -1141,9 +1141,11 @@ box-shadow:
 /* =========================================================
    OSCMS｜最外圍頁面捲動條
 
-   比照風險評估系統：
-   保留瀏覽器／作業系統原生顏色與樣式，
-   僅調整為較細的 scrollbar。
+   手機：
+   維持目前較細的原生 Scrollbar。
+
+   桌機：
+   完全恢復瀏覽器／作業系統原生 Scrollbar。
 ========================================================= */
 
 html,
@@ -1153,6 +1155,20 @@ body {
 
     scrollbar-width:
         thin;
+}
+
+
+/* 桌機版：完全恢復原生 Scrollbar */
+@media screen and (min-width: 1025px) {
+
+    html,
+    body {
+        scrollbar-color:
+            auto;
+
+        scrollbar-width:
+            auto;
+    }
 }
 
 /*
