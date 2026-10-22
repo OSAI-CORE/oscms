@@ -17240,67 +17240,6 @@ function setCloudCenterHeaderRefreshBusy(
     );
 }
 
-/* =========================================================
-   OSCMS｜雲端中心背景捲動隔離
-
-   開啟：固定背景頁面並保留原捲動位置
-   關閉：恢復原有樣式與捲動位置
-
-   不影響雲端中心內部捲動
-========================================================= */
-
-let cloudCenterPageScrollSnapshot = null;
-
-function lockCloudCenterPageScroll() {
-
-    if (cloudCenterPageScrollSnapshot) {
-        return;
-    }
-
-    const body = document.body;
-
-    cloudCenterPageScrollSnapshot = {
-        x: window.scrollX,
-        y: window.scrollY,
-        position: body.style.position,
-        top: body.style.top,
-        left: body.style.left,
-        right: body.style.right,
-        width: body.style.width,
-        overflow: body.style.overflow
-    };
-
-    body.style.position = 'fixed';
-    body.style.top =
-        `-${cloudCenterPageScrollSnapshot.y}px`;
-    body.style.left = '0';
-    body.style.right = '0';
-    body.style.width = '100%';
-    body.style.overflow = 'hidden';
-}
-
-
-function unlockCloudCenterPageScroll() {
-
-    if (!cloudCenterPageScrollSnapshot) {
-        return;
-    }
-
-    const state = cloudCenterPageScrollSnapshot;
-    const body = document.body;
-
-    cloudCenterPageScrollSnapshot = null;
-
-    body.style.position = state.position;
-    body.style.top = state.top;
-    body.style.left = state.left;
-    body.style.right = state.right;
-    body.style.width = state.width;
-    body.style.overflow = state.overflow;
-
-    window.scrollTo(state.x, state.y);
-}
-
 function openCloudPreviewModal() {
 
 setCloudCenterHeader(
@@ -17346,19 +17285,14 @@ document
 
 updateCloudPreviewModalHome();
 
-    const cloudCenterModal =
-        document.getElementById(
+    document
+        .getElementById(
             'cloud-preview-modal'
-        );
-
-    if (cloudCenterModal) {
-
-        cloudCenterModal.classList.remove(
+        )
+        ?.classList
+        .remove(
             'hidden'
         );
-
-        lockCloudCenterPageScroll();
-    }
 
     lucide.createIcons();
 }
@@ -17404,8 +17338,6 @@ function closeCloudPreviewModal() {
     ) {
         closeCloudPublisherPasswordModal();
     }
-
-    unlockCloudCenterPageScroll();
 }
 
 
