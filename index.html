@@ -5016,56 +5016,118 @@ body.role-admin
 }
 
 /* =========================================================
-   OSCMS｜日期選擇器及 Tooltip 統一
+   OSCMS｜日期選擇器及 Tooltip 跨系統統一
 
-   1. 保留瀏覽器原生日期圖示
-   2. 整個日期輸入框可開啟選擇器
-   3. 圖示區可獨立點擊
-   4. Tooltip 共用儲存資料按鈕樣式
+   比照危害識別系統：
+
+   桌機：
+   - 自訂 Font Awesome 日曆圖示
+   - 圖示尺寸 14px
+   - 圖示按鈕 30px
+   - Tooltip 顯示於圖示上方
+   - 保留整個日期欄位點擊功能
+
+   手機及不支援 showPicker 的環境：
+   - 使用瀏覽器原生日期選擇器
+   - 不顯示自訂圖示及 Tooltip
+
+   不修改日期欄位、儲存及資料邏輯。
 ========================================================= */
 
 .certificate-date-picker-wrap {
     position: relative;
+    min-width: 0;
 }
 
+/* 預設隱藏自訂日曆按鈕 */
 .certificate-date-picker-trigger {
-    position: absolute;
-
-    right: 0;
-    top: 0;
-
-    width: 32px;
-    height: 36px;
-
-    padding: 0;
-
-    background: transparent;
-    border: 0;
-
-    cursor: pointer;
-    z-index: 2;
+    display: none;
 }
 
-/*
- * Tooltip 樣式仍由
- * .system-tooltip-btn 統一管理。
- *
- * 僅調整右側定位，
- * 避免黑框超出日期欄位右緣。
- */
-@media (hover: hover) and (pointer: fine) {
+/* 僅桌機滑鼠及支援 showPicker 的環境 */
+@media screen and (min-width: 951px)
+and (hover: hover) and (pointer: fine) {
 
-    .certificate-date-picker-trigger::after {
+    /* 日期文字保留右側圖示空間 */
+    .certificate-date-picker-wrap.certificate-picker-supported
+    > input[type="date"] {
+        padding-right: 40px !important;
+    }
+
+    /* 隱藏 Chrome / Edge / Safari 原生日曆圖示 */
+    .certificate-date-picker-wrap.certificate-picker-supported
+    > input[type="date"]::-webkit-calendar-picker-indicator {
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* 自訂日曆按鈕 */
+    .certificate-date-picker-wrap.certificate-picker-supported
+    .certificate-date-picker-trigger {
+        position: absolute;
+
+        right: 6px;
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        width: 30px;
+        height: 30px;
+
+        padding: 0;
+
+        border: 0;
+        border-radius: 6px;
+
+        background: #f8fafc;
+        color: #64748b;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    /* Font Awesome 日曆圖示 */
+    .certificate-date-picker-trigger i {
+        font-size: 14px;
+        line-height: 1;
+        pointer-events: none;
+    }
+
+    /* 滑鼠靠近圖示 */
+    .certificate-date-picker-trigger:hover {
+        color: #334155;
+    }
+
+    /* 輸入框取得焦點 */
+    .certificate-date-picker-wrap:focus-within
+    .certificate-date-picker-trigger {
+        background: #ffffff;
+    }
+
+    /* Tooltip 比照危害識別系統 */
+    .certificate-date-picker-trigger.system-tooltip-btn::after {
         left: auto;
         right: 0;
 
-        transform:
-            translateY(-2px);
+        top: auto;
+        bottom: calc(100% + 6px);
+
+        transform: translateY(2px);
     }
 
-    .certificate-date-picker-trigger:hover::after {
-        transform:
-            translateY(0);
+    .certificate-date-picker-trigger.system-tooltip-btn:hover::after {
+        transform: translateY(0);
+    }
+}
+
+/* 列印時不顯示日期選擇器按鈕 */
+@media print {
+    .certificate-date-picker-trigger {
+        display: none !important;
     }
 }
 
@@ -13831,12 +13893,14 @@ gap-1.5">
            onclick="openCertificateDatePicker(this)"
            class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
 
-    <button type="button"
-            class="certificate-date-picker-trigger system-tooltip-btn"
-            data-tooltip="選擇日期"
-            aria-label="開啟日期選擇器"
-            onclick="openCertificateDatePicker(document.getElementById('budget-add-date'))">
-    </button>
+<button type="button"
+        class="certificate-date-picker-trigger system-tooltip-btn"
+        data-tooltip="選擇受訓日期"
+        aria-label="選擇受訓日期"
+        onclick="openCertificateDatePicker(document.getElementById('budget-add-date'))">
+    <i class="fa-solid fa-calendar-days"
+       aria-hidden="true"></i>
+</button>
 
 </div>
 </div>
@@ -13917,12 +13981,14 @@ gap-1.5">
            onclick="openCertificateDatePicker(this)"
            class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-500">
 
-    <button type="button"
-            class="certificate-date-picker-trigger system-tooltip-btn"
-            data-tooltip="選擇日期"
-            aria-label="開啟日期選擇器"
-            onclick="openCertificateDatePicker(document.getElementById('edit-lastDate'))">
-    </button>
+<button type="button"
+        class="certificate-date-picker-trigger system-tooltip-btn"
+        data-tooltip="選擇上次受訓日期"
+        aria-label="選擇上次受訓日期"
+        onclick="openCertificateDatePicker(document.getElementById('edit-lastDate'))">
+    <i class="fa-solid fa-calendar-days"
+       aria-hidden="true"></i>
+</button>
 
 </div>
                 </div>
@@ -24449,6 +24515,34 @@ function openCertificateDatePicker(input) {
 
     input.focus();
 }
+
+/* =========================================================
+   OSCMS｜日期選擇器支援判斷
+
+   只在支援 showPicker 的環境
+   啟用桌機自訂日曆按鈕。
+
+   不支援時保留原生日期圖示，
+   避免自訂按鈕無法開啟選擇器。
+========================================================= */
+
+document.querySelectorAll(
+    '#edit-modal .certificate-date-picker-wrap, ' +
+    '#budget-add-modal .certificate-date-picker-wrap'
+).forEach(wrap => {
+
+    const input =
+        wrap.querySelector('input[type="date"]');
+
+    if (
+        input &&
+        typeof input.showPicker === 'function'
+    ) {
+        wrap.classList.add(
+            'certificate-picker-supported'
+        );
+    }
+});
 
 function showToast(
     msg,
