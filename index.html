@@ -9039,23 +9039,139 @@ p[id^="budget-summary-"] {
 }
 
 /* =========================================================
-   桌機版：編輯雲端預覽有效期限
+   OSCMS｜編輯雲端預覽有效期限統一
 
-   1. 隱藏手機版自訂日曆圖示
-   2. 保留瀏覽器原生 datetime-local 圖示
-   3. 恢復桌機右側正常內距
+   適用：
+   - 管理者：管理雲端預覽
+   - 使用者：我的發布預覽
+
+   桌機：
+   - 30px 日曆按鈕
+   - Font Awesome fa-calendar-days 14px
+   - 黑色 Tooltip 向上顯示
+
+   手機：
+   - 保留原本日期時間選擇器
+   - 保留原本圖示與欄位寬度設定
+
+   不修改有效期限儲存與雲端更新邏輯。
 ========================================================= */
 
+/* 自訂日曆按鈕預設隱藏 */
+.cloud-expiry-calendar-trigger {
+    display: none;
+}
+
+/* 桌機原有設定 */
 @media screen and (min-width: 951px) {
 
+    /* 隱藏原本手機專用日曆圖示 */
     #cloud-preview-edit-expiry-wrap
     > .fa-calendar-days {
         display: none !important;
     }
 
+    /* 不支援 showPicker 時保留原生操作 */
     #cloud-preview-edit-expiry {
         padding-right: 1rem !important;
         cursor: pointer;
+    }
+
+}
+
+/* 僅桌機滑鼠且支援 showPicker 時啟用 */
+@media screen and (min-width: 951px)
+and (hover: hover) and (pointer: fine) {
+
+    /* 讓自訂 Tooltip 可以超出欄位顯示 */
+    #cloud-preview-edit-expiry-wrap.cloud-expiry-picker-supported {
+        overflow: visible !important;
+    }
+
+    /* 預留右側日曆按鈕空間 */
+    #cloud-preview-edit-expiry-wrap.cloud-expiry-picker-supported
+    #cloud-preview-edit-expiry {
+        padding-right: 44px !important;
+    }
+
+    /* 隱藏瀏覽器原生日曆圖示 */
+    #cloud-preview-edit-expiry-wrap.cloud-expiry-picker-supported
+    #cloud-preview-edit-expiry::-webkit-calendar-picker-indicator {
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* 自訂日曆按鈕 */
+    #cloud-preview-edit-expiry-wrap.cloud-expiry-picker-supported
+    > .cloud-expiry-calendar-trigger {
+        position: absolute;
+
+        right: 6px;
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        width: 30px;
+        height: 30px;
+
+        padding: 0;
+
+        border: 0;
+        border-radius: 6px;
+
+        background: #f8fafc;
+        color: #64748b;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    /* Font Awesome 日曆圖示 */
+    .cloud-expiry-calendar-trigger i {
+        font-size: 14px;
+        line-height: 1;
+        pointer-events: none;
+    }
+
+    /* 滑鼠靠近 */
+    .cloud-expiry-calendar-trigger:hover {
+        color: #334155;
+    }
+
+    /* 日期欄位取得焦點 */
+    #cloud-preview-edit-expiry-wrap:focus-within
+    .cloud-expiry-calendar-trigger {
+        background: #ffffff;
+    }
+
+    /* Tooltip：向上顯示、右側對齊 */
+    #cloud-preview-edit-expiry-wrap
+    .cloud-expiry-calendar-trigger.system-tooltip-btn::after {
+        left: auto;
+        right: 0;
+
+        top: auto;
+        bottom: calc(100% + 6px);
+
+        transform: translateY(2px);
+    }
+
+    #cloud-preview-edit-expiry-wrap
+    .cloud-expiry-calendar-trigger.system-tooltip-btn:hover::after {
+        transform: translateY(0);
+    }
+
+}
+
+/* 列印時不顯示日曆按鈕 */
+@media print {
+
+    .cloud-expiry-calendar-trigger {
+        display: none !important;
     }
 
 }
@@ -13350,6 +13466,7 @@ scale-in-center">
               outline-none
               text-sm text-slate-700">
 
+    <!-- 手機版原有日曆圖示：完整保留 -->
     <i class="fa-solid fa-calendar-days
               absolute
               right-3 top-1/2
@@ -13358,6 +13475,19 @@ scale-in-center">
               text-sm
               pointer-events-none"
        aria-hidden="true"></i>
+
+    <!-- 桌機版：統一日曆圖示與 Tooltip -->
+    <button
+        id="cloud-preview-edit-calendar-btn"
+        type="button"
+        class="cloud-expiry-calendar-trigger system-tooltip-btn"
+        data-tooltip="選擇有效期限"
+        aria-label="選擇有效期限"
+        onclick="openCloudPreviewExpiryPicker()"
+    >
+        <i class="fa-solid fa-calendar-days"
+           aria-hidden="true"></i>
+    </button>
 
 </div>
 
@@ -21169,6 +21299,46 @@ function setCloudPreviewEditStatus(
 }
 
 
+/* =========================================================
+   OSCMS｜編輯雲端預覽有效期限
+
+   桌機自訂日曆按鈕：
+   開啟瀏覽器原生日期時間選擇器。
+
+   不變更有效期限資料、權限及雲端更新邏輯。
+========================================================= */
+
+function openCloudPreviewExpiryPicker() {
+
+    const input =
+        document.getElementById(
+            'cloud-preview-edit-expiry'
+        );
+
+    if (
+        !input ||
+        input.disabled ||
+        input.readOnly
+    ) {
+        return;
+    }
+
+    if (
+        typeof input.showPicker === 'function'
+    ) {
+
+        try {
+            input.showPicker();
+            return;
+        } catch (error) {
+            // 瀏覽器不允許時保留原生輸入功能
+        }
+    }
+
+    input.focus();
+}
+
+
 function openCloudPreviewEditModalFromButton(
     button
 ) {
@@ -21315,8 +21485,31 @@ function openCloudPreviewEditModalFromButton(
 
 
     if (expiryInput) {
+
         expiryInput.value =
             expiresLocal;
+
+        /*
+         * 瀏覽器支援 showPicker 時，
+         * 啟用桌機自訂日曆按鈕。
+         *
+         * 手機及不支援的瀏覽器，
+         * 繼續使用原本的日期時間介面。
+         */
+        const expiryWrap =
+            document.getElementById(
+                'cloud-preview-edit-expiry-wrap'
+            );
+
+        if (expiryWrap) {
+
+            expiryWrap.classList.toggle(
+                'cloud-expiry-picker-supported',
+                typeof expiryInput.showPicker === 'function'
+            );
+
+        }
+
     }
 
 
