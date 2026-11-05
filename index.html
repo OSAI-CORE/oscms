@@ -10609,6 +10609,52 @@ body.role-admin
 
 }
 
+/* =========================================================
+   OSCMS｜手機版輸入欄位防止自動放大
+
+   1. 法規配置基準：勞工人數及事業類別
+   2. 證照清單：下拉篩選
+   3. 外訓預算表：所有可編輯資料欄位
+   4. 外訓預算表：項目及年度篩選
+
+   僅作用於手機版寬度。
+   桌機版維持原有字級。
+   不修改 viewport 或禁止使用者縮放。
+========================================================= */
+
+@media screen and (max-width: 950px) {
+
+    /* 法規配置基準 */
+    #compliance-settings-modal #compliance-business-type,
+    #compliance-settings-modal #compliance-employee-count,
+
+    /* 證照清單篩選 */
+    #certificate-panel #itemFilter,
+    #certificate-panel #statusFilter,
+    #certificate-panel #yearFilter,
+
+    /* 外訓預算表：僅套用可編輯欄位 */
+    #budget-panel textarea.budget-input:not(:disabled),
+    #budget-panel input.budget-input:not(:disabled),
+
+    /* 外訓預算表篩選 */
+    #budget-panel #budgetItemFilter,
+    #budget-panel #budgetYearFilter,
+
+    /* 預覽者模式的較高優先級設定 */
+    body.role-viewer #budget-panel #budgetItemFilter,
+    body.role-viewer #budget-panel #budgetYearFilter {
+
+        font-size: 16px !important;
+    }
+
+    /* 勞工人數提示文字 */
+    #compliance-settings-modal
+    #compliance-employee-count::placeholder {
+
+        font-size: 16px !important;
+    }
+}
 
 </style>
 </head>
@@ -41092,27 +41138,36 @@ function handleCloudCenterEscape() {
         return false;
     }
 
-    const innerViews = [
-        'cloud-preview-publish-view',
-        'cloud-preview-manage-view',
-        'cloud-publisher-accounts-view',
-        'cloud-workspace-view'
-    ];
+    /*
+     * 雲端資料正在處理時，
+     * ESC 不允許提前關閉主視窗。
+     */
+    if (
+        certificateWorkspaceSavePending ||
+        certificateWorkspaceTransitionPending ||
+        certificateCloudPreviewPublishPending ||
+        certificatePendingAttachmentReads > 0
+    ) {
+        return true;
+    }
 
-if (innerViews.some(isOpen)) {
-    backToCloudPreviewHome();
-} else {
+    /*
+     * 第一層與第二層：
+     * ESC 統一直接關閉整個雲端中心。
+     */
     closeCloudPreviewModal();
 
+    /*
+     * 保留原有主介面按鈕焦點處理。
+     */
     const entryButton =
         document.getElementById('cloud-preview-entry-btn');
 
     if (document.activeElement === entryButton) {
         entryButton.blur();
     }
-}
 
-return true;
+    return true;
 }
 
 document.addEventListener(
