@@ -8927,6 +8927,32 @@ body.budget-admin-enabled
     #compliance-role-list .legal-duty-trigger {
         white-space: nowrap !important;
     }
+
+/* =========================================================
+   手機橫式：
+   法定應置人員統計資訊使用整張圖卡寬度
+========================================================= */
+
+/* 隱藏原本左側較窄的統計資訊 */
+#compliance-role-list .compliance-stats-inline {
+    display: none !important;
+}
+
+/* 顯示圖卡下方的完整寬度統計資訊 */
+#compliance-role-list .compliance-stats-landscape {
+    display: block !important;
+
+    width: 100%;
+    min-width: 0;
+
+    margin-top: 6px !important;
+
+    white-space: normal !important;
+    overflow-wrap: normal;
+
+    line-height: 1.35;
+}  
+    
 }
 
 /* =========================================================
@@ -33139,11 +33165,14 @@ window.setTimeout(
     <p class="font-black text-slate-800 text-sm leading-snug min-w-0">${escapeHTML(role.label)}</p>
                                 ${renderFullTimeTooltip(role)}
                             </div>
-                            <p class="text-xs text-slate-500 font-medium mt-1">應置 ${role.required} 人｜有效 ${role.validCount} 人｜待受訓 ${role.warningCount}｜已過期 ${role.expiredCount}</p>
+                            <p class="compliance-stats-inline text-xs text-slate-500 font-medium mt-1">應置 ${role.required} 人｜有效 ${role.validCount} 人｜待受訓 ${role.warningCount}｜已過期 ${role.expiredCount}</p>
                         </div>
                     </div>
                     <span class="shrink-0 text-[11px] font-black px-2.5 py-1 rounded-full border ${statusClass}">${statusText}</span>
                 </div>
+
+                <p class="compliance-stats-landscape hidden text-xs text-slate-500 font-medium mt-1">應置 ${role.required} 人｜有效 ${role.validCount} 人｜待受訓 ${role.warningCount}｜已過期 ${role.expiredCount}</p>
+
             </div>`;
     }
 
@@ -33185,7 +33214,7 @@ function renderAuxiliaryComplianceCard(role) {
                             ${renderAuxiliaryTooltip(role)}
                         </div>
 
-<p class="text-xs text-slate-500 font-medium mt-1">應置 ${role.required} 人｜有效 ${role.validCount} 人｜待受訓 ${role.warningCount}｜已過期 ${role.expiredCount}</p>
+<p class="compliance-stats-inline text-xs text-slate-500 font-medium mt-1">應置 ${role.required} 人｜有效 ${role.validCount} 人｜待受訓 ${role.warningCount}｜已過期 ${role.expiredCount}</p>
 
                     </div>
                 </div>
@@ -33195,6 +33224,9 @@ function renderAuxiliaryComplianceCard(role) {
                 </span>
 
             </div>
+
+            <p class="compliance-stats-landscape hidden text-xs text-slate-500 font-medium mt-1">應置 ${role.required} 人｜有效 ${role.validCount} 人｜待受訓 ${role.warningCount}｜已過期 ${role.expiredCount}</p>
+
         </div>`;
 }
 
