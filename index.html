@@ -8834,39 +8834,35 @@ body.budget-admin-enabled
      * 急救人員兼任／輔助備註移到畫面下方，
      * 位置會比專職備註低，也較接近急救人員小卡。
      */
-    #compliance-role-list .auxiliary-tooltip-panel {
-        left: 50% !important;
-        right: auto !important;
+#compliance-role-list .auxiliary-tooltip-panel {
+    left: 50% !important;
+    right: auto !important;
 
-        top: auto !important;
-        bottom: calc(
-            18px + env(safe-area-inset-bottom)
-        ) !important;
+    top: 58% !important;
+    bottom: auto !important;
 
-        width: calc(100vw - 32px) !important;
-        max-width: 340px !important;
-        max-height: 42dvh !important;
+    width: calc(100vw - 32px) !important;
+    max-width: 340px !important;
+    max-height: 42dvh !important;
 
-        overflow-x: hidden !important;
-        overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
 
-        transform:
-            translateX(-50%)
-            translateY(4px)
-            scale(0.98) !important;
-    }
+    transform:
+        translate(-50%, calc(-50% + 4px))
+        scale(0.98) !important;
+}
 
-    #compliance-role-list
-    .auxiliary-tooltip-wrap.is-open
-    .auxiliary-tooltip-panel {
-        opacity: 1 !important;
-        pointer-events: auto !important;
+#compliance-role-list
+.auxiliary-tooltip-wrap.is-open
+.auxiliary-tooltip-panel {
+    opacity: 1 !important;
+    pointer-events: auto !important;
 
-        transform:
-            translateX(-50%)
-            translateY(0)
-            scale(1) !important;
-    }
+    transform:
+        translate(-50%, -50%)
+        scale(1) !important;
+}
 
     /*
      * 手機觸控版只依 is-open 顯示，
@@ -8887,6 +8883,49 @@ body.budget-admin-enabled
     #compliance-role-list .legal-duty-panel::before,
     #compliance-role-list .auxiliary-tooltip-panel::before {
         display: none !important;
+    }
+}
+
+/* =========================================================
+   OSCMS｜手機橫式
+   法定應置人員檢核圖卡狀態標籤統一排列
+
+   法定專職移到職務名稱下方
+   兼任／輔助維持相同排列方向
+   不影響桌機及手機直式
+========================================================= */
+
+@media screen and (orientation: landscape) and (max-width: 950px) {
+
+    /* 核心人員：標題與法定專職改成上下排列 */
+    #compliance-role-list .compliance-role-title-row {
+        display: block !important;
+    }
+
+    #compliance-role-list .compliance-role-title-row > p {
+        display: block !important;
+    }
+
+    #compliance-role-list .compliance-role-title-row .legal-duty-tooltip-wrap {
+        display: inline-flex !important;
+        margin-top: 4px !important;
+    }
+
+/* 急救人員：職務名稱與兼任／輔助上下排列 */
+#compliance-role-list .compliance-auxiliary-title-row {
+    display: block !important;
+}
+
+/* 兼任／輔助標籤間距一致 */
+#compliance-role-list .auxiliary-tooltip-wrap {
+    display: inline-flex !important;
+    margin-top: 4px !important;
+}
+
+    /* 狀態標籤文字不換行 */
+    #compliance-role-list .auxiliary-tooltip-trigger,
+    #compliance-role-list .legal-duty-trigger {
+        white-space: nowrap !important;
     }
 }
 
@@ -33050,7 +33089,7 @@ window.setTimeout(
                             ${statusIconHTML}
                         </div>
                         <div class="min-w-0">
-<div class="flex flex-nowrap items-start gap-1 min-w-0">
+<div class="compliance-role-title-row flex flex-nowrap items-start gap-1 min-w-0">
     <p class="font-black text-slate-800 text-sm leading-snug min-w-0">${escapeHTML(role.label)}</p>
                                 ${renderFullTimeTooltip(role)}
                             </div>
@@ -33092,7 +33131,7 @@ function renderAuxiliaryComplianceCard(role) {
 
                     <div class="min-w-0">
 
-                        <div class="flex flex-wrap items-center gap-2">
+                        <div class="compliance-auxiliary-title-row flex flex-wrap items-center gap-2">
                             <p class="font-black text-slate-800 text-sm leading-snug">
                                 ${escapeHTML(role.label)}
                             </p>
