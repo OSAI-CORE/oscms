@@ -3039,6 +3039,25 @@ word-break:
             transform: rotate(45deg);
         }
 
+    /* =========================================================
+   OSCMS｜急救人員右欄註解框向左展開
+
+   左欄維持原本向右展開。
+   右欄改為向左展開，避免超出頁面右邊界。
+
+   手機直式原有固定位置設定維持不變。
+========================================================= */
+
+#compliance-role-list .auxiliary-tooltip-panel {
+    left: auto;
+    right: 0;
+}
+
+#compliance-role-list .auxiliary-tooltip-panel::before {
+    left: auto;
+right: calc(24px + var(--auxiliary-tooltip-shift, 0px));
+}   
+
         .auxiliary-tooltip-wrap:hover .auxiliary-tooltip-panel,
         .auxiliary-tooltip-wrap:focus-within .auxiliary-tooltip-panel,
         .auxiliary-tooltip-wrap.is-open .auxiliary-tooltip-panel {
@@ -32585,11 +32604,11 @@ function getTrainingItemStats() {
     function renderFullTimeTooltip(role) {
         if (!shouldShowFullTimeTooltip(role)) return '';
         return `
-            <span class="legal-duty-tooltip-wrap"
+<span class="legal-duty-tooltip-wrap shrink-0"
       onclick="toggleLegalDutyTooltip(event, this)">
-                <button type="button" class="legal-duty-trigger" aria-label="法定專職不可兼任說明">
-                    法定專職 (不可兼任)
-                </button>
+<button type="button" class="legal-duty-trigger" aria-label="法定專職不可兼任說明">
+    法定專職
+</button>
                 <span class="legal-duty-panel" role="tooltip">
                     <span class="block text-amber-300 text-sm font-black mb-2">💡 法定專職限制</span>
                     <span class="block text-xs leading-relaxed text-slate-100">依《職業安全衛生管理辦法》第3條及第4條規定，此員額必須為「常駐廠場執行職務之專職人員」，不得兼任其他與職安無關之工作（如一般行政、總務、廠務、採購等）。</span>
@@ -32615,9 +32634,11 @@ function getTrainingItemStats() {
 
 function renderAuxiliaryTooltip(role) {
     return `
-        <span class="auxiliary-tooltip-wrap"
-              onclick="toggleAuxiliaryTooltip(event, this)"
-              onmouseleave="closeAuxiliaryTooltip(this)">
+<span class="auxiliary-tooltip-wrap"
+      onclick="toggleAuxiliaryTooltip(event, this)"
+      onmouseenter="positionAuxiliaryTooltip(this)"
+      onfocusin="positionAuxiliaryTooltip(this)"
+      onmouseleave="closeAuxiliaryTooltip(this)">
             <button type="button" class="auxiliary-tooltip-trigger" aria-label="兼任輔助角色說明">
                 ${escapeHTML(role.auxiliaryLabel || '兼任 / 輔助')}
             </button>
@@ -32650,6 +32671,25 @@ function toggleLegalDutyTooltip(event, element) {
     element.classList.toggle('is-open');
 }
 
+function positionAuxiliaryTooltip(element) {
+    const panel = element?.querySelector('.auxiliary-tooltip-panel');
+    if (!panel) return;
+
+    panel.style.right = '';
+    panel.style.removeProperty('--auxiliary-tooltip-shift');
+
+    if (window.matchMedia('(orientation: portrait) and (max-width: 767px)').matches) {
+        return;
+    }
+
+    const shift = Math.ceil(20 - panel.getBoundingClientRect().left);
+
+    if (shift > 0) {
+        panel.style.right = `-${shift}px`;
+        panel.style.setProperty('--auxiliary-tooltip-shift', `${shift}px`);
+    }
+}
+
 function toggleAuxiliaryTooltip(event, element) {
     event.stopPropagation();
 
@@ -32669,6 +32709,10 @@ function toggleAuxiliaryTooltip(event, element) {
     });
 
     element.classList.toggle('is-open');
+
+if (element.classList.contains('is-open')) {
+    positionAuxiliaryTooltip(element);
+}
 }
 
 function closeAuxiliaryTooltip(element) {
@@ -32998,26 +33042,22 @@ window.setTimeout(
         const statusClass = role.complete ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-rose-100 text-rose-700 border-rose-200';
         const statusText = role.complete ? '達標' : `缺少 ${role.missing}`;
         const statusIconHTML = renderStatusIconHTML(role.complete, 'check-circle-2');
-        const reminderText = role.complete ? `已達法定最低配置要求，有效配置 ${role.validCount} 人。` : `有效配置 ${role.validCount} 人，仍需補足 ${role.missing} 人。`;
         return `
             <div class="rounded-2xl border border-slate-100 bg-slate-50/70 p-3">
-                <div class="flex items-start justify-between gap-3 mb-3">
+                <div class="flex items-start justify-between gap-3">
                     <div class="flex items-start gap-3 min-w-0">
                         <div class="w-9 h-9 rounded-xl ${role.complete ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600 ring-2 ring-rose-100'} flex items-center justify-center shrink-0">
                             ${statusIconHTML}
                         </div>
                         <div class="min-w-0">
-                            <div class="flex flex-wrap items-center gap-2">
-                                <p class="font-black text-slate-800 text-sm leading-snug">${escapeHTML(role.label)}</p>
+<div class="flex flex-nowrap items-start gap-1 min-w-0">
+    <p class="font-black text-slate-800 text-sm leading-snug min-w-0">${escapeHTML(role.label)}</p>
                                 ${renderFullTimeTooltip(role)}
                             </div>
-                            <p class="text-xs text-slate-400 font-bold mt-1">應置 ${role.required} 人｜有效 ${role.validCount} 人｜待受訓 ${role.warningCount}｜已過期 ${role.expiredCount}</p>
+                            <p class="text-xs text-slate-500 font-medium mt-1">應置 ${role.required} 人｜有效 ${role.validCount} 人｜待受訓 ${role.warningCount}｜已過期 ${role.expiredCount}</p>
                         </div>
                     </div>
                     <span class="shrink-0 text-[11px] font-black px-2.5 py-1 rounded-full border ${statusClass}">${statusText}</span>
-                </div>
-                <div class="text-xs text-slate-500 leading-relaxed bg-white rounded-xl border border-slate-100 px-3 py-2">
-                    ${reminderText}
                 </div>
             </div>`;
     }
@@ -33035,13 +33075,13 @@ function renderAuxiliaryComplianceCard(role) {
         renderStatusIconHTML(role.complete, 'circle-check');
 
     return `
-        <div class="md:col-span-2 rounded-2xl border border-sky-100 bg-gradient-to-r from-sky-50 to-white p-3">
+        <div class="rounded-2xl border border-sky-100 bg-gradient-to-r from-sky-50 to-white p-3">
 
             <div class="flex flex-row items-start justify-between gap-3">
 
                 <div class="flex items-start gap-3 min-w-0">
 
-                    <div class="w-10 h-10 rounded-xl ${
+                    <div class="w-9 h-9 rounded-xl ${
                         role.complete
                             ? 'bg-sky-100 text-sky-600'
                             : 'bg-amber-100 text-amber-600 ring-2 ring-amber-100'
@@ -33060,12 +33100,7 @@ function renderAuxiliaryComplianceCard(role) {
                             ${renderAuxiliaryTooltip(role)}
                         </div>
 
-                        <p class="text-xs text-slate-500 font-bold mt-1">
-                            應置 ${role.required} 人｜
-                            有效 ${role.validCount} 人｜
-                            待受訓 ${role.warningCount}｜
-                            已過期 ${role.expiredCount}
-                        </p>
+<p class="text-xs text-slate-500 font-medium mt-1">應置 ${role.required} 人｜有效 ${role.validCount} 人｜待受訓 ${role.warningCount}｜已過期 ${role.expiredCount}</p>
 
                     </div>
                 </div>
@@ -37786,8 +37821,15 @@ function closeChangePasswordModal() {
     }
 
 
-    isOsaiSystemAccessSettingsReady =
-        false;
+isOsaiSystemAccessSettingsReady =
+    false;
+
+const settingsButton =
+    document.getElementById('permission-settings-btn');
+
+if (document.activeElement === settingsButton) {
+    settingsButton.blur();
+}
 }
 
 function requestCloseChangePasswordModal() {
@@ -39652,7 +39694,14 @@ function closeDataExportModal() {
     }
 
 
-    resetDataExportModal();
+resetDataExportModal();
+
+const exportButton =
+    document.getElementById('export-json-btn');
+
+if (document.activeElement === exportButton) {
+    exportButton.blur();
+}
 }
 
 
@@ -40968,6 +41017,65 @@ document.addEventListener(
     }
 );
 
+/* =========================================================
+   OSCMS｜雲端中心 ESC 逐層關閉
+
+   1. 優先關閉最上層彈出視窗
+   2. 第二層功能畫面返回雲端中心首頁
+   3. 第一層雲端中心首頁直接關閉
+   4. 不干擾其他系統視窗原本的 ESC
+========================================================= */
+
+function handleCloudCenterEscape() {
+
+    const isOpen = id => {
+        const el = document.getElementById(id);
+        return !!el && !el.classList.contains('hidden');
+    };
+
+    const topModals = [
+        ['cloud-preview-password-reset-modal', closeCloudPreviewPasswordResetModal],
+        ['cloud-workspace-rename-modal', closeCloudWorkspaceRenameModal],
+        ['cloud-publisher-create-modal', closeCloudPublisherCreateModal],
+        ['cloud-publisher-password-modal', closeCloudPublisherPasswordModal],
+        ['cloud-preview-edit-modal', closeCloudPreviewEditModal],
+        ['cloud-publisher-login-modal', closeCloudPublisherLoginModal]
+    ];
+
+    for (const [id, close] of topModals) {
+        if (isOpen(id)) {
+            close();
+            return true;
+        }
+    }
+
+    if (!isOpen('cloud-preview-modal')) {
+        return false;
+    }
+
+    const innerViews = [
+        'cloud-preview-publish-view',
+        'cloud-preview-manage-view',
+        'cloud-publisher-accounts-view',
+        'cloud-workspace-view'
+    ];
+
+if (innerViews.some(isOpen)) {
+    backToCloudPreviewHome();
+} else {
+    closeCloudPreviewModal();
+
+    const entryButton =
+        document.getElementById('cloud-preview-entry-btn');
+
+    if (document.activeElement === entryButton) {
+        entryButton.blur();
+    }
+}
+
+return true;
+}
+
 document.addEventListener(
     'keydown',
     function(event) {
@@ -40976,6 +41084,11 @@ document.addEventListener(
             event.key ===
             'Escape'
         ) {
+
+            if (handleCloudCenterEscape()) {
+                event.preventDefault();
+                return;
+            }
 
             requestCloseLoginModal();
 
